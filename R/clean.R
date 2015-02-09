@@ -4,14 +4,20 @@
 #TODO: everything
 
 require(gdata)
+require(lubridate)
 
 init_clean <- function() {
 #
 #
 
 #oss
-clean_oss <- function(data) {
-  names(data) <- slugify(names(data))
+clean_oss <- function() {
+  #assumes oss data has been loaded
+  names(oss) <- slugify(names(oss))
+  oss$completedby <- gsub(",", "", oss$completedby)
+  oss$datein <- mdy(oss$datein)
+  oss$queue <- as.character(oss$queue)
+  oss$category <- as.factor( oss_lookup$category[match(oss$queue, oss_lookup$lookup)] )
 }
 
 #load
