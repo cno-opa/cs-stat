@@ -12,3 +12,4 @@ init <- function(subdir) {
 
 #sequence of script executions
 init("R")
+init_clean()
