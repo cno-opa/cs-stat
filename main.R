@@ -7,9 +7,13 @@ require(xtermStyle)
 init <- function(subdir) {
   Rfiles <- list.files(subdir, pattern = "*.R", full.names = TRUE)
   sapply(Rfiles, source)
-  print( style( "Running!", fg = 208) )
+  cat( style( "Running!\n", fg = 069) )
 }
 
 #sequence of script executions
 init("R")
 init_clean()
+init_plot()
+
+#finish
+cat( style( "Finished!", fg = 069 ) )
