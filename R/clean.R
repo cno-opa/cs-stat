@@ -14,9 +14,9 @@ init_clean <- function() {
 #oss
 clean_oss <- function() {
   #assumes oss data has been loaded
-  
+
   load("./data/context/oss-lookup.Rdata")
-  
+
   names(oss) <- slugify(names(oss))
   oss$completedby <- gsub(",", "", oss$completedby)
   oss$datein <- mdy(oss$datein)
@@ -25,6 +25,9 @@ clean_oss <- function() {
   oss <- filter(oss, lengthofservice < 480) #remove entries that take over 8 hours, or one working day
   oss <- filter(oss, !grepl("appointment", tolower(serviceprovided)) & !grepl("meeting", tolower(serviceprovided))) #remove visits with "meeting" or "appointment"
   oss$category <- as.factor( oss_lookup$category[match(oss$queue, oss_lookup$lookup)] )
+  oss$my <- paste(month(oss$datein, label = TRUE), year(oss$datein))
+  oss <- arrange(oss, datein)
+  oss$my <- factor(oss$my, levels = unique(oss$my))
 
   return(oss)
 }
