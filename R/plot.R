@@ -17,40 +17,29 @@ oss_sp <- function() {
         group_by(my, category)%>%
         summarise(n = n(), meanwait = mean(timewaited), meanserve = mean(lengthofservice))
 
-  names(d) <- c("date", "category", "n", "meanwait", "meanserve")
+  #master
+  p <- ggplot(d, aes(x = my, group = category, colour = category)) +
+        theme(axis.text.x = element_text(angle = 45, hjust = .97), legend.position = "top") +
+        scale_colour_discrete(name = "Category",
+                              labels = c("S&P", "S&P - Elec", "S&P - Inspec", "S&P - Mech", "S&P - Plan Rev"))
 
   #visitors
-  ggplot(d, aes(x = date, y = n, group = category, colour = category)) +
-  geom_line() +
-  theme(axis.text.x = element_text(angle = 45, hjust = .97), legend.position = "top") +
-  labs( title = "Visitors by month", x = "Month", y = "Visitors" ) +
-  scale_colour_discrete(name = "Category",
-                        labels = c("S&P", "S&P - Elec", "S&P - Inspec", "S&P - Mech", "S&P - Plan Rev")
-                        ) +
-  ggsave("./output/oss-sp.png", width = 10, height = 5.5)
-  cat( style( "Saving safety and permits visitors line chart...\n", fg = 208) )
+  p + geom_line(aes(y = n)) +
+      labs( title = "Visitors by month", x = "Month", y = "Visitors" ) +
+      ggsave("./output/oss-sp-visitors.png", width = 10, height = 5.5)
+      cat( style( "Saving safety and permits visitors line chart...\n", fg = 208) )
 
   #mean wait time
-  ggplot(d, aes(x = date, y = meanwait, group = category, colour = category)) +
-  geom_line() +
-  theme(axis.text.x = element_text(angle = 45, hjust = .97), legend.position = "top") +
-  labs( title = "Average wait time", x = "Month", y = "Minutes" ) +
-  scale_colour_discrete(name = "Category",
-                        labels = c("S&P", "S&P - Elec", "S&P - Inspec", "S&P - Mech", "S&P - Plan Rev")
-                        ) +
-  ggsave("./output/oss-sp-wait.png", width = 10, height = 5.5)
-  cat( style( "Saving safety and permits mean wait time line chart...\n", fg = 208) )
+  p + geom_line(aes(y = meanwait)) +
+      labs( title = "Average wait time", x = "Month", y = "Minutes" ) +
+      ggsave("./output/oss-sp-wait.png", width = 10, height = 5.5)
+      cat( style( "Saving safety and permits mean wait time line chart...\n", fg = 208) )
 
   #mean service time
-  ggplot(d, aes(x = date, y = meanserve, group = category, colour = category)) +
-  geom_line() +
-  theme(axis.text.x = element_text(angle = 45, hjust = .97), legend.position = "top") +
-  labs( title = "Average service time", x = "Month", y = "Minutes" ) +
-  scale_colour_discrete(name = "Category",
-                        labels = c("S&P", "S&P - Elec", "S&P - Inspec", "S&P - Mech", "S&P - Plan Rev")
-                        ) +
-  ggsave("./output/oss-sp-service.png", width = 10, height = 5.5)
-  cat( style( "Saving safety and permits mean service time line chart...\n", fg = 208) )
+  p + geom_line(aes(y = meanserve)) +
+      labs( title = "Average service time", x = "Month", y = "Minutes" ) +
+      ggsave("./output/oss-sp-service.png", width = 10, height = 5.5)
+      cat( style( "Saving safety and permits mean service time line chart...\n", fg = 208) )
 }
 
 oss_sp_l <- function() {
@@ -75,9 +64,14 @@ oss_sp_l <- function() {
               )%>%
         group_by(my)%>%
         summarise(n = n(), mean = mean(timewaited))
-  names(l) <- c("date", "n", "mean")
 
-  ggplot(l, aes(x = date, y = mean, group = 1)) +
+  #wait for building permit
+  b <- filter(oss, queue == "Building Permit")%>%
+       group_by(my)%>%
+       summarise(n = n(), mean = mean(timewaited))
+
+  #any permit
+  ggplot(l, aes(x = my, y = mean, group = 1)) +
   geom_line(colour = "steelblue") +
   geom_hline(aes(yintercept = 18), colour = "orange", linetype = "dashed") +
   annotate("text", x = 1.5, y = 18.5, label = "Target") +
@@ -86,13 +80,8 @@ oss_sp_l <- function() {
   ggsave("./output/oss-sp-wait-all.png", width = 10, height = 5.5)
   cat( style( "Saving safety and permits all permits mean wait time line chart...\n", fg = 208) )
 
-  #wait for building permit
-  b <- filter(oss, queue == "Building Permit")%>%
-       group_by(my)%>%
-       summarise(n = n(), mean = mean(timewaited))
-  names(b) <- c("date", "n", "mean")
-
-  ggplot(b, aes(x = date, y = mean, group = 1)) +
+  #building permit
+  ggplot(b, aes(x = my, y = mean, group = 1)) +
   geom_line(colour = "steelblue") +
   geom_hline(aes(yintercept = 18), colour = "orange", linetype = "dashed") +
   annotate("text", x = 1.5, y = 18.5, label = "Target") +
@@ -146,6 +135,7 @@ load("./data/data-cleaned.Rdata")
 #execute
 oss_sp()
 oss_sp_l()
+oss_etc()
 
 #
 #end init_plot
