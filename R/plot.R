@@ -54,8 +54,10 @@ oss_sp <- function() {
 }
 
 #load
+load("./data/data-cleaned.Rdata")
 
 #execute
+oss_sp()
 
 #
 #end init_plot
