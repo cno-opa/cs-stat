@@ -1,7 +1,7 @@
 #plot.R
 #makes ALL the charts
 
-#TODO: DRY. Remove artifacts
+#TODO: DRY. Remove artifacts. CamelCase function names
 
 require(ggplot2)
 require(dplyr)
@@ -197,6 +197,7 @@ oss_sp()
 oss_sp_permits()
 oss_etc()
 oss_olp()
+oss_cpnc()
 
 #
 #end init_plot
