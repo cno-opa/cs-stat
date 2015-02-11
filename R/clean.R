@@ -1,7 +1,7 @@
 #clean.R
 #loads, cleans, and bins data for plotting
 
-#TODO: audit oss data to remove outliers. add in historical acc inputs
+#TODO: audit oss data to remove outliers. add in historical acc inputs. resolve NAs in permits$opa_category
 
 require(gdata)
 require(lubridate)
@@ -31,6 +31,7 @@ cleanOss <- function() {
 }
 
 cleanPermits <- function() {
+  load("./data/context/permits-lookup.Rdata")
 
   toDate <- function(col) {
     as.POSIXct(col, format = "%m/%d/%Y")
@@ -76,6 +77,7 @@ cleanPermits <- function() {
 
   names(permits) <- slugify(names(permits))
   permits$exitreason <- tolower(permits$exitreason)
+  permits$type <- as.character(permits$type)
   permits$d_exp <- toDate(permits$d_exp)
   permits$filingdate <- toDate(permits$filingdate)
   permits$issuedate <- toDate(permits$issuedate)
@@ -93,6 +95,9 @@ cleanPermits <- function() {
     permits$usetype[i] <- assignUseType(permits$landuseshort[i], permits$owner[i])
   }
   resolveUseType()
+
+  #permit type recode
+  permits$opa_category <- permits_lookup$opa_category[match(permits$type, permits_lookup$type)]
 }
 
 #load
