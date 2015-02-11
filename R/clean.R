@@ -1,7 +1,7 @@
 #clean.R
 #loads, cleans, and bins data for plotting
 
-#TODO: everything
+#TODO: audit oss data to remove outliers
 
 require(gdata)
 require(lubridate)
