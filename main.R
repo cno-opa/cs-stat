@@ -1,6 +1,8 @@
 #!usr/bin/Rscript
 #runs the whole kit and kaboodle
 
+.libPaths("C:\\Rpackages")
+
 #initialize
 init <- function(subdir) {
   Rfiles <- list.files(subdir, pattern = "*.R", full.names = TRUE)
