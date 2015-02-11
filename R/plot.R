@@ -5,7 +5,6 @@
 
 require(ggplot2)
 require(dplyr)
-require(xtermStyle)
 
 init_plot <- function() {
 #
@@ -27,22 +26,22 @@ oss_sp <- function() {
   p + geom_line(aes(y = n)) +
       labs( title = "Visitors by month", x = "Month", y = "Visitors" ) +
       ggsave("./output/oss-sp-visitors.png", width = 10, height = 5.5)
-      cat( style( "Saving safety and permits visitors line chart...\n", fg = 208) )
+      cat("Saving safety and permits visitors line chart...\n")
 
   #mean wait time
   p + geom_line(aes(y = meanwait)) +
       labs( title = "Average wait time", x = "Month", y = "Minutes" ) +
       ggsave("./output/oss-sp-wait.png", width = 10, height = 5.5)
-      cat( style( "Saving safety and permits mean wait time line chart...\n", fg = 208) )
+      cat("Saving safety and permits mean wait time line chart...\n")
 
   #mean service time
   p + geom_line(aes(y = meanserve)) +
       labs( title = "Average service time", x = "Month", y = "Minutes" ) +
       ggsave("./output/oss-sp-service.png", width = 10, height = 5.5)
-      cat( style( "Saving safety and permits mean service time line chart...\n", fg = 208) )
+      cat("Saving safety and permits mean service time line chart...\n")
 }
 
-oss_sp_l <- function() {
+oss_sp_permits <- function() {
   #wait for any permit
   l <- filter(oss,
               queue == "BBSA Building Standards & Appeals" |
@@ -78,7 +77,7 @@ oss_sp_l <- function() {
   theme(axis.text.x = element_text(angle = 45, hjust = .97), legend.position = "top") +
   labs( title = "Average wait time for any license or permit", x = "Month", y = "Minutes" )
   ggsave("./output/oss-sp-wait-all.png", width = 10, height = 5.5)
-  cat( style( "Saving safety and permits all permits mean wait time line chart...\n", fg = 208) )
+  cat("Saving safety and permits all permits mean wait time line chart...\n")
 
   #building permit
   ggplot(b, aes(x = my, y = mean, group = 1)) +
@@ -88,7 +87,7 @@ oss_sp_l <- function() {
   theme(axis.text.x = element_text(angle = 45, hjust = .97), legend.position = "top") +
   labs( title = "Average wait time for new building permit", x = "Month", y = "Minutes" )
   ggsave("./output/oss-sp-wait-building.png", width = 10, height = 5.5)
-  cat( style( "Saving safety and permits building permit mean wait time line chart...\n", fg = 208) )
+  cat("Saving safety and permits building permit mean wait time line chart...\n")
 }
 
 oss_etc <- function() {
@@ -114,19 +113,23 @@ oss_etc <- function() {
   p + geom_line(aes(y = n)) +
       labs(title = "Number of visitors", y = "Visitors")
       ggsave("./output/oss-etc-visitors.png", width = 10, height = 5.5)
-      cat( style( "Saving OSS etc visitors line chart...\n", fg = 208) )
+      cat("Saving OSS etc visitors line chart...\n")
 
   #mean wait
   p + geom_line(aes(y = meanwait)) +
       labs(title = "Average wait time")
       ggsave("./output/oss-etc-mean-wait.png", width = 10, height = 5.5)
-      cat( style( "Saving OSS etc mean wait line chart...\n", fg = 208) )
+      cat("Saving OSS etc mean wait line chart...\n")
 
   #mean service
   p + geom_line(aes(y = meanserve)) +
       labs(title = "Average service time")
       ggsave("./output/oss-etc-mean-service.png", width = 10, height = 5.5)
-      cat( style( "Saving OSS etc mean service line chart...\n", fg = 208) )
+      cat("Saving OSS etc mean service line chart...\n")
+}
+
+oss_olp <- function() {
+  d <- filter(oss, category == "")
 }
 
 #load
@@ -134,7 +137,7 @@ load("./data/data-cleaned.Rdata")
 
 #execute
 oss_sp()
-oss_sp_l()
+oss_sp_permits()
 oss_etc()
 
 #

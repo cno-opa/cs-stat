@@ -33,7 +33,7 @@ clean_oss <- function() {
 }
 
 #load
-oss <- read.csv("./data/oss-service-report-2014.csv", sep = ";", header = TRUE)
+oss <- read.csv("./data/oss-service-report.csv", sep = ";", header = TRUE)
 
 #execute
 oss <- clean_oss()
