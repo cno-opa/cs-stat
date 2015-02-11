@@ -30,7 +30,7 @@ cleanOss <- function() {
   return(oss)
 }
 
-cleanPermitApps <- function() {
+cleanPermits <- function() {
 
   toDate <- function(col) {
     as.POSIXct(col, format = "%m/%d/%Y")
@@ -70,38 +70,38 @@ cleanPermitApps <- function() {
         list$usetype[i] <- input
       }
     }
-    u <- filter(permit_apps, usetype == "undetermined")
+    u <- filter(permits, usetype == "undetermined")
     ask(u)
   }
 
-  names(permit_apps) <- slugify(names(permit_apps))
-  permit_apps$exitreason <- tolower(permit_apps$exitreason)
-  permit_apps$d_exp <- toDate(permit_apps$d_exp)
-  permit_apps$filingdate <- toDate(permit_apps$filingdate)
-  permit_apps$issuedate <- toDate(permit_apps$issuedate)
-  permit_apps$finaldate <- toDate(permit_apps$finaldate)
-  permit_apps$currentstatusdate <- toDate(permit_apps$currentstatusdate)
-  permit_apps$nextstatusdate <- toDate(permit_apps$filingdate)
+  names(permits) <- slugify(names(permits))
+  permits$exitreason <- tolower(permits$exitreason)
+  permits$d_exp <- toDate(permits$d_exp)
+  permits$filingdate <- toDate(permits$filingdate)
+  permits$issuedate <- toDate(permits$issuedate)
+  permits$finaldate <- toDate(permits$finaldate)
+  permits$currentstatusdate <- toDate(permits$currentstatusdate)
+  permits$nextstatusdate <- toDate(permits$filingdate)
 
-  permit_apps <- filter(permit_apps, !submittaltype == 3) #remove accela entries
-  permit_apps <- filter(permit_apps, !grepl("voided", exitreason))
-  permit_apps <- filter(permit_apps, !is.na(filingdate))
+  permits <- filter(permits, !submittaltype == 3) #remove accela entries
+  permits <- filter(permits, !grepl("voided", exitreason))
+  permits <- filter(permits, !is.na(filingdate))
 
   #determine residential vs.commercial use type
-  permit_apps$usetype <- NA
-  for(i in 1:nrow(permit_apps)) {
-    permit_apps$usetype[i] <- assignUseType(permit_apps$landuseshort[i], permit_apps$owner[i])
+  permits$usetype <- NA
+  for(i in 1:nrow(permits)) {
+    permits$usetype[i] <- assignUseType(permits$landuseshort[i], permits$owner[i])
   }
   resolveUseType()
 }
 
 #load
 oss <- read.csv("./data/oss-service-report.csv", sep = ";", header = TRUE)
-permit_apps <- read.csv("./data/permit-applications.csv", header = TRUE)
+permits <- read.csv("./data/permits.csv", header = TRUE)
 
 #execute
 oss <- cleanOss()
-permit_apps <- cleanPermitApps()
+permits <- cleanPermits()
 
 #save
 save(list = ls(), file = "./data/data-cleaned.Rdata")
