@@ -33,6 +33,7 @@ cleanOss <- function() {
 cleanPermits <- function() {
   load("./data/context/permits-lookup.Rdata")
   load("./data/context/online-permits.Rdata")
+  load("./data/context/historical-usetypes.Rdata")
 
   toDate <- function(col) {
     as.POSIXct(col, format = "%m/%d/%Y")
@@ -62,23 +63,39 @@ cleanPermits <- function() {
     }
   }
 
-  resolveUseType <- function() {
-    ask <- function(list) {
-      for(i in 1:nrow(list)) {
-        cat(paste("Address: ", list$address[i]))
-        cat(paste("\nDescription: ", list$descr[i]))
-        cat("\n \nresidential, commercial, or undetermined? \n \n")
-        input <- readLines("stdin", 1, warn = FALSE)
-        list$usetype[i] <- input
-      }
+  lookupUseType <- function() {
+    u <- which(permits$usetype == "undetermined", arr.ind = TRUE)
+    for(i in u) {
+      r <- permits$refcode[i]
+      lookup <- hist_usetypes$usetype[hist_usetypes$refcode == r]
+      permits$usetype[i] <- lookup
     }
-    u <- filter(permits, usetype == "undetermined")
-    ask(u)
+    return(permits)
+  }
+
+  resolveUseType <- function() {
+    u <- which(permits$usetype == "undetermined", arr.ind = TRUE)
+    for(i in u) {
+      cat(paste("Address: ", permits$address[i]))
+      cat(paste("\nDescription: ", permits$descr[i]))
+      cat("\n \nresidential, commercial, or undetermined? Enter r, c, or u \n \n")
+      input <- readLines("stdin", 1, warn = FALSE)
+      if(input == "r") {
+        input <- "residential"
+      } else if( input == "c") {
+        input <- "commercial"
+      } else {
+        input <- "undetermined"
+      }
+      permits$usetype[i] <- input
+    }
+    return(permits)
   }
 
   names(permits) <- slugify(names(permits))
   permits$exitreason <- tolower(permits$exitreason)
   permits$type <- as.character(permits$type)
+  permits$refcode <- as.character(permits$refcode)
   permits$d_exp <- toDate(permits$d_exp)
   permits$filingdate <- toDate(permits$filingdate)
   permits$issuedate <- toDate(permits$issuedate)
@@ -99,7 +116,10 @@ cleanPermits <- function() {
   for(i in 1:nrow(permits)) {
     permits$usetype[i] <- assignUseType(permits$landuseshort[i], permits$owner[i])
   }
-  resolveUseType()
+  permits <- lookupUseType()
+  permits <- resolveUseType()
+  hist_usetypes <- data.frame(refcode = permits$refcode, usetype = permits$usetype)
+  save(hist_usetypes, file = "./data/context/historical-usetypes.Rdata") #save it for posterity
 
   #permit type recode and online lookup
   permits$opa_category <- permits_lookup$opa_category[match(permits$type, permits_lookup$type)]
