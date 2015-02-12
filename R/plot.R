@@ -209,7 +209,26 @@ permit_online <- function() { #slide 15
   geom_text(size = 4, colour = "grey33", vjust = -.5)
   ggsave("./output/15permits-online.png", width = 10, height = 5.5)
   cat("Saving percent of permits applied for online chart...\n")
+}
 
+bus_lic_online <- function() {
+  all <- group_by(bus_lic, my, createdby) %>%
+         summarise(n = n())
+
+  denom <- summarise(all, all = sum(n))
+  numer <- filter(all, createdby == "publicwebcrm") %>%
+           summarise(online = sum(n))
+
+  d <- left_join(denom, numer, by = "my")
+  d$prop <- d$online/d$all
+
+  ggplot(d[(nrow(d) - 12):nrow(d),], aes(x = my, y = prop, label = percent(prop))) +
+  geom_bar(stat = "identity", fill = "goldenrod") +
+  labs(title = "Percent of business license applications recieved online", x = "Month", y = "Percent") +
+  theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
+  geom_text(size = 4, colour = "grey33", vjust = -.5)
+  ggsave("./output/15bus-license-online.png", width = 10, height = 5.5)
+  cat("Saving percent of business licenses applied for online chart...\n")
 }
 
 #load
@@ -222,6 +241,7 @@ oss_etc()
 oss_olp()
 oss_cpnc()
 permit_online()
+bus_lic_online()
 
 #
 #end init_plot

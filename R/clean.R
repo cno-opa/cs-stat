@@ -106,13 +106,28 @@ cleanPermits <- function() {
   permits$online <- tolower(permits$type) %in% online_permits$permit
 }
 
+cleanBusLic <- function() {
+
+  toDate <- function(col) {
+    as.POSIXct(col, format = "%m/%d/%Y")
+  }
+
+  names(bus_lic) <- slugify(names(bus_lic))
+  bus_lic$applicationdate <- toDate(bus_lic$applicationdate)
+  bus_lic$my <- paste(month(bus_lic$applicationdate, label = TRUE), year(bus_lic$applicationdate))
+  bus_lic <- arrange(bus_lic, applicationdate)
+  bus_lic$my <- factor(bus_lic$my, levels = unique(bus_lic$my))
+}
+
 #load
 oss <- read.csv("./data/oss-service-report.csv", sep = ";", header = TRUE)
 permits <- read.csv("./data/permits.csv", header = TRUE)
+bus_lic <- read.csv("./data/bus-licenses.csv", header = TRUE)
 
 #execute
 oss <- cleanOss()
 permits <- cleanPermits()
+bus_lic <- cleanBusLic()
 
 #save
 save(list = ls(), file = "./data/data-cleaned.Rdata")
