@@ -5,6 +5,7 @@
 
 require(ggplot2)
 require(dplyr)
+require(scales)
 
 init_plot <- function() {
 #
@@ -189,6 +190,28 @@ oss_cpnc <- function() { #slide 14
       cat("Saving OSS CPNC mean service line chart...\n")
 }
 
+permit_online <- function() { #slide 15
+  all <- filter(permits, online) %>%
+         group_by(my, createdby) %>%
+         summarise(n = n())
+
+  denom <- summarise(all, all = sum(n))
+  numer <- filter(all, createdby == "publicwebcrm") %>%
+           summarise(online = sum(n))
+
+  d <- left_join(denom, numer, by = "my")
+  d$prop <- d$online/d$all
+
+  ggplot(d[(nrow(d) - 12):nrow(d),], aes(x = my, y = prop, label = percent(prop))) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Percent of permit applications recieved online", x = "Month", y = "Percent") +
+  theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
+  geom_text(size = 4, colour = "grey33", vjust = -.5)
+  ggsave("./output/15permits-online.png", width = 10, height = 5.5)
+  cat("Saving percent of permits applied for online chart...\n")
+
+}
+
 #load
 load("./data/data-cleaned.Rdata")
 
@@ -198,6 +221,7 @@ oss_sp_permits()
 oss_etc()
 oss_olp()
 oss_cpnc()
+permit_online()
 
 #
 #end init_plot
