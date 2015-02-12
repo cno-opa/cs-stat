@@ -32,6 +32,7 @@ cleanOss <- function() {
 
 cleanPermits <- function() {
   load("./data/context/permits-lookup.Rdata")
+  load("./data/context/online-permits.Rdata")
 
   toDate <- function(col) {
     as.POSIXct(col, format = "%m/%d/%Y")
@@ -83,7 +84,8 @@ cleanPermits <- function() {
   permits$issuedate <- toDate(permits$issuedate)
   permits$finaldate <- toDate(permits$finaldate)
   permits$currentstatusdate <- toDate(permits$currentstatusdate)
-  permits$nextstatusdate <- toDate(permits$filingdate)
+  permits$nextstatusdate <- toDate(permits$nextstatusdate)
+  permits$daystoissue <- (ymd(permits$issuedate) - ymd(permits$filingdate))/86400
 
   permits <- filter(permits, !submittaltype == 3) #remove accela entries
   permits <- filter(permits, !grepl("voided", exitreason))
@@ -96,8 +98,9 @@ cleanPermits <- function() {
   }
   resolveUseType()
 
-  #permit type recode
+  #permit type recode and online lookup
   permits$opa_category <- permits_lookup$opa_category[match(permits$type, permits_lookup$type)]
+  permits$online <- tolower(permits$type) %in% online_permits$permit
 }
 
 #load
