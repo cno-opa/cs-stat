@@ -211,7 +211,7 @@ permit_online <- function() { #slide 15
   cat("Saving percent of permits applied for online chart...\n")
 }
 
-bus_lic_online <- function() {
+bus_lic_online <- function() { #slide 15 also
   all <- group_by(bus_lic, my, createdby) %>%
          summarise(n = n())
 
@@ -231,6 +231,30 @@ bus_lic_online <- function() {
   cat("Saving percent of business licenses applied for online chart...\n")
 }
 
+comm_res_permit <- function() { #slides 16 and 17
+  d <- filter(permits, !is.na(issuedate)) %>%
+       group_by(my, usetype, opa_category) %>%
+       summarise(n = n())
+  d <- subset(d, levels(my) %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
+
+  p <- ggplot(data = d,
+              aes(x = my, y = n, group = opa_category, colour = opa_category)
+              ) +
+        labs(x = "Month", y = "Number") +
+        theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
+        scale_colour_discrete(name = "")
+
+  p + geom_line(data = filter(d, usetype == "commercial")) +
+      labs(title = "Number of commercial permits issued")
+      ggsave("./output/16commercial-permits-issued.png", width = 10, height = 5.5)
+      cat("Saving number of commercial permits issued chart...\n")
+
+  p + geom_line(data = filter(d, usetype == "residential")) +
+      labs(title = "Number of residential permits issued")
+      ggsave("./output/17residential-permits-issued.png", width = 10, height = 5.5)
+      cat("Saving number of residential permits issued chart...\n")
+}
+
 #load
 load("./data/data-cleaned.Rdata")
 
@@ -242,6 +266,7 @@ oss_olp()
 oss_cpnc()
 permit_online()
 bus_lic_online()
+comm_res_permit()
 
 #
 #end init_plot
