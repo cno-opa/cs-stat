@@ -124,6 +124,8 @@ cleanPermits <- function() {
   #permit type recode and online lookup
   permits$opa_category <- permits_lookup$opa_category[match(permits$type, permits_lookup$type)]
   permits$online <- tolower(permits$type) %in% online_permits$permit
+
+  return(permits)
 }
 
 cleanBusLic <- function() {
@@ -137,6 +139,8 @@ cleanBusLic <- function() {
   bus_lic$my <- paste(month(bus_lic$applicationdate, label = TRUE), year(bus_lic$applicationdate))
   bus_lic <- arrange(bus_lic, applicationdate)
   bus_lic$my <- factor(bus_lic$my, levels = unique(bus_lic$my))
+
+  return(bus_lic)
 }
 
 #load
