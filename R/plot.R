@@ -235,7 +235,7 @@ comm_res_permit <- function() { #slides 16 and 17
   d <- filter(permits, !is.na(issuedate)) %>%
        group_by(my, usetype, opa_category) %>%
        summarise(n = n())
-  d <- subset(d, levels(my) %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
+  d <- subset(d, d$my %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
 
   p <- ggplot(data = d,
               aes(x = my, y = n, group = opa_category, colour = opa_category)
@@ -255,6 +255,35 @@ comm_res_permit <- function() { #slides 16 and 17
       cat("Saving number of residential permits issued chart...\n")
 }
 
+sp_issue_days <- function() { #slide 18
+  d <- filter(permits, division == "SP", !is.na(issuedate)) %>%
+       group_by(my, usetype) %>%
+       summarise(n = n(), mean = mean(daystoissue))
+
+  d <- subset(d, d$my %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
+
+  #master
+  p <- ggplot(d, aes(x = my, y = mean)) +
+       labs(x = "Month", y = "Days") +
+       theme(axis.text.x = element_text(angle = 45, hjust = .97))
+
+  #residential
+  p + geom_bar(data = filter(d, usetype == "residential"), stat = "identity", fill = "steelblue") +
+      labs(title = "Average number of days to issue residential permits") +
+      geom_hline(aes(yintercept = 8), colour = "orange", linetype = "dashed") +
+      geom_hline(aes(yintercept = 17.9), colour = "tomato", linetype = "dashed")
+      ggsave("./output/18days-to-issue-r.png", width = 10, height = 5.5)
+      cat("Saving days to issue residential permits chart...\n")
+
+  #commercial
+  p + geom_bar(data = filter(d, usetype == "commercial"), stat = "identity", fill = "steelblue") +
+      labs(title = "Average number of days to issue commercial permits") +
+      geom_hline(aes(yintercept = 15), colour = "orange", linetype = "dashed") +
+      geom_hline(aes(yintercept = 37.2), colour = "tomato", linetype = "dashed")
+      ggsave("./output/18days-to-issue-c.png", width = 10, height = 5.5)
+      cat("Saving days to issue commercial permits chart...\n")
+}
+
 #load
 load("./data/data-cleaned.Rdata")
 
@@ -267,6 +296,7 @@ oss_cpnc()
 permit_online()
 bus_lic_online()
 comm_res_permit()
+sp_issue_days()
 
 #
 #end init_plot
