@@ -92,6 +92,9 @@ cleanPermits <- function() {
     return(permits)
   }
 
+  hist_usetypes$refcode <- as.character(hist_usetypes$refcode)
+  hist_usetypes$usetype <- as.character(hist_usetypes$usetype)
+
   names(permits) <- slugify(names(permits))
   permits$exitreason <- tolower(permits$exitreason)
   permits$type <- as.character(permits$type)
@@ -102,7 +105,7 @@ cleanPermits <- function() {
   permits$finaldate <- toDate(permits$finaldate)
   permits$currentstatusdate <- toDate(permits$currentstatusdate)
   permits$nextstatusdate <- toDate(permits$nextstatusdate)
-  permits$daystoissue <- (ymd(permits$issuedate) - ymd(permits$filingdate))/86400
+  permits$daystoissue <- as.numeric((ymd(permits$issuedate) - ymd(permits$filingdate))/86400)
   permits$my <- paste(month(permits$filingdate, label = TRUE), year(permits$filingdate))
   permits <- arrange(permits, filingdate)
   permits$my <- factor(permits$my, levels = unique(permits$my))
