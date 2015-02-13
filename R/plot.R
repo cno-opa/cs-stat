@@ -314,6 +314,31 @@ sp_issue_days_dist <- function() { #slide 19
       cat("Saving days to issue residential permits distribution chart...\n")
 }
 
+permits_one_day <- function() { #slide 20
+  d <- filter(permits, division == "SP",
+              opa_category == "Building - All Others" |
+              opa_category == "Building - New Construction",
+              daystoissue < 1) %>%
+       group_by(my, online) %>%
+       summarise(n = n())
+
+  d <- subset(d, d$my %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
+
+  denom <- summarise(group_by(d, my), sum = sum(n))
+  d <- left_join(d, denom, by = "my")
+  d$prop <- d$n/d$sum
+
+  ggplot(d, aes(x = my, y = prop, fill = online, label = percent(prop))) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.7), width = 0.7) +
+  labs(title = "Percent of building permits issued within one day of application", x = "Month", y = "Percent") +
+  theme(axis.text.x = element_text(angle = 45, hjust = .97), legend.position = "top") +
+  geom_text(size = 4, colour = "grey33", vjust = -.5) +
+  scale_fill_discrete(name = "Application method", labels = c("In person", "Online"))
+  ggsave("./output/20-one-day-building-permits.png", width = 10, height = 5.5)
+  cat("Saving percent of building permits issued within one day of application chart...\n")
+
+}
+
 #load
 load("./data/data-cleaned.Rdata")
 
