@@ -1,7 +1,7 @@
 #plot.R
 #makes ALL the charts
 
-#TODO: DRY. Remove artifacts. CamelCase function names
+#TODO: DRY
 
 require(ggplot2)
 require(dplyr)
@@ -284,6 +284,36 @@ sp_issue_days <- function() { #slide 18
       cat("Saving days to issue commercial permits chart...\n")
 }
 
+sp_issue_days_dist <- function() { #slide 19
+  permits$dayscat <- cut(permits$daystoissue,
+                          c(0,15,30, Inf),
+                          right = FALSE,
+                          labels = c("< 15", "15 - 30", "> 30"))
+
+  d <- filter(permits, division == "SP", !is.na(issuedate)) %>%
+       group_by(my, usetype, dayscat) %>%
+       summarise(n = n())
+
+  d <- subset(d, d$my %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
+
+  #master
+  p <- ggplot(d, aes(x = my, y = n, fill = dayscat)) +
+      labs(x = "Month", y = "Number") +
+      theme(axis.text.x = element_text(angle = 45, hjust = .97))
+
+  #commercial
+  p + geom_bar(data = filter(d, usetype == "commercial"), stat = "identity") +
+      labs(title = "Distribution of days to issue commercial permits")
+      ggsave("./output/19dist-days-to-issue-c.png", width = 10, height = 5.5)
+      cat("Saving days to issue commercial permits distribution chart...\n")
+
+  #residential
+  p + geom_bar(data = filter(d, usetype == "residential"), stat = "identity") +
+      labs(title = "Distribution of days to issue residential permits")
+      ggsave("./output/19dist-days-to-issue-r.png", width = 10, height = 5.5)
+      cat("Saving days to issue residential permits distribution chart...\n")
+}
+
 #load
 load("./data/data-cleaned.Rdata")
 
@@ -297,6 +327,7 @@ permit_online()
 bus_lic_online()
 comm_res_permit()
 sp_issue_days()
+sp_issue_days_dist()
 
 #
 #end init_plot
