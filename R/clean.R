@@ -146,15 +146,30 @@ cleanBusLic <- function() {
   return(bus_lic)
 }
 
+cleanRev <- function() {
+  names(rev) <- slugify(names(rev))
+  rev$queue <- as.character(rev$queue)
+  rev$queue[rev$queue == "Account Maint." | rev$queue == "Administration" | rev$queue == "Account Admin."] <- "Account Maintenance and Administration"
+  rev$queue[rev$queue == "Business Regist."] <- "Business Intake"
+  rev$datein <- mdy(rev$datein)
+  rev$my <- paste(month(rev$datein, label = TRUE), year(rev$datein))
+  rev <- arrange(rev, datein)
+  rev$my <- factor(rev$my, levels = unique(rev$my))
+
+  return(rev)
+}
+
 #load
 oss <- read.csv("./data/oss-service-report.csv", sep = ";", header = TRUE)
 permits <- read.csv("./data/permits.csv", header = TRUE)
 bus_lic <- read.csv("./data/bus-licenses.csv", header = TRUE)
+rev <- read.csv("./data/revenue.csv", sep = ";", header = TRUE)
 
 #execute
 oss <- cleanOss()
 permits <- cleanPermits()
 bus_lic <- cleanBusLic()
+rev <- cleanRev()
 
 #save
 save(list = ls(), file = "./data/data-cleaned.Rdata")
