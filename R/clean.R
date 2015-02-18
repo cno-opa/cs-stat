@@ -26,6 +26,7 @@ cleanOss <- function() {
   oss$my <- paste(month(oss$datein, label = TRUE), year(oss$datein))
   oss <- arrange(oss, datein)
   oss$my <- factor(oss$my, levels = unique(oss$my))
+  oss <- subset(oss, oss$my %in% levels(oss$my)[(length(levels(oss$my))-12):length(levels(oss$my))])
 
   return(oss)
 }
@@ -109,6 +110,7 @@ cleanPermits <- function() {
   permits$my <- paste(month(permits$filingdate, label = TRUE), year(permits$filingdate))
   permits <- arrange(permits, filingdate)
   permits$my <- factor(permits$my, levels = unique(permits$my))
+  permits <- subset(permits, permits$my %in% levels(permits$my)[(length(levels(permits$my))-12):length(levels(permits$my))])permits
 
   permits <- filter(permits, !submittaltype == 3) #remove accela entries
   permits <- filter(permits, !grepl("voided", exitreason))
@@ -165,12 +167,13 @@ cleanLic <- function() {
   lic$my <- paste(month(lic$applicationdate, label = TRUE), year(lic$applicationdate))
   lic <- arrange(lic, applicationdate)
   lic$my <- factor(lic$my, levels = unique(lic$my))
-  lic$daystoissue <- as.numeric(ymd(lic$issuedate) - ymd(lic$applicationdate))
+  lic$daystoissue <- as.numeric(ymd(lic$issuedate) - ymd(lic$applicationdate))/86400
   lic$type <- as.character(lic$type)
   lic$opa_category <- NA
   for(i in 1:nrow(lic)) {
     lic$opa_category[i] <- opaCategorize(lic$type[i])
   }
+  lic <- subset(lic, lic$my %in% levels(lic$my)[(length(levels(lic$my))-12):length(levels(lic$my))])
 
   return(lic)
 }
@@ -184,6 +187,7 @@ cleanRev <- function() {
   rev$my <- paste(month(rev$datein, label = TRUE), year(rev$datein))
   rev <- arrange(rev, datein)
   rev$my <- factor(rev$my, levels = unique(rev$my))
+  rev <- subset(rev, rev$my %in% levels(rev$my)[(length(levels(rev$my))-12):length(levels(rev$my))])
 
   return(rev)
 }
