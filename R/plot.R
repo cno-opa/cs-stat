@@ -339,6 +339,36 @@ permits_one_day <- function() { #slide 20
 
 }
 
+revenue <- function() { #slide 21
+  d <- group_by(rev, my, queue) %>%
+       summarise(n = n(), meanwait = mean(timewaited), meanserve = mean(lengthofservice))
+
+  #master
+  p <- ggplot(d, aes(x = my, group = queue, colour = queue)) +
+       theme(axis.text.x = element_text(angle = 45, hjust = .97), legend.position = "top") +
+       labs( x = "Month", y = "Minutes" ) +
+       scale_colour_discrete(name = "")
+
+  #visitors
+  p + geom_line(aes(y = n)) +
+     labs(title = "Number of visitors", y = "Visitors")
+     ggsave("./output/21rev-visitors.png", width = 10, height = 5.5)
+     cat("Saving reveue bureau visitors line chart...\n")
+
+  #mean wait
+  p + geom_line(aes(y = meanwait)) +
+     labs(title = "Average wait time")
+     ggsave("./output/21rev-mean-wait.png", width = 10, height = 5.5)
+     cat("Saving reveue bureau mean wait line chart...\n")
+
+  #mean service
+  p + geom_line(aes(y = meanserve)) +
+     labs(title = "Average service time")
+     ggsave("./output/rev-mean-service.png", width = 10, height = 5.5)
+     cat("Saving reveue bureau mean service line chart...\n")
+
+}
+
 #load
 load("./data/data-cleaned.Rdata")
 
@@ -353,6 +383,7 @@ bus_lic_online()
 comm_res_permit()
 sp_issue_days()
 sp_issue_days_dist()
+permits_one_day()
 
 #
 #end init_plot
