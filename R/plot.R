@@ -1,11 +1,12 @@
 #plot.R
 #makes ALL the charts
 
-#TODO: DRY
+#TODO: DRY. Alternative to current charts in slide 22
 
 require(ggplot2)
 require(dplyr)
 require(scales)
+require(reshape2)
 
 init_plot <- function() {
 #
@@ -202,7 +203,7 @@ permit_online <- function() { #slide 15
   d <- left_join(denom, numer, by = "my")
   d$prop <- d$online/d$all
 
-  ggplot(d[(nrow(d) - 12):nrow(d),], aes(x = my, y = prop, label = percent(prop))) +
+  ggplot(d, aes(x = my, y = prop, label = percent(prop))) +
   geom_bar(stat = "identity", fill = "steelblue") +
   labs(title = "Percent of permit applications recieved online", x = "Month", y = "Percent") +
   theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
@@ -223,7 +224,7 @@ bus_lic_online <- function() { #slide 15 also
   d <- left_join(denom, numer, by = "my")
   d$prop <- d$online/d$all
 
-  ggplot(d[(nrow(d) - 12):nrow(d),], aes(x = my, y = prop, label = percent(prop))) +
+  ggplot(d, aes(x = my, y = prop, label = percent(prop))) +
   geom_bar(stat = "identity", fill = "goldenrod") +
   labs(title = "Percent of business license applications recieved online", x = "Month", y = "Percent") +
   theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
@@ -236,7 +237,7 @@ comm_res_permit <- function() { #slides 16 and 17
   d <- filter(permits, !is.na(issuedate)) %>%
        group_by(my, usetype, opa_category) %>%
        summarise(n = n())
-  d <- subset(d, d$my %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
+  #d <- subset(d, d$my %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
 
   p <- ggplot(data = d,
               aes(x = my, y = n, group = opa_category, colour = opa_category)
@@ -261,7 +262,7 @@ sp_issue_days <- function() { #slide 18
        group_by(my, usetype) %>%
        summarise(n = n(), mean = mean(daystoissue))
 
-  d <- subset(d, d$my %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
+  #d <- subset(d, d$my %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
 
   #master
   p <- ggplot(d, aes(x = my, y = mean)) +
@@ -295,7 +296,7 @@ sp_issue_days_dist <- function() { #slide 19
        group_by(my, usetype, dayscat) %>%
        summarise(n = n())
 
-  d <- subset(d, d$my %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
+  #d <- subset(d, d$my %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
 
   #master
   p <- ggplot(d, aes(x = my, y = n, fill = dayscat)) +
@@ -323,7 +324,7 @@ permits_one_day <- function() { #slide 20
        group_by(my, online) %>%
        summarise(n = n())
 
-  d <- subset(d, d$my %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
+  # d <- subset(d, d$my %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
 
   denom <- summarise(group_by(d, my), sum = sum(n))
   d <- left_join(d, denom, by = "my")
@@ -352,21 +353,100 @@ revenue <- function() { #slide 21
 
   #visitors
   p + geom_line(aes(y = n)) +
-     labs(title = "Number of visitors", y = "Visitors")
-     ggsave("./output/21rev-visitors.png", width = 10, height = 5.5)
-     cat("Saving reveue bureau visitors line chart...\n")
+      labs(title = "Number of visitors", y = "Visitors")
+      ggsave("./output/21rev-visitors.png", width = 10, height = 5.5)
+      cat("Saving reveue bureau visitors line chart...\n")
 
   #mean wait
   p + geom_line(aes(y = meanwait)) +
-     labs(title = "Average wait time")
-     ggsave("./output/21rev-mean-wait.png", width = 10, height = 5.5)
-     cat("Saving reveue bureau mean wait line chart...\n")
+      labs(title = "Average wait time")
+      ggsave("./output/21rev-mean-wait.png", width = 10, height = 5.5)
+      cat("Saving reveue bureau mean wait line chart...\n")
 
   #mean service
   p + geom_line(aes(y = meanserve)) +
-     labs(title = "Average service time")
-     ggsave("./output/rev-mean-service.png", width = 10, height = 5.5)
-     cat("Saving reveue bureau mean service line chart...\n")
+      labs(title = "Average service time")
+      ggsave("./output/21rev-mean-service.png", width = 10, height = 5.5)
+      cat("Saving reveue bureau mean service line chart...\n")
+}
+
+lic_other <- function() { #slide 22
+  d <- filter(lic, !is.na(issuedate)) %>%
+       group_by(my, opa_category) %>%
+       summarise(n = n(),
+       meanissue = mean(daystoissue, na.rm = TRUE),
+       sameday = sum(daystoissue == 0))
+
+  d <- melt(d)
+
+  #master
+  p <- ggplot(d, aes(x = my, y = value, fill = variable)) +
+       theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
+       labs(x = "Month")
+
+  #business licenses
+  p + geom_bar(data = filter(d, opa_category == "Business",
+               variable == "n"),
+               stat = "identity") +
+      labs(title = "Business licenses issued", y = "Number") +
+      guides(fill = FALSE)
+      ggsave("./output/22bus-n-permits.png", width = 10, height = 5.5)
+      cat("Saving number of business licenses issued chart...\n")
+
+  p + geom_bar(data = filter(d, opa_category == "Business",
+               variable == "meanissue"),
+               stat = "identity") +
+      labs(title = "Average number of days to issue", y = "Days") +
+      guides(fill = FALSE)
+      ggsave("./output/22bus-mean-days-permits.png", width = 10, height = 5.5)
+      cat("Saving mean days to issue business license chart...\n")
+
+
+  #electrical
+  p + geom_bar(data = filter(d, opa_category == "Electrical",
+               variable == "n" | variable == "sameday"),
+               stat = "identity",
+               position = "identity") +
+      labs(title = "Number of same day electrical permits issued", y = "Number") +
+      scale_fill_discrete(name = "", labels = c("All permits issued", "Issued same day"))
+      ggsave("./output/22electrical-same-day.png", width = 10, height = 5.5)
+      cat("Saving electrical permits issued same day chart...\n")
+
+  #mechanical
+  p + geom_bar(data = filter(d, opa_category == "Mechanical",
+              variable == "n" | variable == "sameday"),
+              stat = "identity",
+              position = "identity") +
+      labs(title = "Number of same day mechanical permits issued", y = "Number") +
+      scale_fill_discrete(name = "", labels = c("All permits issued", "Issued same day"))
+      ggsave("./output/22mechanical-same-day.png", width = 10, height = 5.5)
+      cat("Saving mechanical permits issued same day chart...\n")
+}
+
+lic_cpnc <- function() { #slide 23
+  d <- filter(lic, !is.na(issuedate), opa_category == "CPNC") %>%
+       group_by(my, type) %>%
+       summarise(n = n(), meanissue = mean(daystoissue))
+
+  #master
+  p <- ggplot(d, aes(x = my, fill = type)) +
+       theme(axis.text.x = element_text(angle = 45, hjust = .97), legend.position = "top") +
+       labs(x = "Month") +
+       scale_fill_discrete(name = "")
+
+  #number of permits
+  p + geom_bar(aes(y = n), stat = "identity", position = position_dodge(width = 0.7), width = 0.7) +
+      labs(title = "Number of CPNC permits issued", y = "Number") +
+      geom_text(size = 4, colour = "grey33", vjust = -.5, aes(label = n, y = n))
+      ggsave("./output/23cpnc-number-permits.png", width = 10, height = 5.5)
+      cat("Saving CPNC number of permits issued chart...\n")
+
+  #average days to issue
+  p + geom_bar(aes(y = meanissue), stat = "identity", position = position_dodge(width = 0.7), width = 0.7) +
+      labs(title = "Average number of days to issue CPNC permit", y = "Days") +
+      geom_text(size = 4, colour = "grey33", vjust = -.5, aes(label = round(meanissue), y = meanissue))
+      ggsave("./output/23cpnc-days-issue-permits.png", width = 10, height = 5.5)
+      cat("Saving CPNC average days to issue chart...\n")
 }
 
 #load
@@ -385,6 +465,8 @@ sp_issue_days()
 sp_issue_days_dist()
 permits_one_day()
 revenue()
+lic_other()
+lic_cpnc()
 
 #
 #end init_plot
