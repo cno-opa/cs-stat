@@ -1,7 +1,7 @@
 #clean.R
 #loads, cleans, and bins data for plotting
 
-#TODO: audit oss data to remove outliers. add in historical acc inputs. resolve NAs in permits$opa_category
+#TODO: audit oss data to remove outliers. resolve NAs in permits$opa_category
 
 require(gdata)
 require(lubridate)
@@ -131,19 +131,20 @@ cleanPermits <- function() {
   return(permits)
 }
 
-cleanBusLic <- function() {
-
+cleanLic <- function() {
   toDate <- function(col) {
     as.POSIXct(col, format = "%m/%d/%Y")
   }
 
-  names(bus_lic) <- slugify(names(bus_lic))
-  bus_lic$applicationdate <- toDate(bus_lic$applicationdate)
-  bus_lic$my <- paste(month(bus_lic$applicationdate, label = TRUE), year(bus_lic$applicationdate))
-  bus_lic <- arrange(bus_lic, applicationdate)
-  bus_lic$my <- factor(bus_lic$my, levels = unique(bus_lic$my))
+  names(lic) <- slugify(names(lic))
+  lic$applicationdate <- toDate(lic$applicationdate)
+  lic$issuedate <- toDate(lic$issuedate)
+  lic$my <- paste(month(lic$applicationdate, label = TRUE), year(lic$applicationdate))
+  lic <- arrange(lic, applicationdate)
+  lic$my <- factor(lic$my, levels = unique(lic$my))
+  lic$daystoissue <- as.numeric(ymd(lic$issuedate) - ymd(lic$applicationdate))
 
-  return(bus_lic)
+  return(lic)
 }
 
 cleanRev <- function() {
@@ -162,14 +163,14 @@ cleanRev <- function() {
 #load
 oss <- read.csv("./data/oss-service-report.csv", sep = ";", header = TRUE)
 permits <- read.csv("./data/permits.csv", header = TRUE)
-bus_lic <- read.csv("./data/bus-licenses.csv", header = TRUE)
 rev <- read.csv("./data/revenue.csv", sep = ";", header = TRUE)
+lic <- read.csv("./data/licenses.csv", header = TRUE)
 
 #execute
 oss <- cleanOss()
 permits <- cleanPermits()
-bus_lic <- cleanBusLic()
 rev <- cleanRev()
+lic <- cleanLic()
 
 #save
 save(list = ls(), file = "./data/data-cleaned.Rdata")
