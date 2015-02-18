@@ -110,7 +110,7 @@ cleanPermits <- function() {
   permits$my <- paste(month(permits$filingdate, label = TRUE), year(permits$filingdate))
   permits <- arrange(permits, filingdate)
   permits$my <- factor(permits$my, levels = unique(permits$my))
-  permits <- subset(permits, permits$my %in% levels(permits$my)[(length(levels(permits$my))-12):length(levels(permits$my))])permits
+  permits <- subset(permits, permits$my %in% levels(permits$my)[(length(levels(permits$my))-12):length(levels(permits$my))])
 
   permits <- filter(permits, !submittaltype == 3) #remove accela entries
   permits <- filter(permits, !grepl("voided", exitreason))
