@@ -212,7 +212,8 @@ permit_online <- function() { #slide 15
 }
 
 bus_lic_online <- function() { #slide 15 also
-  all <- group_by(bus_lic, my, createdby) %>%
+  all <- filter(lic, type == "Business License" | type == "Temporary Business License") %>%
+         group_by(my, createdby) %>%
          summarise(n = n())
 
   denom <- summarise(all, all = sum(n))
@@ -366,7 +367,6 @@ revenue <- function() { #slide 21
      labs(title = "Average service time")
      ggsave("./output/rev-mean-service.png", width = 10, height = 5.5)
      cat("Saving reveue bureau mean service line chart...\n")
-
 }
 
 #load
@@ -384,6 +384,7 @@ comm_res_permit()
 sp_issue_days()
 sp_issue_days_dist()
 permits_one_day()
+revenue()
 
 #
 #end init_plot
