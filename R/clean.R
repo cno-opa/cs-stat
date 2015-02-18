@@ -132,8 +132,31 @@ cleanPermits <- function() {
 }
 
 cleanLic <- function() {
+
   toDate <- function(col) {
     as.POSIXct(col, format = "%m/%d/%Y")
+  }
+
+  opaCategorize <- function(type) {
+    if (type == "Business License" | type == "Temporary Business License") {
+      "Business"
+    } else if (type == "Driver CPNC" | type == "Tour Guide") {
+      "CPNC"
+    } else if (type == "Electrical A - Contractor" |
+               type == "Electrical C - Maintenance" |
+               type == "Electrical D - Journeyman" |
+               type == "Electrical E - Helper"
+              ) {
+      "Electrical"
+    } else if (type == "Mechanical A - AC and Refrigeration" |
+               type == "Mechanical A - Master Gasfitter" |
+               type == "Mechanical B - Journeyman Gasfitter" |
+               type == "Mechanical B - Journeyman Mechanic"
+               ) {
+      "Mechanical"
+    } else {
+      NA
+    }
   }
 
   names(lic) <- slugify(names(lic))
@@ -143,6 +166,11 @@ cleanLic <- function() {
   lic <- arrange(lic, applicationdate)
   lic$my <- factor(lic$my, levels = unique(lic$my))
   lic$daystoissue <- as.numeric(ymd(lic$issuedate) - ymd(lic$applicationdate))
+  lic$type <- as.character(lic$type)
+  lic$opa_category <- NA
+  for(i in 1:nrow(lic)) {
+    lic$opa_category[i] <- opaCategorize(lic$type[i])
+  }
 
   return(lic)
 }
