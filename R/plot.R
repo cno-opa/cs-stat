@@ -237,7 +237,6 @@ comm_res_permit <- function() { #slides 16 and 17
   d <- filter(permits, !is.na(issuedate)) %>%
        group_by(my, usetype, opa_category) %>%
        summarise(n = n())
-  #d <- subset(d, d$my %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
 
   p <- ggplot(data = d,
               aes(x = my, y = n, group = opa_category, colour = opa_category)
@@ -261,8 +260,6 @@ sp_issue_days <- function() { #slide 18
   d <- filter(permits, division == "SP", !is.na(issuedate)) %>%
        group_by(my, usetype) %>%
        summarise(n = n(), mean = mean(daystoissue))
-
-  #d <- subset(d, d$my %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
 
   #master
   p <- ggplot(d, aes(x = my, y = mean)) +
@@ -295,8 +292,6 @@ sp_issue_days_dist <- function() { #slide 19
   d <- filter(permits, division == "SP", !is.na(issuedate)) %>%
        group_by(my, usetype, dayscat) %>%
        summarise(n = n())
-
-  #d <- subset(d, d$my %in% levels(d$my)[(length(levels(d$my))-12):length(levels(d$my))])
 
   #master
   p <- ggplot(d, aes(x = my, y = n, fill = dayscat)) +
@@ -483,10 +478,8 @@ inspect_bldg_charts <-function() { #slide 26
   theme(axis.text.x = element_text(angle = 45, hjust = .97), legend.position = "top") +
   labs(title = "Number of building inspections done and those done in the same day", x = "Month", y = "Number") +
   scale_fill_discrete(name = "", labels = c("All inspections", "Same day inspections"))
-  ggsave("./output/26inspect-bdlg.png", width = 10, height = 5.5)
+  ggsave("./output/26inspect-bldg.png", width = 10, height = 5.5)
   cat("Saving number of building inspections chart...\n")
-
-
 }
 
 #load
@@ -508,6 +501,7 @@ revenue()
 lic_other()
 lic_cpnc()
 inspect_biz_charts()
+inspect_bldg_charts()
 
 #
 #end init_plot
