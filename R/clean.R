@@ -23,10 +23,7 @@ cleanOss <- function() {
   oss <- filter(oss, lengthofservice < 480) #remove entries that take over 8 hours, or one working day
   oss <- filter(oss, !grepl("appointment", tolower(serviceprovided)) & !grepl("meeting", tolower(serviceprovided))) #remove visits with "meeting" or "appointment"
   oss$category <- as.factor( oss_lookup$category[match(oss$queue, oss_lookup$lookup)] )
-  oss$my <- paste(month(oss$datein, label = TRUE), year(oss$datein))
-  oss <- arrange(oss, datein)
-  oss$my <- factor(oss$my, levels = unique(oss$my))
-  oss <- subset(oss, oss$my %in% levels(oss$my)[(length(levels(oss$my))-12):length(levels(oss$my))])
+  oss <- my(oss, oss$datein)
 
   return(oss)
 }
@@ -35,10 +32,6 @@ cleanPermits <- function() {
   load("./data/context/permits-lookup.Rdata")
   load("./data/context/online-permits.Rdata")
   load("./data/context/historical-usetypes.Rdata")
-
-  toDate <- function(col) {
-    as.POSIXct(col, format = "%m/%d/%Y")
-  }
 
   assignUseType <- function(landuse, owner) {
     if(landuse == "ACC") {
@@ -107,10 +100,7 @@ cleanPermits <- function() {
   permits$currentstatusdate <- toDate(permits$currentstatusdate)
   permits$nextstatusdate <- toDate(permits$nextstatusdate)
   permits$daystoissue <- as.numeric((ymd(permits$issuedate) - ymd(permits$filingdate))/86400)
-  permits$my <- paste(month(permits$filingdate, label = TRUE), year(permits$filingdate))
-  permits <- arrange(permits, filingdate)
-  permits$my <- factor(permits$my, levels = unique(permits$my))
-  permits <- subset(permits, permits$my %in% levels(permits$my)[(length(levels(permits$my))-12):length(levels(permits$my))])
+  permits <- my(permits, permits$filingdate)
 
   permits <- filter(permits, !submittaltype == 3) #remove accela entries
   permits <- filter(permits, !grepl("voided", exitreason))
@@ -135,11 +125,7 @@ cleanPermits <- function() {
 
 cleanLic <- function() {
 
-  toDate <- function(col) {
-    as.POSIXct(col, format = "%m/%d/%Y")
-  }
-
-  opaCategorize <- function(type) {
+  categorize <- function(type) {
     if (type == "Business License" | type == "Temporary Business License") {
       "Business"
     } else if (type == "Driver CPNC" | type == "Tour Guide") {
@@ -164,16 +150,13 @@ cleanLic <- function() {
   names(lic) <- slugify(names(lic))
   lic$applicationdate <- toDate(lic$applicationdate)
   lic$issuedate <- toDate(lic$issuedate)
-  lic$my <- paste(month(lic$applicationdate, label = TRUE), year(lic$applicationdate))
-  lic <- arrange(lic, applicationdate)
-  lic$my <- factor(lic$my, levels = unique(lic$my))
+  lic <- my(lic, lic$applicationdate)
   lic$daystoissue <- as.numeric(ymd(lic$issuedate) - ymd(lic$applicationdate))/86400
   lic$type <- as.character(lic$type)
   lic$opa_category <- NA
   for(i in 1:nrow(lic)) {
-    lic$opa_category[i] <- opaCategorize(lic$type[i])
+    lic$opa_category[i] <- categorize(lic$type[i])
   }
-  lic <- subset(lic, lic$my %in% levels(lic$my)[(length(levels(lic$my))-12):length(levels(lic$my))])
 
   return(lic)
 }
@@ -184,10 +167,7 @@ cleanRev <- function() {
   rev$queue[rev$queue == "Account Maint." | rev$queue == "Administration" | rev$queue == "Account Admin."] <- "Account Maintenance and Administration"
   rev$queue[rev$queue == "Business Regist."] <- "Business Intake"
   rev$datein <- mdy(rev$datein)
-  rev$my <- paste(month(rev$datein, label = TRUE), year(rev$datein))
-  rev <- arrange(rev, datein)
-  rev$my <- factor(rev$my, levels = unique(rev$my))
-  rev <- subset(rev, rev$my %in% levels(rev$my)[(length(levels(rev$my))-12):length(levels(rev$my))])
+  rev <- my(rev, rev$datein)
 
   return(rev)
 }
@@ -195,29 +175,51 @@ cleanRev <- function() {
 cleanInspectBiz <- function() {
   names(inspect_biz) <- slugify(names(inspect_biz))
   inspect_biz$requested <- mdy(inspect_biz$requested)
-  inspect_biz$my <- paste(month(inspect_biz$requested, label = TRUE), year(inspect_biz$requested))
-  inspect_biz <- arrange(inspect_biz, requested)
-  inspect_biz$my <- factor(inspect_biz$my, levels = unique(inspect_biz$my))
-  inspect_biz <- subset(inspect_biz, inspect_biz$my %in% levels(inspect_biz$my)[(length(levels(inspect_biz$my))-12):length(levels(inspect_biz$my))])
+  inspect_biz <- my(inspect_biz, inspect_biz$requested)
+
   return(inspect_biz)
 }
 
 cleanInspectBldg <- function() {
-  load("./data/context/inspections-bldg-historical.Rdata")
+  load("./data/context/inspections-bldg-historical-all-2014.Rdata")
 
   names(inspect_bldg) <- slugify(names(inspect_bldg))
   inspect_bldg$date <- mdy(inspect_bldg$date)
   inspect_bldg$requested <- mdy(inspect_bldg$requested)
-  inspect_bldg$my <- paste(month(inspect_bldg$requested, label = TRUE), year(inspect_bldg$requested))
-  inspect_bldg <- arrange(inspect_bldg, requested)
-  inspect_bldg$my <- factor(inspect_bldg$my, levels = unique(inspect_bldg$my))
+  inspect_bldg <- my(inspect_bldg, inspect_bldg$requested, subset = FALSE)
 
   inspect_bldg_hist <- rbind(inspect_bldg_hist, inspect_bldg)
   inspect_bldg_hist <- filter(inspect_bldg_hist, days >= 0)
-  save(inspect_bldg_hist, file = "./data/context/inspections-bldg-historical.Rdata")
+  save(inspect_bldg_hist, file = "./data/context/inspections-bldg-historical-recent.Rdata")
 
   inspect_bldg_hist <- subset(inspect_bldg_hist, inspect_bldg_hist$my %in% levels(inspect_bldg_hist$my)[(length(levels(inspect_bldg_hist$my))-12):length(levels(inspect_bldg_hist$my))])
   return(inspect_bldg_hist)
+}
+
+cleanComplaints <- function() {
+  categorize <- function(input) {
+    if(input == "Building Code" | input == "Working Without Permit" | input == "Imminent Danger of Collapse"){
+      "Building"
+    }else if(input == "Zoning General" | input == "Zoning - Paving/Parking" | input == "Illegal Sign" | input == "Junk and Debris"){
+      "Zoning"
+    }else {
+      NA
+    }
+  }
+
+  names(complaints) <- slugify(names(complaints))
+  complaints <- filter(complaints, origin == "Business" | origin == "Police" | origin == "Citizen")
+  complaints$d_filed <- toDate(complaints$d_filed)
+  complaints$firstinspection <- toDate(complaints$firstinspection)
+  complaints <- my(complaints, complaints$d_filed)
+  complaints$days <- as.numeric(ymd(complaints$firstinspection) - ymd(complaints$d_filed))/86400
+  complaints$days <- ifelse(complaints$days < 0, NA, complaints$days)
+  complaints$opa_category <- NA
+  for(i in 1:nrow(complaints)) {
+    complaints$opa_category[i] <- categorize(complaints$type[i])
+  }
+
+  return(complaints)
 }
 
 #load
@@ -227,6 +229,7 @@ rev <- read.csv("./data/revenue.csv", sep = ";", header = TRUE)
 lic <- read.csv("./data/licenses.csv", header = TRUE)
 inspect_biz <- read.csv("./data/inspections-biz.csv", header = TRUE)
 inspect_bldg <- read.csv("./data/inspections-bldg-recent.csv", header = TRUE)
+complaints <- read.csv("./data/complaints.csv", header = TRUE)
 
 #execute
 oss <- cleanOss()
@@ -235,6 +238,7 @@ rev <- cleanRev()
 lic <- cleanLic()
 inspect_biz <- cleanInspectBiz()
 inspect_bldg <- cleanInspectBldg()
+complaints <- cleanComplaints()
 
 #save
 save(list = ls(), file = "./data/data-cleaned.Rdata")
