@@ -202,12 +202,31 @@ cleanInspectBiz <- function() {
   return(inspect_biz)
 }
 
+cleanInspectBldg <- function() {
+  load("./data/context/inspections-bldg-historical.Rdata")
+
+  names(inspect_bldg) <- slugify(names(inspect_bldg))
+  inspect_bldg$date <- mdy(inspect_bldg$date)
+  inspect_bldg$requested <- mdy(inspect_bldg$requested)
+  inspect_bldg$my <- paste(month(inspect_bldg$requested, label = TRUE), year(inspect_bldg$requested))
+  inspect_bldg <- arrange(inspect_bldg, requested)
+  inspect_bldg$my <- factor(inspect_bldg$my, levels = unique(inspect_bldg$my))
+
+  inspect_bldg_hist <- rbind(inspect_bldg_hist, inspect_bldg)
+  inspect_bldg_hist <- filter(inspect_bldg_hist, days >= 0)
+  save(inspect_bldg_hist, file = "./data/context/inspections-bldg-historical.Rdata")
+
+  inspect_bldg_hist <- subset(inspect_bldg_hist, inspect_bldg_hist$my %in% levels(inspect_bldg_hist$my)[(length(levels(inspect_bldg_hist$my))-12):length(levels(inspect_bldg_hist$my))])
+  return(inspect_bldg_hist)
+}
+
 #load
 oss <- read.csv("./data/oss-service-report.csv", sep = ";", header = TRUE)
 permits <- read.csv("./data/permits.csv", header = TRUE)
 rev <- read.csv("./data/revenue.csv", sep = ";", header = TRUE)
 lic <- read.csv("./data/licenses.csv", header = TRUE)
 inspect_biz <- read.csv("./data/inspections-biz.csv", header = TRUE)
+inspect_bldg <- read.csv("./data/inspections-bldg-recent.csv", header = TRUE)
 
 #execute
 oss <- cleanOss()
@@ -215,6 +234,7 @@ permits <- cleanPermits()
 rev <- cleanRev()
 lic <- cleanLic()
 inspect_biz <- cleanInspectBiz()
+inspect_bldg <- cleanInspectBldg()
 
 #save
 save(list = ls(), file = "./data/data-cleaned.Rdata")

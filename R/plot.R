@@ -1,7 +1,7 @@
 #plot.R
 #makes ALL the charts
 
-#TODO: DRY. Alternative to current charts in slide 22
+#TODO: DRY
 
 require(ggplot2)
 require(dplyr)
@@ -470,6 +470,23 @@ inspect_biz_charts <- function() { #slide 25
       labs(y = "Number", title = "Number of inspection requests")
       ggsave("./output/25inspect-biz-n.png", width = 10, height = 5.5)
       cat("Saving number of business license inspections chart...\n")
+}
+
+inspect_bldg_charts <-function() { #slide 26
+  d <- group_by(inspect_bldg, my) %>%
+       summarise(n = n(), sameday = sum(days == 0))
+
+  d <- melt(d)
+
+  ggplot(d, aes(x = my, y = value, fill = variable)) +
+  geom_bar(stat = "identity", position = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = .97), legend.position = "top") +
+  labs(title = "Number of building inspections done and those done in the same day", x = "Month", y = "Number") +
+  scale_fill_discrete(name = "", labels = c("All inspections", "Same day inspections"))
+  ggsave("./output/26inspect-bdlg.png", width = 10, height = 5.5)
+  cat("Saving number of building inspections chart...\n")
+
+
 }
 
 #load
