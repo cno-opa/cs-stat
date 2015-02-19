@@ -192,17 +192,29 @@ cleanRev <- function() {
   return(rev)
 }
 
+cleanInspectBiz <- function() {
+  names(inspect_biz) <- slugify(names(inspect_biz))
+  inspect_biz$requested <- mdy(inspect_biz$requested)
+  inspect_biz$my <- paste(month(inspect_biz$requested, label = TRUE), year(inspect_biz$requested))
+  inspect_biz <- arrange(inspect_biz, requested)
+  inspect_biz$my <- factor(inspect_biz$my, levels = unique(inspect_biz$my))
+  inspect_biz <- subset(inspect_biz, inspect_biz$my %in% levels(inspect_biz$my)[(length(levels(inspect_biz$my))-12):length(levels(inspect_biz$my))])
+  return(inspect_biz)
+}
+
 #load
 oss <- read.csv("./data/oss-service-report.csv", sep = ";", header = TRUE)
 permits <- read.csv("./data/permits.csv", header = TRUE)
 rev <- read.csv("./data/revenue.csv", sep = ";", header = TRUE)
 lic <- read.csv("./data/licenses.csv", header = TRUE)
+inspect_biz <- read.csv("./data/inspections-biz.csv", header = TRUE)
 
 #execute
 oss <- cleanOss()
 permits <- cleanPermits()
 rev <- cleanRev()
 lic <- cleanLic()
+inspect_biz <- cleanInspectBiz()
 
 #save
 save(list = ls(), file = "./data/data-cleaned.Rdata")

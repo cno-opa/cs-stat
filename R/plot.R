@@ -449,6 +449,29 @@ lic_cpnc <- function() { #slide 23
       cat("Saving CPNC average days to issue chart...\n")
 }
 
+inspect_biz_charts <- function() { #slide 25
+  d <- filter(inspect_biz, type == "Business License" | type == "Temporary Business License", days >= 0) %>%
+       group_by(my) %>%
+       summarise(n = n(), mean = mean(days))
+
+  p <- ggplot(d, aes(x = my)) +
+       labs(x = "Month") +
+       theme(axis.text.x = element_text(angle = 45, hjust = .97))
+
+  p + geom_bar(aes(y = mean), stat = "identity", fill = "springgreen4") +
+      labs(y = "Days", title = "Average number of days to completing inspection request") +
+      geom_text(size = 4, colour = "grey33", vjust = -.5, aes(label = round(mean), y = mean)) +
+      geom_hline(aes(yintercept = 7), colour = "tomato", linetype = "dashed") +
+      geom_hline(aes(yintercept = 1.1), colour = "steelblue", linetype = "dashed")
+      ggsave("./output/25inspect-biz-mean-days.png", width = 10, height = 5.5)
+      cat("Saving mean number of days to inspect business license chart...\n")
+
+  p + geom_line(aes(y = n, group = 1), colour = "tomato") +
+      labs(y = "Number", title = "Number of inspection requests")
+      ggsave("./output/25inspect-biz-n.png", width = 10, height = 5.5)
+      cat("Saving number of business license inspections chart...\n")
+}
+
 #load
 load("./data/data-cleaned.Rdata")
 
@@ -467,6 +490,7 @@ permits_one_day()
 revenue()
 lic_other()
 lic_cpnc()
+inspect_biz_charts()
 
 #
 #end init_plot
