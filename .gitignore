@@ -5,4 +5,5 @@
 .Rproj
 data/*
 output/*
+notes/*
 run.bat
