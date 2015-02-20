@@ -370,9 +370,8 @@ lic_other <- function() { #slide 22
        group_by(my, opa_category) %>%
        summarise(n = n(),
        meanissue = mean(daystoissue, na.rm = TRUE),
-       sameday = sum(daystoissue == 0))
-
-  d <- melt(d)
+       sameday = sum(daystoissue == 0)) %>%
+       melt()
 
   #master
   p <- ggplot(d, aes(x = my, y = value, fill = variable)) +
@@ -469,9 +468,8 @@ inspect_biz_charts <- function() { #slide 25
 
 inspect_bldg_charts <-function() { #slide 26
   d <- group_by(inspect_bldg, my) %>%
-       summarise(n = n(), sameday = sum(days == 0))
-
-  d <- melt(d)
+       summarise(n = n(), sameday = sum(days == 0)) %>%
+       melt()
 
   ggplot(d, aes(x = my, y = value, fill = variable)) +
   geom_bar(stat = "identity", position = "identity") +
@@ -480,6 +478,18 @@ inspect_bldg_charts <-function() { #slide 26
   scale_fill_discrete(name = "", labels = c("All inspections", "Same day inspections"))
   ggsave("./output/26inspect-bldg.png", width = 10, height = 5.5)
   cat("Saving number of building inspections chart...\n")
+}
+
+hdlc_permits_charts <- function() {
+  d <- group_by(hdlc_permits, my) %>%
+       summarise(mean = mean(daystoissue, na.rm = TRUE), nperstaff = n()/3) %>%
+       melt()
+
+  ggplot(d, aes(x = my, y = value, group = variable, colour = variable)) +
+  geom_line() +
+  labs(title = "Days to review applications and number of applications", x = "Month", y = "") +
+  theme(axis.text.x = element_text(angle = 45, hjust = .97), legend.position = "top") +
+  scale_colour_discrete(name = "", labels = c("Average number of days to review application", "Applications per staff"))
 }
 
 #load
@@ -502,6 +512,7 @@ lic_other()
 lic_cpnc()
 inspect_biz_charts()
 inspect_bldg_charts()
+hdlc_permits_charts()
 
 #
 #end init_plot

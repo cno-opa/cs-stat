@@ -1,7 +1,7 @@
 #clean.R
 #loads, cleans, and bins data for plotting
 
-#TODO: audit oss data to remove outliers. resolve NAs in permits$opa_category
+#TODO: audit oss data to remove outliers. resolve NAs in permits$opa_category. build generic cleaner functions for 1) permits, 2) licenses, 3) inspections, 4) service reports
 
 require(gdata)
 require(lubridate)
@@ -222,6 +222,25 @@ cleanComplaints <- function() {
   return(complaints)
 }
 
+cleanHDLCPermits <-function() {
+  exclude <- c("HDLC NO Hearing",
+               "HDLC CBD Hearing",
+               "HDLC NO ARC Meeting",
+               "HDLC CBD ARC Meeting",
+               "Returned for revision",
+               "Materials resubmitted",
+               "Review resubmitted materials"
+                )
+
+  names(hdlc_permits) <- slugify(names(hdlc_permits))
+  hdlc_permits$filingdate <- toDate(hdlc_permits$filingdate)
+  hdlc_permits$issuedate <- toDate(hdlc_permits$issuedate)
+  hdlc_permits$daystoissue <- as.numeric(hdlc_permits$issuedate - hdlc_permits$filingdate)/86400
+  hdlc_permits <- filter(hdlc_permits, !(hdlc_permits$currentstatus %in% exclude))
+  hdlc_permits <- filter(hdlc_permits, !(hdlc_permits$nextstatus %in% exclude))
+  hdlc_permits <- my(hdlc_permits, hdlc_permits$issuedate)
+}
+
 #load
 oss <- read.csv("./data/oss-service-report.csv", sep = ";", header = TRUE)
 permits <- read.csv("./data/permits.csv", header = TRUE)
@@ -230,6 +249,7 @@ lic <- read.csv("./data/licenses.csv", header = TRUE)
 inspect_biz <- read.csv("./data/inspections-biz.csv", header = TRUE)
 inspect_bldg <- read.csv("./data/inspections-bldg-recent.csv", header = TRUE)
 complaints <- read.csv("./data/complaints.csv", header = TRUE)
+hdlc_permits <- read.csv("./data/hdlc-permits.csv", header = TRUE)
 
 #execute
 oss <- cleanOss()
