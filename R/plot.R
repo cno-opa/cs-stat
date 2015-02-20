@@ -480,7 +480,7 @@ inspect_bldg_charts <-function() { #slide 26
   cat("Saving number of building inspections chart...\n")
 }
 
-hdlc_permits_charts <- function() {
+hdlc_permits_charts <- function() { # slide 28
   d <- group_by(hdlc_permits, my) %>%
        summarise(mean = mean(daystoissue, na.rm = TRUE), nperstaff = n()/3) %>%
        melt()
