@@ -20,4 +20,5 @@ After the `clean.R` cleans and transforms the data for use, the data object is s
  * dplyr
  * ggplot2
  * stringr
- * xtermStyle
+ * scales
+ * reshape2
