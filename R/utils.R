@@ -1,7 +1,7 @@
 #generic utility functions
 
 require(stringr)
-requrie(dplyr)
+require(dplyr)
 
 slugify <- function(col_names) {
   col_names <- tolower( gsub( '\\.', '_', str_trim(col_names) ) )
