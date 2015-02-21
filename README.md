@@ -2,8 +2,7 @@
 
 ## To do
 
- * Make scans of OSS data more robust my converting to lowercase and removing garbage
- * Consider breaking up chart calls into separate files for easier reading
+ * Refactor everything
 
 ## Usage
 
