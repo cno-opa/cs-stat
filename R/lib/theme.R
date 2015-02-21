@@ -12,6 +12,7 @@ theme_opa <- function() {
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank(),
     panel.grid.major.y = element_line(colour = "grey50"),
-    legend.key = element_rect(colour = NA, fill = "white")
+    legend.key = element_rect(colour = NA, fill = "white"),
+    complete = FALSE
     )
 }
