@@ -15,6 +15,8 @@ cleanOss <- function() {
 plotOss <- function() {
 #
 #
+
+
 ossSp <- function() { #slide 10
   d <-  filter(oss, category == "Safety and Permits" |
                category == "Safety and Permits - Electrical" |
@@ -189,6 +191,7 @@ ossSpPermits()
 ossEtc()
 ossOlp()
 ossCpnc()
+
 
 #
 #end plotOss
