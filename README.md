@@ -14,7 +14,6 @@ After the `clean.R` cleans and transforms the data for use, the data object is s
 
 ## Dependencies
 
- * gdata
  * lubridate
  * dplyr
  * ggplot2

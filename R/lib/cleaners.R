@@ -11,7 +11,6 @@
 
 #TODO: Data audit
 
-require(gdata)
 require(lubridate)
 require(dplyr)
 
