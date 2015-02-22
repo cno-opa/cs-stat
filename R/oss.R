@@ -16,6 +16,7 @@ plotOss <- function() {
 #
 #
 
+theme_set(theme_opa())
 
 ossSp <- function() { #slide 10
   d <-  filter(oss, category == "Safety and Permits" |
