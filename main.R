@@ -1,4 +1,3 @@
-#!usr/bin/Rscript
 #runs the whole kit and kaboodle
 
 .libPaths("C:\\Rpackages")
@@ -11,9 +10,8 @@ init <- function(subdir) {
 }
 
 #sequence of script executions
+init("R/lib")
 init("R")
-init_clean()
-init_plot()
 
 #finish
 cat("Finished!")

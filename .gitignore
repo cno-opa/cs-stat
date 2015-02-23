@@ -6,4 +6,4 @@
 data/*
 output/*
 notes/*
-run.bat
+*.bat
