@@ -15,11 +15,11 @@ require(lubridate)
 require(dplyr)
 
 
-clean <- function(df, datecols, datein, FUN = toDate) {
+clean <- function(df, datecols, datein, FUN = toDate, subset = TRUE) {
   for(i in datecols) {
     df[,i] <- FUN(df[,i])
   }
-  df <- my(df, datein)
+  df <- my(df, datein, subset)
   names(df) <- slugify(names(df))
 
   return(df)
@@ -45,8 +45,8 @@ cleanLicenses <- function(df) {
   return(df)
 }
 
-cleanInspections <- function(df) {
-  df <- clean(df, "Requested", "Requested", mdy)
+cleanInspections <- function(df, subset = TRUE) {
+  df <- clean(df, "Requested", "Requested", mdy, subset)
   return(df)
 }
 
