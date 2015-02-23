@@ -83,6 +83,21 @@ cleanAllPermits <- function() {
   return(permits)
 }
 
+cleanHDLC <- function() {
+  exclude <- c("HDLC NO Hearing",
+               "HDLC CBD Hearing",
+               "HDLC NO ARC Meeting",
+               "HDLC CBD ARC Meeting",
+               "Returned for revision",
+               "Materials resubmitted",
+               "Review resubmitted materials"
+                )
+
+  hdlc_permits <- cleanPermits(hdlc_permits)
+  hdlc_permits <- filter(hdlc_permits, !(hdlc_permits$currentstatus %in% exclude))
+  hdlc_permits <- filter(hdlc_permits, !(hdlc_permits$nextstatus %in% exclude))
+}
+
 plotPermits <- function() {
 #
 #
@@ -198,12 +213,25 @@ permitsOneDay <- function() { #slide 20
     ggsave("./output/20-one-day-building-permits.png", width = 10, height = 5.5)
 }
 
+hdlcPermitsCharts <- function() { # slide 28
+  d <- group_by(hdlc_permits, my) %>%
+       summarise(mean = mean(daystoissue, na.rm = TRUE), nperstaff = n()/3) %>%
+       melt()
+
+  ggplot(d, aes(x = my, y = value, group = variable, colour = variable)) +
+  geom_line() +
+  labs(title = "Days to review applications and number of applications", x = "Month", y = "") +
+  scale_colour_discrete(name = "", labels = c("Average number of days to review application", "Applications per staff"))
+  ggsave("./output/28-hdlc-building-permits.png", width = 10, height = 5.5)
+}
+
 #plot calls
 permitOnline()
 commResPermit()
 spIssueDays()
 spIssueDaysDist()
 permitsOneDay()
+hdlcPermitsCharts()
 
 #
 #
@@ -211,7 +239,9 @@ permitsOneDay()
 
 #load
 permits <- read.csv("./data/permits.csv", header = TRUE)
+hdlc_permits <- read.csv("./data/hdlc-permits.csv", header = TRUE)
 
 #execute
 permits <- cleanAllPermits()
+hdlc_permits <- cleanHDLC()
 plotPermits()
