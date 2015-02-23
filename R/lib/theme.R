@@ -17,6 +17,7 @@
 #     panel.grid.major.x = element_blank(),
 #     panel.grid.major.y = element_line(colour = "grey50"),
 #     legend.key = element_rect(colour = NA, fill = "white"),
+#     legend.position = "top",
 #     complete = FALSE
 #     )
 # }
@@ -58,7 +59,7 @@ theme_opa <- function (base_size = 12, base_family = "")
     legend.text.align = NULL,
     legend.title = element_text(size = rel(0.8), face = "bold", hjust = 0),
     legend.title.align = NULL,
-    legend.position = "right",
+    legend.position = "top",
     legend.direction = NULL,
     legend.justification = "center",
     legend.box = NULL,
