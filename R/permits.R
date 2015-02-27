@@ -65,6 +65,7 @@ cleanAllPermits <- function() {
   permits <- filter(permits, !submittaltype == 3) #remove accela entries
   permits <- filter(permits, !grepl("voided", exitreason))
   permits <- filter(permits, !is.na(filingdate))
+  permits <- filter(permits, daystoissue >= 0 | is.na(daystoissue)) #remove any entries with negative days to issue
 
   #determine residential vs.commercial use type
   permits$usetype <- NA

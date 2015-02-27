@@ -2,7 +2,11 @@
 
 ## To do
 
- * Refactor everything
+ * Finish this (311, CPNC, complaints) (CSG)
+ * Review presentation and consider removing some charts (OW, MS, CSG)
+ * Standardize and save source data queries (VS, CSG)
+ * Complete theme_opa() (CSG)
+ * Review all charts (MS, CSG)
 
 ## Usage
 
