@@ -33,14 +33,14 @@ inspectBizCharts <- function() { #slide 25
        labs(x = "Month")
 
   p + geom_bar(aes(y = mean), stat = "identity", fill = "springgreen4") +
-      labs(y = "Days", title = "Average number of days to completing inspection request") +
+      labs(y = "Days", title = "Average number of days to completing inspection request\n\n\n") +
       geom_text(size = 4, colour = "grey33", vjust = -.5, aes(label = round(mean), y = mean)) +
       geom_hline(aes(yintercept = 7), colour = "tomato", linetype = "dashed") +
       geom_hline(aes(yintercept = 1.1), colour = "steelblue", linetype = "dashed")
       ggsave("./output/25inspect-biz-mean-days.png", width = 10, height = 5.5)
 
   p + geom_line(aes(y = n, group = 1), colour = "tomato") +
-      labs(y = "Number", title = "Number of inspection requests")
+      labs(y = "Number", title = "Number of inspection requests\n\n\n")
       ggsave("./output/25inspect-biz-n.png", width = 10, height = 5.5)
 }
 
@@ -51,7 +51,7 @@ inspectBldgCharts <-function() { #slide 26
 
   ggplot(d, aes(x = my, y = value, fill = variable)) +
   geom_bar(stat = "identity", position = "identity") +
-  labs(title = "Number of building inspections done and those done in the same day", x = "Month", y = "Number") +
+  labs(title = "Number of building inspections done and those done in the same day\n\n\n", x = "Month", y = "Number") +
   scale_fill_discrete(name = "", labels = c("All inspections", "Same day inspections"))
   ggsave("./output/26inspect-bldg.png", width = 10, height = 5.5)
 }

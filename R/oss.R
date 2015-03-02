@@ -33,17 +33,17 @@ ossSp <- function() { #slide 10
 
   #visitors
   p + geom_line(aes(y = n), size = 1) +
-      labs( title = "Visitors by month", x = "Month", y = "Visitors" ) +
+      labs( title = "Visitors by month\n\n\n", x = "Month", y = "Visitors" ) +
       ggsave("./output/10oss-sp-visitors.png", width = 10, height = 5.5)
 
   #mean wait time
   p + geom_line(aes(y = meanwait), size = 1) +
-      labs( title = "Average wait time", x = "Month", y = "Minutes" ) +
+      labs( title = "Average wait time\n\n\n", x = "Month", y = "Minutes" ) +
       ggsave("./output/10oss-sp-wait.png", width = 10, height = 5.5)
 
   #mean service time
   p + geom_line(aes(y = meanserve), size = 1) +
-      labs( title = "Average service time", x = "Month", y = "Minutes" ) +
+      labs( title = "Average service time\n\n\n", x = "Month", y = "Minutes" ) +
       ggsave("./output/10oss-sp-service.png", width = 10, height = 5.5)
 }
 
@@ -80,7 +80,7 @@ ossSpPermits <- function() { #slide 11
   geom_line(colour = "steelblue", size = 1) +
   geom_hline(aes(yintercept = 18), colour = "tomato", linetype = "dashed") +
   annotate("text", x = 1.5, y = 18.5, label = "Target") +
-  labs( title = "Average wait time for any license or permit", x = "Month", y = "Minutes" )
+  labs( title = "Average wait time for any license or permit\n\n\n", x = "Month", y = "Minutes" )
   ggsave("./output/11oss-sp-wait-all.png", width = 10, height = 5.5)
 
   #building permit
@@ -88,7 +88,7 @@ ossSpPermits <- function() { #slide 11
   geom_line(colour = "steelblue", size = 1) +
   geom_hline(aes(yintercept = 18), colour = "tomato", linetype = "dashed") +
   annotate("text", x = 1.5, y = 18.5, label = "Target") +
-  labs( title = "Average wait time for new building permit", x = "Month", y = "Minutes" )
+  labs( title = "Average wait time for new building permit\n\n\n", x = "Month", y = "Minutes" )
   ggsave("./output/11oss-sp-wait-building.png", width = 10, height = 5.5)
 }
 
@@ -112,17 +112,17 @@ ossEtc <- function() { #slide 12
 
   #visitors
   p + geom_line(aes(y = n), size = 1) +
-      labs(title = "Number of visitors", y = "Visitors")
+      labs(title = "Number of visitors\n\n\n", y = "Visitors")
       ggsave("./output/12oss-etc-visitors.png", width = 10, height = 5.5)
 
   #mean wait
   p + geom_line(aes(y = meanwait), size = 1) +
-      labs(title = "Average wait time")
+      labs(title = "Average wait time\n\n\n")
       ggsave("./output/12oss-etc-mean-wait.png", width = 10, height = 5.5)
 
   #mean service
   p + geom_line(aes(y = meanserve), size = 1) +
-      labs(title = "Average service time")
+      labs(title = "Average service time\n\n\n")
       ggsave("./output/12oss-etc-mean-service.png", width = 10, height = 5.5)
 }
 
@@ -134,7 +134,7 @@ ossOlp <- function() { #slide 13
   #occupational license
   ggplot(filter(d, queue == "Occup. License"), aes(x = my, y = meanwait, group = queue)) +
     geom_line(colour = "steelblue", size = 1) +
-    labs(title = "Average wait time to apply for a new occupational license",x = "Month", y = "Minutes") +
+    labs(title = "Average wait time to apply for a new occupational license\n\n\n",x = "Month", y = "Minutes") +
     geom_hline(aes(yintercept = 18), colour = "tomato", linetype = "dashed") +
     annotate("text", x = 1.5, y = 18.5, label = "Target") +
     ggsave("./output/13oss-occup-license.png", width = 10, height = 5.5)
@@ -142,7 +142,7 @@ ossOlp <- function() { #slide 13
   #make a payement
   ggplot(filter(d, queue == "Payment"), aes(x = my, y = meanwait, group = queue)) +
     geom_line(colour = "steelblue", size = 1) +
-    labs(title = "Average wait time to make a payement",x = "Month", y = "Minutes") +
+    labs(title = "Average wait time to make a payement\n\n\n",x = "Month", y = "Minutes") +
     geom_hline(aes(yintercept = 5), colour = "tomato", linetype = "dashed") +
     annotate("text", x = 1.5, y = 5.5, label = "Target") +
     ggsave("./output/13oss-payment-mean-wait.png", width = 10, height = 5.5)
@@ -167,17 +167,17 @@ ossCpnc <- function() { #slide 14
 
   #visitors
   p + geom_line(aes(y = n), size = 1) +
-      labs(title = "Number of visitors", y = "Visitors")
+      labs(title = "Number of visitors\n\n\n", y = "Visitors")
       ggsave("./output/14oss-cpnc-visitors.png", width = 10, height = 5.5)
 
   #mean wait
   p + geom_line(aes(y = meanwait), size = 1) +
-      labs(title = "Average wait time")
+      labs(title = "Average wait time\n\n\n")
       ggsave("./output/14oss-cpnc-mean-wait.png", width = 10, height = 5.5)
 
   #mean service
   p + geom_line(aes(y = meanserve), size = 1) +
-      labs(title = "Average service time")
+      labs(title = "Average service time\n\n\n")
       ggsave("./output/14oss-cpnc-mean-service.png", width = 10, height = 5.5)
 }
 

@@ -19,17 +19,17 @@ plotRev <- function() {
 
   #visitors
   p + geom_line(aes(y = n)) +
-      labs(title = "Number of visitors", y = "Visitors")
+      labs(title = "Number of visitors\n\n\n", y = "Visitors")
       ggsave("./output/21rev-visitors.png", width = 10, height = 5.5)
 
   #mean wait
   p + geom_line(aes(y = meanwait)) +
-      labs(title = "Average wait time")
+      labs(title = "Average wait time\n\n\n")
       ggsave("./output/21rev-mean-wait.png", width = 10, height = 5.5)
 
   #mean service
   p + geom_line(aes(y = meanserve)) +
-      labs(title = "Average service time")
+      labs(title = "Average service time\n\n\n")
       ggsave("./output/21rev-mean-service.png", width = 10, height = 5.5)
 }
 

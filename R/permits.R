@@ -119,7 +119,7 @@ permitOnline <- function() { #slide 15
 
   ggplot(d, aes(x = my, y = prop, label = percent(prop))) +
     geom_bar(stat = "identity", fill = "steelblue") +
-    labs(title = "Percent of permit applications recieved online", x = "Month", y = "Percent") +
+    labs(title = "Percent of permit applications recieved online\n\n\n", x = "Month", y = "Percent") +
     geom_text(size = 4, colour = "grey33", vjust = -.5)
     ggsave("./output/15permits-online.png", width = 10, height = 5.5)
 }
@@ -136,11 +136,11 @@ commResPermit <- function() { #slides 16 and 17
         scale_colour_discrete(name = "")
 
   p + geom_line(data = filter(d, usetype == "commercial")) +
-      labs(title = "Number of commercial permits issued")
+      labs(title = "Number of commercial permits issued\n\n\n")
       ggsave("./output/16commercial-permits-issued.png", width = 10, height = 5.5)
 
   p + geom_line(data = filter(d, usetype == "residential")) +
-      labs(title = "Number of residential permits issued")
+      labs(title = "Number of residential permits issued\n\n\n")
       ggsave("./output/17residential-permits-issued.png", width = 10, height = 5.5)
 }
 
@@ -156,14 +156,14 @@ spIssueDays <- function() { #slide 18
 
   #residential
   p + geom_bar(data = filter(d, usetype == "residential"), stat = "identity", fill = "steelblue") +
-      labs(title = "Average number of days to issue residential permits") +
+      labs(title = "Average number of days to issue residential permits\n\n\n") +
       geom_hline(aes(yintercept = 8), colour = "orange", linetype = "dashed") +
       geom_hline(aes(yintercept = 17.9), colour = "tomato", linetype = "dashed")
       ggsave("./output/18days-to-issue-r.png", width = 10, height = 5.5)
 
   #commercial
   p + geom_bar(data = filter(d, usetype == "commercial"), stat = "identity", fill = "steelblue") +
-      labs(title = "Average number of days to issue commercial permits") +
+      labs(title = "Average number of days to issue commercial permits\n\n\n") +
       geom_hline(aes(yintercept = 15), colour = "orange", linetype = "dashed") +
       geom_hline(aes(yintercept = 37.2), colour = "tomato", linetype = "dashed")
       ggsave("./output/18days-to-issue-c.png", width = 10, height = 5.5)
@@ -185,12 +185,12 @@ spIssueDaysDist <- function() { #slide 19
 
   #commercial
   p + geom_bar(data = filter(d, usetype == "commercial"), stat = "identity") +
-      labs(title = "Distribution of days to issue commercial permits")
+      labs(title = "Distribution of days to issue commercial permits\n\n\n")
       ggsave("./output/19dist-days-to-issue-c.png", width = 10, height = 5.5)
 
   #residential
   p + geom_bar(data = filter(d, usetype == "residential"), stat = "identity") +
-      labs(title = "Distribution of days to issue residential permits")
+      labs(title = "Distribution of days to issue residential permits\n\n\n")
       ggsave("./output/19dist-days-to-issue-r.png", width = 10, height = 5.5)
 }
 
@@ -208,7 +208,7 @@ permitsOneDay <- function() { #slide 20
 
   ggplot(d, aes(x = my, y = prop, fill = online, label = percent(prop))) +
     geom_bar(stat = "identity", position = position_dodge(width = 0.7), width = 0.7) +
-    labs(title = "Percent of building permits issued within one day of application", x = "Month", y = "Percent") +
+    labs(title = "Percent of building permits issued within one day of application\n\n\n", x = "Month", y = "Percent") +
     geom_text(size = 4, colour = "grey33", vjust = -.5) +
     scale_fill_discrete(name = "Application method", labels = c("In person", "Online"))
     ggsave("./output/20-one-day-building-permits.png", width = 10, height = 5.5)
@@ -221,7 +221,7 @@ hdlcPermitsCharts <- function() { # slide 28
 
   ggplot(d, aes(x = my, y = value, group = variable, colour = variable)) +
   geom_line() +
-  labs(title = "Days to review applications and number of applications", x = "Month", y = "") +
+  labs(title = "Days to review applications and number of applications\n\n\n", x = "Month", y = "") +
   scale_colour_discrete(name = "", labels = c("Average number of days to review application", "Applications per staff"))
   ggsave("./output/28-hdlc-building-permits.png", width = 10, height = 5.5)
 }
