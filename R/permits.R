@@ -34,7 +34,9 @@ cleanAllPermits <- function() {
     for(i in u) {
       r <- permits$refcode[i]
       lookup <- hist_usetypes$usetype[hist_usetypes$refcode == r]
-      permits$usetype[i] <- lookup
+      if(length(lookup) > 0) {
+        permits$usetype[i] <- lookup
+      }
     }
     return(permits)
   }
