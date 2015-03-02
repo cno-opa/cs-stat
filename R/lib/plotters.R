@@ -108,3 +108,18 @@ buildChart <- function(p) {
 
   return(built)
 }
+
+lineOPA <- function(data, x, y, title = "Need a title", xlab = "Month", ylab = "Need axis label", group = 1, ...) {
+  args <- eval(substitute(alist(...)))
+
+  base <- ggplot(data, aes_string(x = x, y = y, group = group, colour = group)) +
+            geom_line(size = 1) +
+            labs(title = title, x = xlab, y = ylab) +
+            scale_colour_brewer(palette = "Blues")
+
+  if( !is.null(args$labels) ) {
+    base <- base + geom_text(size = 4, colour = "grey33", vjust = -.5, aes_string(label = args$labels, y = y))
+  }
+
+  return(base)
+}
