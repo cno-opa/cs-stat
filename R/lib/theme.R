@@ -1,5 +1,7 @@
 #
-# A theme for CS STAT charts
+# A theme for CS STAT charts and a function to build it
+#
+# Important: Either use the function here, buildChart, to cut up the chart elements are arrange them properly, or include three line breaks ('\n\n\n') in the chart title of your ggplot call
 #
 #
 # This is what is changed:
@@ -26,9 +28,9 @@
 # And here is the default gray theme, with changes made, so theme is complete and can be set by theme_set(opa_theme())
 # ===============================
 
-#load 'grid' package
-
 library("grid")
+library("gridExtra")
+library("gtable")
 
 theme_opa <- function (base_size = 12, base_family = "")
 {
@@ -59,9 +61,9 @@ theme_opa <- function (base_size = 12, base_family = "")
     legend.text.align = NULL,
     legend.title = element_text(size = rel(0.8), face = "bold", hjust = 0),
     legend.title.align = NULL,
-    legend.position = "top",
-    legend.direction = NULL,
-    legend.justification = "center",
+    legend.position = c(0,1),
+    legend.direction = "horizontal",
+    legend.justification = c(0.03, 0),
     legend.box = NULL,
 
     panel.background = element_rect(fill = "white", colour = NA),
@@ -79,6 +81,30 @@ theme_opa <- function (base_size = 12, base_family = "")
     strip.text.y = element_text(angle = -90),
 
     plot.background = element_rect(colour = "white"),
-    plot.title = element_text(size = rel(1.2)),
-    plot.margin = unit(c(1, 1, 0.5, 0.5), "lines"), complete = TRUE)
+    plot.title = element_text(size = rel(1.2), hjust = 0),
+    plot.margin = unit(c(1, 1, 0.5, 0.5), "lines"),
+    complete = TRUE)
+}
+
+buildChart <- function(p) {
+
+  gt <- ggplot_gtable(ggplot_build(p))
+
+  t <- gtable_filter(gt, "title")[[1]]
+
+  l <- gtable_filter(gt, "guide-box")[[1]]
+
+  p <- p + theme(legend.position = "none", plot.title = element_blank())
+
+  built <- grid.arrange(
+             arrangeGrob(
+              t[[1]],
+              l[[1]],
+              p,
+              nrow = 3,
+              heights = c(1, 1.2, 10)
+             )
+           )
+
+  return(built)
 }
