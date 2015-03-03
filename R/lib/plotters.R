@@ -24,8 +24,6 @@
 #     )
 # }
 #
-#
-# And here is the default gray theme, with changes made, so theme is complete and can be set by theme_set(opa_theme())
 # ===============================
 
 library("grid")
@@ -63,7 +61,7 @@ theme_opa <- function (base_size = 12, base_family = "")
     legend.title.align = NULL,
     legend.position = c(0,1),
     legend.direction = "horizontal",
-    legend.justification = c(0.03, 0),
+    legend.justification = c(-0.05, 0.8),
     legend.box = NULL,
 
     panel.background = element_rect(fill = "white", colour = NA),
@@ -81,7 +79,7 @@ theme_opa <- function (base_size = 12, base_family = "")
     strip.text.y = element_text(angle = -90),
 
     plot.background = element_rect(colour = "white"),
-    plot.title = element_text(size = rel(1.2), hjust = 0),
+    plot.title = element_text(size = rel(1.2), hjust = 0.05),
     plot.margin = unit(c(1, 1, 0.5, 0.5), "lines"),
     complete = TRUE)
 }
@@ -109,17 +107,34 @@ buildChart <- function(p) {
   return(built)
 }
 
-lineOPA <- function(data, x, y, title = "Need a title", xlab = "Month", ylab = "Need axis label", group = 1, ...) {
-  args <- eval(substitute(alist(...)))
+lineOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label", group = 1, ...) {
+  # set labels with `labels = "label_column"`
+  # set highlight with `highlight = "group_to_highlight"`
+
+  dots <- eval(substitute(alist(...)))
+
+  remap <- function(input, matcher, value) {
+    matcher <- paste0(matcher, "(?! .)")
+    i <- grep(matcher, names(input), perl = TRUE)
+    input[i] <- value
+    return(input)
+  }
+
+  blues <- colorRampPalette( c("#3182bd", "#9ecae1") )(length(d[group,]))
+  names(blues) <- as.matrix(unique(d[,group]))[,group]
+
+  if( !is.null(dots$highlight) ) {
+    blues <- remap(blues, dots$highlight, "#FF1906")
+  }
 
   base <- ggplot(data, aes_string(x = x, y = y, group = group, colour = group)) +
             geom_line(size = 1) +
             labs(title = title, x = xlab, y = ylab) +
-            scale_colour_brewer(palette = "Blues")
+            scale_colour_manual( values = blues )
 
-  if( !is.null(args$labels) ) {
-    base <- base + geom_text(size = 4, colour = "grey33", vjust = -.5, aes_string(label = args$labels, y = y))
+  if( !is.null(dots$labels) ) {
+    base <- base +
+            geom_text(size = 4, colour = "grey33", vjust = -.5, aes_string(label = dots$labels, y = y))
   }
-
   return(base)
 }
