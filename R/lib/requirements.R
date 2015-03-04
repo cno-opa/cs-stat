@@ -4,6 +4,8 @@
 #
 #
 
+require(gdata)
+require(zoo)
 require(dplyr)
 require(ggplot2)
 require(lubridate)

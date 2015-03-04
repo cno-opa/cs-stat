@@ -39,7 +39,7 @@ theme_opa <- function (base_size = 12, base_family = "")
 
     axis.text = element_text(size = rel(0.8), colour = "grey50"),
     strip.text = element_text(size = rel(0.8)),
-    axis.line = element_line(colour = "grey50"),
+    axis.line = element_blank(),
     axis.line.y = element_blank(),
     axis.text.x = element_text(vjust = 1, angle = 45, hjust = .97),
     axis.text.y = element_text(hjust = 1),
@@ -57,7 +57,7 @@ theme_opa <- function (base_size = 12, base_family = "")
     legend.key.width = NULL,
     legend.text = element_text(size = rel(0.8)),
     legend.text.align = NULL,
-    legend.title = element_text(size = rel(0.8), face = "bold", hjust = 0),
+    legend.title = element_blank(),
     legend.title.align = NULL,
     legend.position = c(0,1),
     legend.direction = "horizontal",
@@ -120,8 +120,12 @@ lineOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label",
     return(input)
   }
 
-  blues <- colorRampPalette( c("#3182bd", "#9ecae1") )(length(d[group,]))
-  names(blues) <- as.matrix(unique(d[,group]))[,group]
+  if(group == 1) {
+    blues <- "#3182bd"
+  } else {
+    blues <- colorRampPalette( c("#3182bd", "#9ecae1") )(length(d[group,]))
+    names(blues) <- as.matrix(unique(d[,group]))[,1]
+  }
 
   if( !is.null(dots$highlight) ) {
     blues <- remap(blues, dots$highlight, "#FF1906")
@@ -130,11 +134,45 @@ lineOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label",
   base <- ggplot(data, aes_string(x = x, y = y, group = group, colour = group)) +
             geom_line(size = 1) +
             labs(title = title, x = xlab, y = ylab) +
-            scale_colour_manual( values = blues )
+            expand_limits(y = 0)
+
+
+  if(group == 1) {
+    base <- base + geom_line(colour = blues) + guides(colour = FALSE)
+  } else {
+    base <- base + scale_colour_manual( values = blues )
+  }
 
   if( !is.null(dots$labels) ) {
     base <- base +
             geom_text(size = 4, colour = "grey33", vjust = -.5, aes_string(label = dots$labels, y = y))
   }
+
+  return(base)
+}
+
+barOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label", stat = "identity", position = "identity", ...) {
+  # set fill with `fill = "variable"`
+  # set labels with `labels = "label_column"`
+
+  dots <- eval(substitute(alist(...)))
+
+  base <- ggplot(data, aes_string(x = x, y = y, fill = dots$fill)) +
+          geom_bar(stat = stat, position = position) +
+          labs(title = title, x = xlab, y = ylab) +
+          expand_limits(y = 0)
+
+  if( !is.null(dots$labels) ) {
+    base <- base +
+            geom_text(size = 4, colour = "grey33", vjust = -.5, aes_string(label = dots$labels, y = y))
+  }
+
+  if( !is.null(dots$fill) ) {
+    blues <- colorRampPalette( c("#3182bd", "#9ecae1") )(nrow(unique(data[dots$fill])))
+    base <- base + geom_bar(stat = stat, position = position) + scale_fill_manual(values = blues)
+  } else {
+    base <- base + geom_bar(stat = stat, position = position, fill = "#3182bd")
+  }
+
   return(base)
 }
