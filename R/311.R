@@ -61,7 +61,9 @@ plot311 <- function() {
   }
 
   operators <- function() {
-    d <-
+    p <- barOPA(ops, "agent", "value", position = "dodge", fill = "variable")
+    p <- buildChart(p)
+    ggsave("./output/8-311-operators.png", plot = p, width = 10, height = 7.5)
   }
 
   topRequest <- function() {
