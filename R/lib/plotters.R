@@ -135,8 +135,8 @@ lineOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label",
   if(group == 1) {
     blues <- "#3182bd"
   } else {
-    blues <- colorRampPalette( c("#3182bd", "#9ecae1") )(length(d[group,]))
-    names(blues) <- as.matrix(unique(d[,group]))[,1]
+    blues <- colorRampPalette( c("#3182bd", "#9ecae1") )(nrow(unique(data[group])))
+    names(blues) <- as.matrix(unique(data[group]))[,1]
   }
 
   if( !is.null(dots$highlight) ) {
