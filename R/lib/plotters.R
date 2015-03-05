@@ -88,21 +88,33 @@ buildChart <- function(p) {
 
   gt <- ggplot_gtable(ggplot_build(p))
 
-  t <- gtable_filter(gt, "title")[[1]]
+    gtl <- gt[[1]]
 
-  l <- gtable_filter(gt, "guide-box")[[1]]
+  t <- gtable_filter(gt, "title")[[1]]
 
   p <- p + theme(legend.position = "none", plot.title = element_blank())
 
-  built <- grid.arrange(
-             arrangeGrob(
-              t[[1]],
-              l[[1]],
-              p,
-              nrow = 3,
-              heights = c(1, 1.2, 10)
+  if( TRUE %in% grepl("guide-box", gtl) ) {
+    l <- gtable_filter(gt, "guide-box")[[1]]
+
+    built <- grid.arrange(
+               arrangeGrob(
+                t[[1]],
+                l[[1]],
+                p,
+                nrow = 3,
+                heights = c(1, 1.2, 10)
+               )
              )
-           )
+  } else {
+    built <- grid.arrange(
+               arrangeGrob(
+                t[[1]],
+                p,
+                heights = c(1, 10)
+               )
+             )
+  }
 
   return(built)
 }
