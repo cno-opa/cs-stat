@@ -28,73 +28,83 @@ plot311 <- function() {
 
   theme_set(theme_opa())
 
-  callVol <- function() {
-    d <- filter(qls, measure == "Calls") %>%
-         group_by(date) %>%
-         summarise(n = value)
+callVol <- function() {
+  d <- filter(qls, measure == "Calls") %>%
+       group_by(date) %>%
+       summarise(n = value)
 
-    p <- lineOPA(d, "date", "n", "Call Volume", "Date", "Calls", labels = "n")
-    ggsave("./output/4-311-calls.png", plot = p, width = 10, height = 7.5)
-  }
+  p <- lineOPA(d, "date", "n", "Call Volume", "Date", "Calls", labels = "n")
+  p <- buildChart(p)
+  ggsave("./output/4-311-calls.png", plot = p, width = 10, height = 7.5)
+}
 
-  callAbandon <- function() {
-    d <- filter(qls, measure == "Abandonment Rate") %>%
-         group_by(date) %>%
-         summarise(n = value)
+callAbandon <- function() {
+  d <- filter(qls, measure == "Abandonment Rate") %>%
+       group_by(date) %>%
+       summarise(n = value)
 
-    p <- lineOPA(d, "date", "n", "Abandonment Rate", "Date", "Rate", labels = "percent(n)")
-    ggsave("./output/5-311-abandonment.png", plot = p, width = 10, height = 7.5)
-  }
+  p <- lineOPA(d, "date", "n", "Abandonment Rate", "Date", "Rate", labels = "percent(n)", percent = TRUE)
+  p <- buildChart(p)
+  ggsave("./output/5-311-abandonment.png", plot = p, width = 10, height = 7.5)
+}
 
-  holdTime <- function() {
-    d <- filter(qls, measure == "Avg. Hold Time (sec)") %>%
-         group_by(date) %>%
-         summarise(n = value)
+holdTime <- function() {
+  d <- filter(qls, measure == "Avg. Hold Time (sec)") %>%
+       group_by(date) %>%
+       summarise(n = value)
 
-    p <- lineOPA(d, "date", "n", "Average hold time", "Date", "Seconds", labels = "n")
-    p <- buildChart(p)
-    ggsave("./output/6-311-hold-time.png", plot = p, width = 10, height = 7.5)
-  }
+  p <- lineOPA(d, "date", "n", "Average hold time", "Date", "Seconds", labels = "n")
+  p <- buildChart(p)
+  ggsave("./output/6-311-hold-time.png", plot = p, width = 10, height = 7.5)
+}
 
-  firstCall <- function() {
-    d <- filter(qls, measure == "First Call Resolution") %>%
-         group_by(date) %>%
-         summarise(n = value)
+firstCall <- function() {
+  d <- filter(qls, measure == "First Call Resolution") %>%
+       group_by(date) %>%
+       summarise(n = value)
 
-    p <- lineOPA(d, "date", "n", "First call resolution", "Date", "Rate", labels = "percent(n)")
-    p <- buildChart(p)
-    ggsave("./output/7-311-first-call.png", plot = p, width = 10, height = 7.5)
-  }
+  p <- lineOPA(d, "date", "n", "First call resolution", "Date", "Rate", labels = "percent(n)", percent = TRUE)
+  p <- buildChart(p)
+  ggsave("./output/7-311-first-call.png", plot = p, width = 10, height = 7.5)
+}
 
-  operators <- function() {
-    p <- barOPA(ops, "agent", "value", "Operator scores", "Operator", "Score (%)", position = "dodge", fill = "variable")
-    p <- buildChart(p)
-    ggsave("./output/8-311-operators.png", plot = p, width = 10, height = 7.5)
-  }
+operators <- function() {
+  p <- barOPA(ops, "agent", "value", "Operator scores", "Operator", "Score (%)", position = "dodge", fill = "variable")
+  p <- buildChart(p)
+  ggsave("./output/8-311-operators.png", plot = p, width = 10, height = 7.5)
+}
 
-  topRequest <- function() {
-    top <- filter(qls,
-                  type == "service request",
-                  date == levels(qls$date)[length(levels(qls$date))]) %>%
-            arrange(value)
+topRequest <- function() {
+  top <- filter(qls,
+                type == "service request",
+                date == levels(qls$date)[length(levels(qls$date))]) %>%
+          arrange(value)
 
-    top <- top$measure[1:3]
+  top <- top$measure[1:3]
 
-    d <- filter(qls, measure == top[1] | measure == top[2] | measure == top[3])
+  d <- filter(qls, measure == top[1] | measure == top[2] | measure == top[3])
 
-    p <- lineOPA(d,
-                 "date",
-                 "value",
-                 "Top service requests",
-                 "Date",
-                 "Requests",
-                 labels = "value",
-                 group = "measure",
-                 highlight = "Street Light")
+  p <- lineOPA(d,
+               "date",
+               "value",
+               "Top service requests",
+               "Date",
+               "Requests",
+               labels = "value",
+               group = "measure",
+               highlight = "Street Light")
 
-    p <- buildChart(p)
-    ggsave("./output/9-311-top-requests.png", plot = p, width = 10, height = 7.5)
-  }
+  p <- buildChart(p)
+  ggsave("./output/9-311-top-requests.png", plot = p, width = 10, height = 7.5)
+}
+
+#execute
+callVol()
+callAbandon()
+holdTime()
+firstCall()
+operators()
+topRequest()
 
 #
 #

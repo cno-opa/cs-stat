@@ -68,7 +68,7 @@ theme_opa <- function (base_size = 12, base_family = "")
     panel.border = element_blank(),
     panel.grid.major = element_line(colour = "white"),
     panel.grid.major.x = element_blank(),
-    panel.grid.major.y = element_line(colour = "grey50"),
+    panel.grid.major.y = element_line(colour = "grey40"),
     panel.grid.minor = element_blank(),
     panel.margin = unit(0.25, "lines"),
     panel.margin.x = NULL,
@@ -97,33 +97,37 @@ buildChart <- function(p) {
   if( TRUE %in% grepl("guide-box", gtl) ) {
     l <- gtable_filter(gt, "guide-box")[[1]]
 
-    built <- grid.arrange(
-               arrangeGrob(
-                t[[1]],
-                l[[1]],
-                p,
-                nrow = 3,
-                heights = c(1, 1.2, 10)
-               )
+    built <- arrangeGrob(
+              t[[1]],
+              l[[1]],
+              p,
+              nrow = 3,
+              heights = c(1, 1.2, 10)
              )
   } else {
-    built <- grid.arrange(
-               arrangeGrob(
-                t[[1]],
-                p,
-                heights = c(1, 10)
-               )
+    built <- arrangeGrob(
+              t[[1]],
+              p,
+              nrow = 2,
+              heights = c(1, 10)
              )
   }
 
   return(built)
 }
 
-lineOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label", group = 1, ...) {
+lineOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label", group = 1, percent = FALSE, ...) {
   # set labels with `labels = "label_column"`
   # set highlight with `highlight = "group_to_highlight"`
+  # percent = FALSE refers to whether or not y-axis should be in percent
 
   dots <- eval(substitute(alist(...)))
+
+  #make continuous var type
+  data[y] <- as.numeric(data[y][[1]])
+
+  #get max y val
+  ymax <- max(data[y], na.rm = TRUE)
 
   remap <- function(input, matcher, value) {
     matcher <- paste0(matcher, "(?! .)")
@@ -144,10 +148,8 @@ lineOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label",
   }
 
   base <- ggplot(data, aes_string(x = x, y = y, group = group, colour = group)) +
-            geom_line(size = 1) +
-            labs(title = title, x = xlab, y = ylab) +
-            expand_limits(y = 0)
-
+          geom_line(size = 1) +
+          labs(title = title, x = xlab, y = ylab)
 
   if(group == 1) {
     base <- base + geom_line(colour = blues) + guides(colour = FALSE)
@@ -158,6 +160,17 @@ lineOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label",
   if( !is.null(dots$labels) ) {
     base <- base +
             geom_text(size = 4, colour = "grey33", vjust = -.5, aes_string(label = dots$labels, y = y))
+  }
+
+  if(percent == FALSE) {
+    brks <- pretty_breaks(4)(0:ymax)
+    yul  <- brks[length(brks)]
+    base <- base + scale_y_continuous(breaks = brks) + expand_limits(y = c(0, yul))
+  } else {
+    yul  <- ymax + 0.05
+    incr <- yul/4
+    brks <- seq(0, yul, incr)
+    base <- base + scale_y_continuous(breaks = brks) + expand_limits(y = c(0, yul))
   }
 
   return(base)
