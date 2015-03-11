@@ -32,9 +32,15 @@ cleanServiceReport <- function(df) {
 }
 
 cleanPermits <- function(df) {
+  load("./data/context/online-permits.Rdata")
   df <- clean(df, c("FilingDate", "IssueDate"), "FilingDate")
   df$daystoissue <- as.numeric(ymd(df$issuedate) - ymd(df$filingdate))/86400
   df$type <- as.character(df$type)
+  df <- filter(df, !submittaltype == 3) #remove accela entries
+  df <- filter(df, !grepl("voided", exitreason))
+  df <- filter(df, !is.na(filingdate))
+  df <- filter(df, daystoissue >= 0 | !is.na(daystoissue)) #remove any entries with negative days to issue or nas
+  df$online <- tolower(df$type) %in% online_permits$permit
   return(df)
 }
 
