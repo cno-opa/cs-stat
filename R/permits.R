@@ -62,9 +62,13 @@ cleanIssued <- function(permits) {
     return(permits)
   }
 
+  #issue time in seconds
+  permits$sec_to_issue <- as.POSIXct(permits$IssueDate, format = "%m/%d/%Y %H:%M:%S") - as.POSIXct(permits$FilingDate, format = "%m/%d/%Y %H:%M:%S")
+
   #master cleanse
   permits <- cleanPermits(permits)
 
+  #month issued
   permits$month_issued <- as.factor(as.yearmon(permits$issuedate))
 
   #determine residential vs.commercial use type
@@ -111,6 +115,31 @@ resCommIssueTime <- function() {
   p <- lineOPA(d, "month_issued", "mean_to_issue", "Mean days to issue for residential and commercial permits", "Month Issued", "Days", group = "usetype", labels = "round(mean_to_issue)")
   p <- buildChart(p)
   ggsave("./output/20-permits-res-comm-days-to-issue.png", plot = p, width = 10, height = 7.5)
+}
+
+sameDay <- function() {
+  d <- filter(issued, opa_category == "Building - All Others" | opa_category == "Building - New Construction") %>%
+       mutate(app_method = ifelse(createdby == "publicwebcrm", "online", "in person")) %>%
+       mutate(under_48 = ifelse(sec_to_issue < 172800, TRUE, FALSE)) %>%
+       group_by(month_issued, app_method, under_48) %>%
+       summarise(n = n())
+
+  t <- summarise_each(d, funs(sum))$n
+  x <- list()
+  for(i in t) {
+    x <- append(x, i)
+    x <- append(x, i)
+  }
+  d$total <- as.numeric(x)
+  d$prop <- d$n/d$total
+
+  d <- filter(d, under_48 == TRUE)
+  d <- melt(d)
+  d <- filter(d, variable == "prop")
+
+  p <- lineOPA(d, "month_issued", "value", "Building permits issued within 48 hours of application", "Month", "Percentage", group = "app_method", labels = "percent(value)")
+  p <- buildChart(p)
+  ggsave("./output/21-permits-48-hours.png", plot = p, width = 10, height = 7.5)
 }
 
 #execute
