@@ -145,6 +145,7 @@ sameDay <- function() {
 #execute
 resComm()
 resCommIssueTime()
+sameDay()
 
 #
 #
