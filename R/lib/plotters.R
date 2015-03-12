@@ -139,12 +139,12 @@ lineOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label",
   if(group == 1) {
     blues <- "#3182bd"
   } else {
-    blues <- colorRampPalette( c("#3182bd", "#9ecae1") )(nrow(unique(data[group])))
+    blues <- colorRampPalette( c("#002537", "#c0eaff") )(nrow(unique(data[group])))
     names(blues) <- as.matrix(unique(data[group]))[,1]
   }
 
   if( !is.null(dots$highlight) ) {
-    blues <- remap(blues, dots$highlight, "#FF1906")
+    blues <- remap(blues, dots$highlight, "#002537")
   }
 
   base <- ggplot(data, aes_string(x = x, y = y, group = group, colour = group)) +
@@ -193,11 +193,30 @@ barOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label", 
   }
 
   if( !is.null(dots$fill) ) {
-    blues <- colorRampPalette( c("#3182bd", "#9ecae1") )(nrow(unique(data[dots$fill])))
+    blues <- colorRampPalette( c("#002537", "#c0eaff") )(nrow(unique(data[dots$fill])))
     base <- base + geom_bar(stat = stat, position = position) + scale_fill_manual(values = blues)
   } else {
-    base <- base + geom_bar(stat = stat, position = position, fill = "#3182bd")
+    base <- base + geom_bar(stat = stat, position = position, fill = "#002537")
   }
+
+  return(base)
+}
+
+schigoda <- function(data, x, y, fill, title = "Schigoda!", ...) {
+  #
+  #
+
+  dots <- eval(substitute(alist(...)))
+
+  blues <- colorRampPalette( c("#002537", "#c0eaff") )(nrow(unique(data[fill])))
+
+  #area
+  data[, x] <- as.Date(as.yearmon(data[, x]))
+  base <- ggplot(data, aes_string(x = x, y = y, fill = fill)) +
+          geom_area(position = "identity") +
+          labs(title = title, x = "", y = "") +
+          scale_fill_manual(values = blues) +
+          scale_x_date(breaks = pretty_breaks(9)(data[, x]), labels = date_format("%b %Y"))
 
   return(base)
 }

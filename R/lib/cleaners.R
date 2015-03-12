@@ -45,7 +45,7 @@ cleanPermits <- function(df) {
 }
 
 cleanLicenses <- function(df) {
-  df <- clean(df, c("ApplicationDate", "IssueDate"), "ApplicationDate")
+  df <- clean(df, c("ApplicationDate", "IssueDate"), "IssueDate")
   df$daystoissue <- as.numeric(ymd(df$issuedate) - ymd(df$applicationdate))/86400
   df$type <- as.character(df$type)
   return(df)
