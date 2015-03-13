@@ -84,6 +84,11 @@ theme_opa <- function (base_size = 12, base_family = "")
     complete = TRUE)
 }
 
+#aesthetic variables
+lightBlue <- "#23b6ff"
+darkBlue <- "#002537"
+red <- "tomato"
+
 buildChart <- function(p) {
 
   gt <- ggplot_gtable(ggplot_build(p))
@@ -137,14 +142,14 @@ lineOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label",
   }
 
   if(group == 1) {
-    blues <- "#3182bd"
+    blues <- darkBlue
   } else {
-    blues <- colorRampPalette( c("#002537", "#c0eaff") )(nrow(unique(data[group])))
+    blues <- colorRampPalette( c(darkBlue, lightBlue) )(nrow(unique(data[group])))
     names(blues) <- as.matrix(unique(data[group]))[,1]
   }
 
   if( !is.null(dots$highlight) ) {
-    blues <- remap(blues, dots$highlight, "#002537")
+    blues <- remap(blues, dots$highlight, red)
   }
 
   base <- ggplot(data, aes_string(x = x, y = y, group = group, colour = group)) +
@@ -193,10 +198,10 @@ barOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label", 
   }
 
   if( !is.null(dots$fill) ) {
-    blues <- colorRampPalette( c("#002537", "#c0eaff") )(nrow(unique(data[dots$fill])))
+    blues <- colorRampPalette( c(darkBlue, lightBlue) )(nrow(unique(data[dots$fill])))
     base <- base + geom_bar(stat = stat, position = position) + scale_fill_manual(values = blues)
   } else {
-    base <- base + geom_bar(stat = stat, position = position, fill = "#002537")
+    base <- base + geom_bar(stat = stat, position = position, fill = darkBlue)
   }
 
   return(base)
@@ -208,7 +213,7 @@ schigoda <- function(data, x, y, fill, title = "Schigoda!", ...) {
 
   dots <- eval(substitute(alist(...)))
 
-  blues <- colorRampPalette( c("#002537", "#c0eaff") )(nrow(unique(data[fill])))
+  blues <- colorRampPalette( c(darkBlue, lightBlue) )(nrow(unique(data[fill])))
 
   #area
   data[, x] <- as.Date(as.yearmon(data[, x]))

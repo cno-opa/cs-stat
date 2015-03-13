@@ -75,11 +75,27 @@ biz <- function() {
   ggsave("./output/24-licenses-biz.png", plot = p, width = 10, height = 7.5)
 }
 
+cpnc <- function() {
+  d <- filter(l, opa_category == "CPNC") %>%
+       group_by(my, type) %>%
+       summarise(n = n(), days_to_issue = mean(daystoissue)) %>%
+       filter(my != "NA NA") %>%
+       melt()
+
+  p_n <- lineOPA(filter(d, variable == "n"), "my", "value", "Number of CPNC licenses issued", group = "type", labels = "value")
+  p_n <- buildChart(p_n)
+  ggsave("./output/25-licenses-cpnc-n.png", plot = p_n, width = 10, height = 7.5)
+
+  p_m <- lineOPA(filter(d, variable == "days_to_issue"), "my", "value", "Average days to issue CPNC licenses", group = "type", labels = "round(value)")
+  p_m <- buildChart(p_m)
+  ggsave("./output/26-licenses-cpnc-mean.png", plot = p_m, width = 10, height = 7.5)
+}
 
 #execute
 mech()
 elec()
 biz()
+cpnc()
 
 #
 #
@@ -90,3 +106,4 @@ l <- read.csv("./data/licenses.csv", header = TRUE)
 
 #execute
 l <- cleanL(l)
+plotL()
