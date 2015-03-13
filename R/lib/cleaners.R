@@ -52,7 +52,7 @@ cleanLicenses <- function(df) {
 }
 
 cleanInspections <- function(df, subset = TRUE) {
-  df <- clean(df, "Requested", "Requested", mdy, subset)
+  df <- clean(df, c("Date", "Requested"), "Date", mdy, subset)
   return(df)
 }
 
