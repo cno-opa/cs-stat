@@ -3,6 +3,7 @@
 cleanIssued <- function(permits) {
   load("./data/context/permits-lookup.Rdata")
   load("./data/context/historical-usetypes.Rdata")
+  load("./data/context/online-permits.Rdata")
 
   assignUseType <- function(landuse, owner) {
     if(landuse == "ACC") {
@@ -68,6 +69,10 @@ cleanIssued <- function(permits) {
   #master cleanse
   permits <- cleanPermits(permits)
 
+  permits <- filter(permits, !submittaltype == 3) #remove accela entries
+  permits <- filter(permits, !grepl("voided", exitreason))
+  permits <- filter(permits, !is.na(filingdate))
+
   #month issued
   permits$month_issued <- as.factor(as.yearmon(permits$issuedate))
 
@@ -82,14 +87,16 @@ cleanIssued <- function(permits) {
   save(hist_usetypes, file = "./data/context/historical-usetypes.Rdata") #save it for posterity
 
   #permit type recode and online lookup
+  permits$online <- tolower(permits$type) %in% online_permits$permit
   permits$opa_category <- permits_lookup$opa_category[match(permits$type, permits_lookup$type)]
 
   return(permits)
 }
 
-cleanHDLC <- function(permits) {
-
-}
+# cleanHDLC <- function(permits) {
+#   permits <- cleanPermits(permits)
+#   return(permits)
+# }
 
 plotPermits <- function() {
 #
@@ -152,10 +159,11 @@ sameDay()
 }
 
 # load
-applied <- read.csv("./data/permits-applied.csv", header = TRUE)
+# applied <- read.csv("./data/permits-applied.csv", header = TRUE)
 issued <- read.csv("./data/permits-issued.csv", header = TRUE)
+#hdlc <- read.csv("./data/permits-hdlc.csv", header = TRUE)
 
 # execute
-applied <- cleanPermits(applied)
+#applied <- cleanPermits(applied)
 issued <- cleanIssued(issued)
 plotPermits()
