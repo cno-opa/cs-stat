@@ -26,14 +26,14 @@ plot311 <- function() {
 #
 #
 
-  theme_set(theme_opa())
+theme_set(theme_opa())
 
 callVol <- function() {
   d <- filter(qls, measure == "Calls") %>%
        group_by(date) %>%
        summarise(n = value)
 
-  p <- lineOPA(d, "date", "n", "Call Volume", "Date", "Calls", labels = "n")
+  p <- lineOPA(d, "date", "n", "Call Volume")
   p <- buildChart(p)
   ggsave("./output/4-311-calls.png", plot = p, width = 10, height = 7.5)
 }
@@ -43,7 +43,7 @@ callAbandon <- function() {
        group_by(date) %>%
        summarise(n = value)
 
-  p <- lineOPA(d, "date", "n", "Abandonment Rate", "Date", "Rate", labels = "percent(n)", percent = TRUE)
+  p <- lineOPA(d, "date", "n", "Abandonment Rate", percent = TRUE)
   p <- buildChart(p)
   ggsave("./output/5-311-abandonment.png", plot = p, width = 10, height = 7.5)
 }
@@ -53,7 +53,7 @@ holdTime <- function() {
        group_by(date) %>%
        summarise(n = value)
 
-  p <- lineOPA(d, "date", "n", "Average hold time", "Date", "Seconds", labels = "n")
+  p <- lineOPA(d, "date", "n", "Average hold time")
   p <- buildChart(p)
   ggsave("./output/6-311-hold-time.png", plot = p, width = 10, height = 7.5)
 }
@@ -63,13 +63,15 @@ firstCall <- function() {
        group_by(date) %>%
        summarise(n = value)
 
-  p <- lineOPA(d, "date", "n", "First call resolution", "Date", "Rate", labels = "percent(n)", percent = TRUE)
+  p <- lineOPA(d, "date", "n", "First call resolution", percent = TRUE)
   p <- buildChart(p)
   ggsave("./output/7-311-first-call.png", plot = p, width = 10, height = 7.5)
 }
 
 operators <- function() {
-  p <- barOPA(ops, "agent", "value", "Operator scores", "Operator", "Score (%)", position = "dodge", fill = "variable")
+  p <- barOPA(ops, "agent", "value", "Operator scores", ylab = "Score (%)", position = "dodge", fill = "variable")
+  p <- p + theme(legend.text = element_text(size = rel(0.65))) +
+           guides(fill = guide_legend(nrow = 2))
   p <- buildChart(p)
   ggsave("./output/8-311-operators.png", plot = p, width = 10, height = 7.5)
 }
@@ -88,8 +90,6 @@ topRequest <- function() {
                "date",
                "value",
                "Top service requests",
-               "Date",
-               "Requests",
                labels = "value",
                group = "measure",
                highlight = "Street Light")

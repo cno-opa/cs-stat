@@ -38,7 +38,7 @@ building <- function() {
        filter(my != "NA NA") %>%
        melt()
 
-  p <- schigoda(d, "my", "value", fill = "variable")
+  p <- schigoda(d, "my", "value", fill = "variable", legend.labels = c("All", "Inspections in less than 7 days"))
   p <- buildChart(p)
   ggsave("./output/28-complaints-building.png", plot = p, width = 10, height = 7.5)
 }
@@ -50,7 +50,7 @@ zoning <- function() {
        filter(my != "NA NA") %>%
        melt()
 
-  p <- schigoda(d, "my", "value", fill = "variable")
+  p <- schigoda(d, "my", "value", fill = "variable", legend.labels = c("All", "Inspections in less than 7 days"))
   p <- buildChart(p)
   ggsave("./output/29-complaints-zoning.png", plot = p, width = 10, height = 7.5)
 }
@@ -60,7 +60,7 @@ openEndOfMonth <- function() {
        group_by(month_filed) %>%
        summarise(n = n())
 
-  p <- lineOPA(d, "month_filed", "n", "Number of complaints with no first inspection by end of month", labels = "n")
+  p <- lineOPA(d, "month_filed", "n", "Number of complaints with no first inspection by end of month")
   p <- buildChart(p)
   ggsave("./output/30-complaints-open.png", plot = p, width = 10, height = 7.5)
 }

@@ -34,8 +34,8 @@ ossSP <- function() {
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "my", "value", "Safety and Permits visitors", "Date" ,"Visitors", labels = "value")
-  p_times <- lineOPA(filter(d_all, variable != "n"), "my", "value", "Safety and Permits timeliness", "Date", "Minutes", group = "variable", labels = "value" )
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "my", "value", "Safety and Permits volume")
+  p_times <- lineOPA(filter(d_all, variable != "n"), "my", "value", "Safety and Permits timeliness", group = "variable", legend.labels = c("Median wait time", "Median service time") )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
@@ -57,7 +57,7 @@ ossSP <- function() {
   p_facet <- ggplot(d_cat, aes(my, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
-             labs(title = "Saftey and Permits stats by queue", x = "Date", y = "") +
+             labs(title = "Saftey and Permits stats by queue", x = "", y = "") +
              scale_colour_manual(values = c("grey70", "tomato")) +
              scale_x_discrete(breaks = brks) +
              theme(panel.grid.major.y = element_blank(),
@@ -89,8 +89,8 @@ ossCPNC <- function() {
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "my", "value", "CPNC visitors", "Date" ,"Visitors", labels = "value")
-  p_times <- lineOPA(filter(d_all, variable != "n"), "my", "value", "CPNC timeliness", "Date", "Minutes", group = "variable", labels = "value" )
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "my", "value", "Taxi Cab Bureau volume")
+  p_times <- lineOPA(filter(d_all, variable != "n"), "my", "value", "Taxi Cab Bureau timeliness", ylab = "Minutes", group = "variable", legend.labels = c("Median wait time", "Median service time") )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
@@ -112,7 +112,7 @@ ossCPNC <- function() {
   p_facet <- ggplot(d_cat, aes(my, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
-             labs(title = "CPNC stats by queue", x = "Date", y = "") +
+             labs(title = "CPNC stats by queue", x = "", y = "") +
              scale_colour_manual(values = c("grey70", "tomato")) +
              scale_x_discrete(breaks = brks) +
              theme(panel.grid.major.y = element_blank(),
@@ -145,8 +145,8 @@ ossEtc <- function() {
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "my", "value", "CPC, VCC, etc. visitors", "Date" ,"Visitors", labels = "value")
-  p_times <- lineOPA(filter(d_all, variable != "n"), "my", "value", "CPC, VCC, etc. timeliness", "Date", "Minutes", group = "variable", labels = "value" )
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "my", "value", "CPC, VCC, etc. volume")
+  p_times <- lineOPA(filter(d_all, variable != "n"), "my", "value", "CPC, VCC, etc. timeliness", ylab = "Minutes", group = "variable", legend.labels = c("Median wait time", "Median service time") )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
@@ -168,7 +168,7 @@ ossEtc <- function() {
   p_facet <- ggplot(d_cat, aes(my, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
-             labs(title = "VCC, HDLC, etc. stats by queue", x = "Date", y = "") +
+             labs(title = "VCC, HDLC, etc. stats by queue", x = "", y = "") +
              scale_colour_manual(values = c("grey70", "tomato")) +
              scale_x_discrete(breaks = brks) +
              theme(panel.grid.major.y = element_blank(),

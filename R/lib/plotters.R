@@ -30,7 +30,7 @@ library("grid")
 library("gridExtra")
 library("gtable")
 
-theme_opa <- function (base_size = 12, base_family = "")
+theme_opa <- function (base_size = 14, base_family = "")
 {
   theme(
     line = element_line(colour = "black", size = 0.5, linetype = 1, lineend = "butt"),
@@ -43,7 +43,7 @@ theme_opa <- function (base_size = 12, base_family = "")
     axis.line.y = element_blank(),
     axis.text.x = element_text(vjust = 1, angle = 45, hjust = .97),
     axis.text.y = element_text(hjust = 1),
-    axis.ticks = element_line(colour = "grey50"),
+    axis.ticks = element_blank(),
     axis.title.x = element_text(),
     axis.title.y = element_text(angle = 90),
     axis.ticks.length = unit(0.15, "cm"),
@@ -52,16 +52,16 @@ theme_opa <- function (base_size = 12, base_family = "")
     legend.background = element_rect(colour = NA),
     legend.margin = unit(0.2, "cm"),
     legend.key = element_rect(colour = NA, fill = "white"),
-    legend.key.size = unit(1.2, "lines"),
+    legend.key.size = unit(.8, "lines"),
     legend.key.height = NULL,
     legend.key.width = NULL,
-    legend.text = element_text(size = rel(0.8)),
+    legend.text = element_text(size = rel(0.75)),
     legend.text.align = NULL,
     legend.title = element_blank(),
     legend.title.align = NULL,
     legend.position = c(0,1),
     legend.direction = "horizontal",
-    legend.justification = c(-0.05, 0.8),
+    legend.justification = c(-0.02, 0.8),
     legend.box = NULL,
 
     panel.background = element_rect(fill = "white", colour = NA),
@@ -121,9 +121,11 @@ buildChart <- function(p) {
   return(built)
 }
 
-lineOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label", group = 1, percent = FALSE, ...) {
+lineOPA <- function(data, x, y, title = "Title!", group = 1, percent = FALSE, ...) {
   # set labels with `labels = "label_column"`
   # set highlight with `highlight = "group_to_highlight"`
+  # set y axis label with `ylab = "label"`
+  # set legend labels with `legend.labels = character vector`
   # percent = FALSE refers to whether or not y-axis should be in percent
 
   dots <- eval(substitute(alist(...)))
@@ -153,13 +155,22 @@ lineOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label",
   }
 
   base <- ggplot(data, aes_string(x = x, y = y, group = group, colour = group)) +
-          geom_line(size = 1) +
-          labs(title = title, x = xlab, y = ylab)
+          geom_line(size = 1.5) +
+          labs(title = title, x = "", y = "")
+
+  if( !is.null(dots$ylab) ) {
+    base + labs(y = dots$ylab)
+  }
 
   if(group == 1) {
     base <- base + geom_line(colour = blues) + guides(colour = FALSE)
   } else {
     base <- base + scale_colour_manual( values = blues )
+  }
+
+  if( !is.null(dots$legend.labels) ) {
+    legend.labels <- eval(dots$legend.labels)
+    base <- base + scale_colour_manual( values = blues, labels = legend.labels )
   }
 
   if( !is.null(dots$labels) ) {
@@ -175,13 +186,13 @@ lineOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label",
     yul  <- ymax + 0.05
     incr <- yul/4
     brks <- seq(0, yul, incr)
-    base <- base + scale_y_continuous(breaks = brks) + expand_limits(y = c(0, yul))
+    base <- base + scale_y_continuous(breaks = brks, labels = percent(brks)) + expand_limits(y = c(0, yul))
   }
 
   return(base)
 }
 
-barOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label", stat = "identity", position = "identity", ...) {
+barOPA <- function(data, x, y, title = "Title", stat = "identity", position = "identity", ...) {
   # set fill with `fill = "variable"`
   # set labels with `labels = "label_column"`
 
@@ -189,8 +200,12 @@ barOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label", 
 
   base <- ggplot(data, aes_string(x = x, y = y, fill = dots$fill)) +
           geom_bar(stat = stat, position = position) +
-          labs(title = title, x = xlab, y = ylab) +
+          labs(title = title, y = "", x = "") +
           expand_limits(y = 0)
+
+  if( !is.null(dots$ylab) ) {
+    base + labs(y = dots$ylab)
+  }
 
   if( !is.null(dots$labels) ) {
     base <- base +
@@ -202,6 +217,11 @@ barOPA <- function(data, x, y, title = "Title", xlab = "Month", ylab = "Label", 
     base <- base + geom_bar(stat = stat, position = position) + scale_fill_manual(values = blues)
   } else {
     base <- base + geom_bar(stat = stat, position = position, fill = darkBlue)
+  }
+
+  if( !is.null(dots$legend.labels) ) {
+    legend.labels <- eval(dots$legend.labels)
+    base <- base + scale_fill_manual( values = blues, labels = legend.labels )
   }
 
   return(base)
@@ -222,6 +242,11 @@ schigoda <- function(data, x, y, fill, title = "Schigoda!", ...) {
           labs(title = title, x = "", y = "") +
           scale_fill_manual(values = blues) +
           scale_x_date(breaks = pretty_breaks(9)(data[, x]), labels = date_format("%b %Y"))
+
+  if( !is.null(dots$legend.labels) ) {
+    legend.labels <- eval(dots$legend.labels)
+    base <- base + scale_fill_manual( values = blues, labels = legend.labels )
+  }
 
   return(base)
 }

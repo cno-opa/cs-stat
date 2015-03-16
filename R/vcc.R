@@ -79,7 +79,7 @@ timeliness <- function() {
        summarise(n = n(), target = sum(under_target == TRUE)) %>%
        melt()
 
-  p <- schigoda(d, "my", "value", fill = "variable")
+  p <- schigoda(d, "my", "value", fill = "variable", legend.labels = c("All", "Inspections within target time"))
   p <- buildChart(p)
   ggsave("./output/31-vcc-review.png", plot = p, width = 10, height = 7.5)
 }
@@ -94,7 +94,7 @@ responsiveness <- function() {
 
   d$my <- as.factor(as.yearmon(d$my))
 
-  p <- barOPA(d, "my", "value", fill = "variable", position = "stack")
+  p <- barOPA(d, "my", "value", "Number of applications approved due to violations", fill = "variable", position = "stack", legend.labels = c("In response to violations", "Not in response to violations"))
   p <- buildChart(p)
   ggsave("./output/32-vcc-responses.png", plot = p, width = 10, height = 7.5)
 }

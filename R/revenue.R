@@ -21,7 +21,7 @@ plotRev <- function() {
   p_facet <-ggplot(d, aes(my, value, group = opa_category, colour = highlight)) +
             geom_line(size = 1) +
             facet_grid(variable ~ opa_category, scales = "free_y") +
-            labs(title = "Revenue stats by queue", x = "Date", y = "") +
+            labs(title = "Revenue stats by queue", x = "", y = "") +
             scale_colour_manual(values = c("grey70", "tomato")) +
             scale_x_discrete(breaks = brks) +
             theme(panel.grid.major.y = element_blank(),
