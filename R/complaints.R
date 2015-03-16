@@ -68,6 +68,7 @@ openEndOfMonth <- function() {
 #execute
 building()
 zoning()
+openEndOfMonth()
 
 #
 #
