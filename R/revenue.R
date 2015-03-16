@@ -18,6 +18,20 @@ plotRev <- function() {
 
   brks <- unique(d$my)[seq(1, 13, 2)]
 
+  #relabel
+  d$variable <- as.character(d$variable)
+  for(i in 1:nrow(d)) {
+    if(d$variable[i] == "n") {
+      d$variable[i] <- "Visitors"
+    } else if (d$variable[i] == "medianwait") {
+      d$variable[i] <- "Median Wait"
+    } else if (d$variable[i] == "medianserve") {
+      d$variable[i] <- "Median Service"
+    } else {
+      NA
+    }
+  }
+
   p_facet <-ggplot(d, aes(my, value, group = opa_category, colour = highlight)) +
             geom_line(size = 1) +
             facet_grid(variable ~ opa_category, scales = "free_y") +

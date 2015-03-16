@@ -54,6 +54,20 @@ ossSP <- function() {
 
   brks <- unique(d$my)[seq(1, 13, 2)]
 
+  #relabel
+  d_cat$variable <- as.character(d_cat$variable)
+  for(i in 1:nrow(d_cat)) {
+    if(d_cat$variable[i] == "n") {
+      d_cat$variable[i] <- "Visitors"
+    } else if (d_cat$variable[i] == "medianwait") {
+      d_cat$variable[i] <- "Median Wait"
+    } else if (d_cat$variable[i] == "medianserve") {
+      d_cat$variable[i] <- "Median Service"
+    } else {
+      NA
+    }
+  }
+
   p_facet <- ggplot(d_cat, aes(my, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
@@ -108,6 +122,20 @@ ossCPNC <- function() {
   }
 
   brks <- unique(d$my)[seq(1, 13, 2)]
+
+  #relabel
+  d_cat$variable <- as.character(d_cat$variable)
+  for(i in 1:nrow(d_cat)) {
+    if(d_cat$variable[i] == "n") {
+      d_cat$variable[i] <- "Visitors"
+    } else if (d_cat$variable[i] == "medianwait") {
+      d_cat$variable[i] <- "Median Wait"
+    } else if (d_cat$variable[i] == "medianserve") {
+      d_cat$variable[i] <- "Median Service"
+    } else {
+      NA
+    }
+  }
 
   p_facet <- ggplot(d_cat, aes(my, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
@@ -164,6 +192,20 @@ ossEtc <- function() {
   }
 
   brks <- unique(d$my)[seq(1, 13, 2)]
+
+  #relabel
+  d_cat$variable <- as.character(d_cat$variable)
+  for(i in 1:nrow(d_cat)) {
+    if(d_cat$variable[i] == "n") {
+      d_cat$variable[i] <- "Visitors"
+    } else if (d_cat$variable[i] == "medianwait") {
+      d_cat$variable[i] <- "Median Wait"
+    } else if (d_cat$variable[i] == "medianserve") {
+      d_cat$variable[i] <- "Median Service"
+    } else {
+      NA
+    }
+  }
 
   p_facet <- ggplot(d_cat, aes(my, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
