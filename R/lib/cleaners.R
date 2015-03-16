@@ -57,7 +57,7 @@ cleanInspections <- function(df, subset = TRUE) {
 }
 
 cleanComplaints <- function(df) {
-  df <- clean(df, c("D_Filed", "FirstInspection"), "D_Filed")
+  df <- clean(df, c("D_Filed", "FirstInspection"), "FirstInspection")
   df$daystoinspect <- as.numeric(ymd(df$firstinspection) - ymd(df$d_filed))/86400
   df$daystoinspect <- ifelse(df$daystoinspect < 0, NA, df$daystoinspect)
   return(df)
