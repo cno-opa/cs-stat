@@ -21,6 +21,22 @@ cleanOps <- function() {
   return(ops)
 }
 
+cleanSource <- function() {
+  names(sourceD) <- slugify(names(sourceD))
+  sourceD$x_1 <- NULL
+  sourceD$x_2 <- NULL
+  sourceD$x_3 <- NULL
+  sourceD$x_4 <- NULL
+  sourceD$x_5 <- NULL
+  sourceD$x_6 <- NULL
+  sourceD$x_7 <- NULL
+  sourceD$x_8 <- NULL
+  sourceD$open_dt <- mdy(sourceD$open_dt)
+  sourceD$closed_dt <- mdy(sourceD$closed_dt)
+  sourceD$my <- as.factor(as.yearmon(sourceD$open_dt))
+  return(sourceD)
+}
+
 #plots
 plot311 <- function() {
 #
@@ -83,17 +99,25 @@ topRequest <- function() {
           arrange(value)
 
   top <- top$measure[1:3]
+  top <- as.character(top)
 
-  d <- filter(qls, measure == top[1] | measure == top[2] | measure == top[3])
+  sourceD$type <- as.character(sourceD$type)
+  date_cut <- max(sourceD$open_dt)
+  date_cut <- ymd(paste( (year(date_cut) - 1), month(date_cut), "01", sep = "-"))
+
+       #filter(qls, measure == top[1] | measure == top[2] | measure == top[3]) <== use that when 311 doesn't insist on changing their type designations around
+  d <- filter(sourceD, agrepl(top[1], type, max.distance = 0.3) | agrepl(top[2], type, max.distance = 0.3) | agrepl(top[3], type, max.distance = 0.3)) %>%
+       filter(open_dt > date_cut) %>%
+       group_by(my, type) %>%
+       summarise(n = n()) %>%
+       melt()
 
   p <- lineOPA(d,
-               "date",
+               "my",
                "value",
                "Top service requests",
-               labels = "value",
-               group = "measure",
+               group = "type",
                highlight = "Street Light")
-
   p <- buildChart(p)
   ggsave("./output/9-311-top-requests.png", plot = p, width = 7, height = 6.25)
 }
@@ -113,8 +137,10 @@ topRequest()
 #load
 qls <- read.xls("./data/311.xlsx", sheet = "QLS", na.strings = c("", "#N/A", "NA", "#DIV/0!", "REF!"), strip.white = TRUE, perl = "C:/Strawberry/perl/bin/perl.exe")
 ops <- read.xls("./data/311.xlsx", sheet = "operator performance", na.strings = c("", "#N/A", "NA", "#DIV/0!, #REF!"), strip.white = TRUE, perl = "C:/Strawberry/perl/bin/perl.exe")
+sourceD <- read.csv("./data/311-source.csv", header = TRUE)
 
 #execute
 qls <- cleanQLS()
 ops <- cleanOps()
+sourceD <- cleanSource()
 plot311()
