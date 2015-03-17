@@ -227,7 +227,7 @@ barOPA <- function(data, x, y, title = "Title", stat = "identity", position = "i
   return(base)
 }
 
-schigoda <- function(data, x, y, fill, title = "Schigoda!", ...) {
+schigoda <- function(data, x, y, title = "Schigoda!", fill, ...) {
   #
   #
 

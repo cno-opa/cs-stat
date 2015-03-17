@@ -38,9 +38,13 @@ building <- function() {
        filter(my != "NA NA") %>%
        melt()
 
-  p <- schigoda(d, "my", "value", fill = "variable", legend.labels = c("All", "Inspections in less than 7 days"))
+  p <- schigoda(d, "my", "value", title = "Building inspections, and inspections in under 7 days", fill = "variable", legend.labels = c("All", "Inspections in less than 7 days"))
   p <- buildChart(p)
   ggsave("./output/28-complaints-building.png", plot = p, width = 7, height = 6.25)
+
+  pb <- barOPA(d, "my", "value", "Building inspections, and inspections in under 7 days", fill = "variable", position = "identity", legend.labels = c("All", "Inspections in less than 7 days"))
+  pb <- buildChart(pb)
+  ggsave("./output/28b-complaints-building.png", plot = pb, width = 7, height = 6.25)
 }
 
 zoning <- function() {
@@ -50,9 +54,13 @@ zoning <- function() {
        filter(my != "NA NA") %>%
        melt()
 
-  p <- schigoda(d, "my", "value", fill = "variable", legend.labels = c("All", "Inspections in less than 7 days"))
+  p <- schigoda(d, "my", "value", title = "Zoning inspections, and inspections in under 7 days", fill = "variable", legend.labels = c("All", "Inspections in less than 7 days"))
   p <- buildChart(p)
   ggsave("./output/29-complaints-zoning.png", plot = p, width = 7, height = 6.25)
+
+  pb <- barOPA(d, "my", "value", title = "Zoning inspections, and inspections in under 7 days", fill = "variable", position = "identity", legend.labels = c("All", "Inspections in less than 7 days"))
+  pb <- buildChart(pb)
+  ggsave("./output/29b-complaints-zoning.png", plot = pb, width = 7, height = 6.25)
 }
 
 openEndOfMonth <- function() {
