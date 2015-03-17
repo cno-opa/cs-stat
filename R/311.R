@@ -34,6 +34,10 @@ cleanSource <- function() {
   sourceD$open_dt <- mdy(sourceD$open_dt)
   sourceD$closed_dt <- mdy(sourceD$closed_dt)
   sourceD$my <- as.factor(as.yearmon(sourceD$open_dt))
+  sourceD$month_closed <- as.factor(as.yearmon(sourceD$closed_dt))
+  sourceD$open_end_month <- ifelse(sourceD$my != sourceD$month_closed, TRUE, FALSE)
+  sourceD$age__calendar <- as.numeric(as.character(sourceD$age__calendar))
+  sourceD$age__business <- as.numeric(as.character(sourceD$age__business))
   return(sourceD)
 }
 
@@ -122,6 +126,101 @@ topRequest <- function() {
   ggsave("./output/9-311-top-requests.png", plot = p, width = 7, height = 6.25)
 }
 
+taxiComplaints <- function() {
+  #for easily subsetting only last 12 months
+  taxi <- filter(sourceD, title == "Taxi - Complaint")
+  date_cut <- max(taxi$open_dt)
+  date_cut <- ymd(paste( (year(date_cut) - 1), month(date_cut), "01", sep = "-"))
+  months_pre_cut <- seq(date_cut, max(taxi$open_dt), "month")
+
+  #number closed per month
+  n_closed <- filter(taxi, closed_dt >= date_cut) %>%
+              group_by(month_closed) %>%
+              summarise(closed = n())
+
+  #number opened per month
+  n_opened <- filter(taxi, open_dt >= date_cut) %>%
+              group_by(my) %>%
+              summarise(opened = n())
+
+  #number still open at end of each month
+  n_open <- data.frame(date = months_pre_cut)
+
+  calcOpen <- function(date) {
+    date_end_month <- ymd( paste(year(date), month(date), days_in_month(month(date))) )
+
+    opened_before <- filter(taxi, open_dt <= date_end_month)
+    closed_before <- filter(taxi, closed_dt <= date_end_month)
+
+    return(nrow(opened_before) - nrow(closed_before))
+  }
+
+  n_open$open_at_end <- lapply(n_open$date, calcOpen)
+  n_open$date <- as.factor(as.yearmon(n_open$date))
+
+  #mean days to close for all complaints closed in each month
+  d_closed <- filter(taxi, closed_dt >= date_cut) %>%
+              group_by(month_closed) %>%
+              summarise(mean_close = mean(age__calendar))
+
+  #mean age of every open complaint at end of each month
+  d_open <- data.frame(date = months_pre_cut)
+
+  calcOpenAge <- function(date) {
+    date_end_month <- ymd( paste(year(date), month(date), days_in_month(month(date))) )
+
+    #anti join method
+    opened_before <- filter(taxi, open_dt <= date_end_month)
+    closed_before <- filter(taxi, closed_dt <= date_end_month)
+    o <- anti_join(opened_before, closed_before, by = "case_reference")
+    o$age <- date_end_month - o$open_dt
+
+    return( as.numeric(mean(o$age, na.rm = TRUE), units ="days") )
+  }
+
+  d_open$age_open_eom <- lapply(d_open$date, calcOpenAge)
+  d_open$date <- as.factor(as.yearmon(d_open$date))
+
+  #join into single table for plots
+  names(n_closed)[1]  <- "date"
+  names(n_opened)[1]  <- "date"
+  names(n_open)[1]    <- "date"
+  names(d_closed)[1]  <- "date"
+  names(d_open)[1]    <- "date"
+
+  d <- left_join(n_closed, n_opened) %>%
+       left_join(n_open) %>%
+       left_join(d_closed) %>%
+       left_join(d_open)
+
+  d$date <- as.factor(as.yearmon(d$date))
+  d$open_at_end <- unlist(d$open_at_end)
+  d$age_open_eom <- unlist(d$age_open_eom)
+
+  d <- melt(d)
+
+  p_n <- lineOPA(filter(d, variable == "closed" | variable == "opened" | variable == "open_at_end"),
+                 "date",
+                 "value",
+                 "Number of complaints against drivers",
+                 group = "variable",
+                 legend.labels = c("Closed", "Opened", "Open at end of month")
+                )
+  p_n <- buildChart(p_n)
+  ggsave("./output/27-311-taxi-complaints-n.png", plot = p_n, width = 7, height = 6.25)
+
+  p_d <- lineOPA(filter(d, variable == "mean_close" | variable == "age_open_eom"),
+                 "date",
+                 "value",
+                 "Ages of complaints against drivers",
+                 group = "variable",
+                 legend.labels = c("Mean days to close", "Age of open complaints at end of month")
+                )
+  p_d <- buildChart(p_d)
+  ggsave("./output/27-2-311-taxi-complaints-time.png", plot = p_d, width = 7, height = 6.25)
+
+}
+
 #execute
 callVol()
 callAbandon()
@@ -129,6 +228,7 @@ holdTime()
 firstCall()
 operators()
 topRequest()
+taxiComplaints()
 
 #
 #
