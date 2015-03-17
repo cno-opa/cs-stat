@@ -21,7 +21,7 @@ plotBiz <- function() {
 
   p <- schigoda(d, "my", "value", fill = "variable")
   p <- buildChart(p)
-  ggsave("./output/27-inspections-biz.png", plot = p, width = 10, height = 7.5)
+  ggsave("./output/27-inspections-biz.png", plot = p, width = 7, height = 6.25)
 }
 
 #execute

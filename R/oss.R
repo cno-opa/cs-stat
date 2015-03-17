@@ -40,8 +40,8 @@ ossSP <- function() {
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
 
-  ggsave("./output/10-oss-sp-visitors.png", plot = p_vol, width = 10, height = 7.5)
-  ggsave("./output/11-oss-sp-times.png", plot = p_times, width = 10, height = 7.5)
+  ggsave("./output/10-oss-sp-visitors.png", plot = p_vol, width = 7, height = 6.25)
+  ggsave("./output/11-oss-sp-times.png", plot = p_times, width = 7, height = 6.25)
 
   #facet chart
   d_cat$highlight <- "no"
@@ -52,7 +52,7 @@ ossSP <- function() {
     }
   }
 
-  brks <- unique(d$my)[seq(1, 13, 2)]
+  brks <- unique(d$my)[seq(1, 13, 5)]
 
   #relabel
   d_cat$variable <- as.character(d_cat$variable)
@@ -81,7 +81,8 @@ ossSP <- function() {
                    strip.text.x = element_text(face = "bold"),
                    strip.text.y = element_text(face = "bold")
                   )
-  ggsave("./output/12-oss-sp-facet.png", plot = p_facet, width = 10, height = 7.5)
+  p_facet <- buildChart(p_facet)
+  ggsave("./output/12-oss-sp-facet.png", plot = p_facet, width = 7, height = 6.25)
 }
 
 ossCPNC <- function() {
@@ -109,8 +110,8 @@ ossCPNC <- function() {
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
 
-  ggsave("./output/13-oss-cpnc-visitors.png", plot = p_vol, width = 10, height = 7.5)
-  ggsave("./output/14-oss-cpnc-times.png", plot = p_times, width = 10, height = 7.5)
+  ggsave("./output/13-oss-cpnc-visitors.png", plot = p_vol, width = 7, height = 6.25)
+  ggsave("./output/14-oss-cpnc-times.png", plot = p_times, width = 7, height = 6.25)
 
   #facet grid
   d_cat$highlight <- "no"
@@ -121,7 +122,7 @@ ossCPNC <- function() {
     }
   }
 
-  brks <- unique(d$my)[seq(1, 13, 2)]
+  brks <- unique(d$my)[seq(1, 13, 5)]
 
   #relabel
   d_cat$variable <- as.character(d_cat$variable)
@@ -150,7 +151,8 @@ ossCPNC <- function() {
                    strip.text.x = element_text(face = "bold"),
                    strip.text.y = element_text(face = "bold")
                   )
-  ggsave("./output/15-oss-cpnc-facet.png", plot = p_facet, width = 10, height = 7.5)
+  p_facet <- buildChart(p_facet)
+  ggsave("./output/15-oss-cpnc-facet.png", plot = p_facet, width = 7, height = 6.25)
 }
 
 ossEtc <- function() {
@@ -179,8 +181,8 @@ ossEtc <- function() {
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
 
-  ggsave("./output/16-oss-etc-visitors.png", plot = p_vol, width = 10, height = 7.5)
-  ggsave("./output/17-oss-etc-times.png", plot = p_times, width = 10, height = 7.5)
+  ggsave("./output/16-oss-etc-visitors.png", plot = p_vol, width = 7, height = 6.25)
+  ggsave("./output/17-oss-etc-times.png", plot = p_times, width = 7, height = 6.25)
 
   #facet grid
   d_cat$highlight <- "no"
@@ -191,7 +193,7 @@ ossEtc <- function() {
     }
   }
 
-  brks <- unique(d$my)[seq(1, 13, 2)]
+  brks <- unique(d$my)[seq(1, 13, 5)]
 
   #relabel
   d_cat$variable <- as.character(d_cat$variable)
@@ -220,7 +222,8 @@ ossEtc <- function() {
                    strip.text.x = element_text(face = "bold"),
                    strip.text.y = element_text(face = "bold")
                   )
-  ggsave("./output/18-oss-etc-facet.png", plot = p_facet, width = 10, height = 7.5)
+  p_facet <- buildChart(p_facet)
+  ggsave("./output/18-oss-etc-facet.png", plot = p_facet, width = 7, height = 6.25)
 
 }
 

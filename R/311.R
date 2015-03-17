@@ -35,7 +35,7 @@ callVol <- function() {
 
   p <- lineOPA(d, "date", "n", "Call Volume")
   p <- buildChart(p)
-  ggsave("./output/4-311-calls.png", plot = p, width = 10, height = 7.5)
+  ggsave("./output/4-311-calls.png", plot = p, width = 7, height = 6.25)
 }
 
 callAbandon <- function() {
@@ -45,7 +45,7 @@ callAbandon <- function() {
 
   p <- lineOPA(d, "date", "n", "Abandonment Rate", percent = TRUE)
   p <- buildChart(p)
-  ggsave("./output/5-311-abandonment.png", plot = p, width = 10, height = 7.5)
+  ggsave("./output/5-311-abandonment.png", plot = p, width = 7, height = 6.25)
 }
 
 holdTime <- function() {
@@ -55,7 +55,7 @@ holdTime <- function() {
 
   p <- lineOPA(d, "date", "n", "Average hold time")
   p <- buildChart(p)
-  ggsave("./output/6-311-hold-time.png", plot = p, width = 10, height = 7.5)
+  ggsave("./output/6-311-hold-time.png", plot = p, width = 7, height = 6.25)
 }
 
 firstCall <- function() {
@@ -65,7 +65,7 @@ firstCall <- function() {
 
   p <- lineOPA(d, "date", "n", "First call resolution", percent = TRUE)
   p <- buildChart(p)
-  ggsave("./output/7-311-first-call.png", plot = p, width = 10, height = 7.5)
+  ggsave("./output/7-311-first-call.png", plot = p, width = 7, height = 6.25)
 }
 
 operators <- function() {
@@ -73,7 +73,7 @@ operators <- function() {
   p <- p + theme(legend.text = element_text(size = rel(0.65))) +
            guides(fill = guide_legend(nrow = 2))
   p <- buildChart(p)
-  ggsave("./output/8-311-operators.png", plot = p, width = 10, height = 7.5)
+  ggsave("./output/8-311-operators.png", plot = p, width = 7, height = 6.25)
 }
 
 topRequest <- function() {
@@ -95,7 +95,7 @@ topRequest <- function() {
                highlight = "Street Light")
 
   p <- buildChart(p)
-  ggsave("./output/9-311-top-requests.png", plot = p, width = 10, height = 7.5)
+  ggsave("./output/9-311-top-requests.png", plot = p, width = 7, height = 6.25)
 }
 
 #execute

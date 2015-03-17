@@ -16,7 +16,7 @@ plotRev <- function() {
    }
   }
 
-  brks <- unique(d$my)[seq(1, 13, 2)]
+  brks <- unique(d$my)[seq(1, 13, 5)]
 
   #relabel
   d$variable <- as.character(d$variable)
@@ -45,7 +45,8 @@ plotRev <- function() {
                   strip.text.x = element_text(face = "bold"),
                   strip.text.y = element_text(face = "bold")
                  )
-  ggsave("./output/21-rev-facet.png", plot = p_facet, width = 10, height = 7.5)
+  p_facet <- buildChart(p_facet)
+  ggsave("./output/21-rev-facet.png", plot = p_facet, width = 7, height = 6.25)
 }
 
 #load

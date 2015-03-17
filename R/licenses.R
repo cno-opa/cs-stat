@@ -48,7 +48,7 @@ mech <- function() {
 
   p <- schigoda(d, "my", "value", fill = "variable", legend.labels = c("All licenses", "Issued in one day"))
   p <- buildChart(p)
-  ggsave("./output/22-licenses-mech.png", plot = p, width = 10, height = 7.5)
+  ggsave("./output/22-licenses-mech.png", plot = p, width = 7, height = 6.25)
 }
 
 elec <- function() {
@@ -60,7 +60,7 @@ elec <- function() {
 
   p <- schigoda(d, "my", "value", fill = "variable", legend.labels = c("All licenses", "Issued in one day"))
   p <- buildChart(p)
-  ggsave("./output/23-licenses-elec.png", plot = p, width = 10, height = 7.5)
+  ggsave("./output/23-licenses-elec.png", plot = p, width = 7, height = 6.25)
 }
 
 biz <- function() {
@@ -72,7 +72,7 @@ biz <- function() {
 
   p <- schigoda(d, "my", "value", fill = "variable", legend.labels = c("All licenses", "Ten days", "Five days", "One day"))
   p <- buildChart(p)
-  ggsave("./output/24-licenses-biz.png", plot = p, width = 10, height = 7.5)
+  ggsave("./output/24-licenses-biz.png", plot = p, width = 7, height = 6.25)
 }
 
 cpnc <- function() {
@@ -84,11 +84,11 @@ cpnc <- function() {
 
   p_n <- lineOPA(filter(d, variable == "n"), "my", "value", "Number of CPNC licenses issued", group = "type")
   p_n <- buildChart(p_n)
-  ggsave("./output/25-licenses-cpnc-n.png", plot = p_n, width = 10, height = 7.5)
+  ggsave("./output/25-licenses-cpnc-n.png", plot = p_n, width = 7, height = 6.25)
 
   p_m <- lineOPA(filter(d, variable == "days_to_issue"), "my", "value", "Average days to issue CPNC licenses", group = "type")
   p_m <- buildChart(p_m)
-  ggsave("./output/26-licenses-cpnc-mean.png", plot = p_m, width = 10, height = 7.5)
+  ggsave("./output/26-licenses-cpnc-mean.png", plot = p_m, width = 7, height = 6.25)
 }
 
 #execute
