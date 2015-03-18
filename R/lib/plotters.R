@@ -12,7 +12,7 @@
 # lineOPA : A generic line chart generator with a few options. See below for details.
 # barOPA : A generic histogram generator. Also, see below.
 # schigoda : All hail the area chart of might.
-# some aesthetic variables used by the chart functions for their color schemes
+# some aesthetic variables used by the chart functions for their color schemes.
 #
 # ===============================
 #
@@ -82,6 +82,7 @@ lightBlue <- "#23b6ff"
 darkBlue <- "#002537"
 red <- "tomato"
 
+#chart builder!
 buildChart <- function(p) {
 
   gt <- ggplot_gtable(ggplot_build(p))
@@ -115,20 +116,22 @@ buildChart <- function(p) {
 }
 
 lineOPA <- function(data, x, y, title = "Title!", group = 1, percent = FALSE, ...) {
-  # set labels with `labels = "label_column"`
+  # most of the options are passed as dots parameters:
+  # set data labels with `labels = "label_column"`
   # set highlight with `highlight = "group_to_highlight"`
-  # set y axis label with `ylab = "label"`
+  # set y-axis label with `ylab = "label"`
   # set legend labels with `legend.labels = character vector`
   # percent = FALSE refers to whether or not y-axis should be in percent
 
   dots <- eval(substitute(alist(...)))
 
-  #make continuous var type
+  #make y variable continuous
   data[y] <- as.numeric(data[y][[1]])
 
-  #get max y val
+  #get max y value
   ymax <- max(data[y], na.rm = TRUE)
 
+  #function used by highlighting feature
   remap <- function(input, matcher, value) {
     matcher <- paste0(matcher, "(?! .)")
     i <- grep(matcher, names(input), perl = TRUE)
@@ -147,6 +150,7 @@ lineOPA <- function(data, x, y, title = "Title!", group = 1, percent = FALSE, ..
     blues <- remap(blues, dots$highlight, red)
   }
 
+  #the very basic base
   base <- ggplot(data, aes_string(x = x, y = y, group = group, colour = group)) +
           geom_line(size = 1.5) +
           labs(title = title, x = "", y = "")
@@ -186,8 +190,10 @@ lineOPA <- function(data, x, y, title = "Title!", group = 1, percent = FALSE, ..
 }
 
 barOPA <- function(data, x, y, title = "Title", stat = "identity", position = "identity", ...) {
-  # set fill with `fill = "variable"`
-  # set labels with `labels = "label_column"`
+  # set fill with `fill = "variable"` if you have multiple groups
+  # set y-axis label with `ylab = "label"`
+  # set data labels with `labels = "label_column"`
+  # set legend labels with `legend.labels = character vector`
 
   dots <- eval(substitute(alist(...)))
 
@@ -221,8 +227,8 @@ barOPA <- function(data, x, y, title = "Title", stat = "identity", position = "i
 }
 
 schigoda <- function(data, x, y, title = "Schigoda!", fill, ...) {
-  #
-  #
+  # fill is not optional on this area chart of might
+  # set legend labels with `legend.labels = character vector`
 
   dots <- eval(substitute(alist(...)))
 
