@@ -1,5 +1,27 @@
 # wut for revenue
 
+#clean
+cleanRevD <- function(data) {
+  categorize <- function(type) {
+    if(type == "Account Maint." | type == "Administration" | type == "Account Admin.") {
+      "Account Maintenance and Administration"
+    } else if(type == "Business Regist.") {
+      "Business Intake"
+    } else if(type == "Enforcement") {
+      "Enforcement"
+    } else if(type == "Alcoholic Beverage") {
+      "ABO"
+    } else {
+      "Other"
+    }
+  }
+
+  data <- cleanServiceReport(data)
+  data$opa_category <- sapply(data$queue, categorize)
+
+  return(data)
+}
+
 #plot
 plotRev <- function() {
   d <- group_by(rev, month_start, opa_category) %>%
@@ -53,20 +75,5 @@ plotRev <- function() {
 rev <- read.csv("./data/revenue.csv", sep = ";", header = TRUE)
 
 #execute
-rev <- cleanServiceReport(rev)
-  rev$opa_category <- NA
-  for(i in 1:nrow(rev)) {
-    if(rev$queue[i] == "Account Maint." | rev$queue[i] == "Administration" | rev$queue[i] == "Account Admin.") {
-      rev$opa_category[i] <- "Account Maintenance and Administration"
-    } else if(rev$queue[i] == "Business Regist.") {
-      rev$opa_category[i] <- "Business Intake"
-    } else if(rev$queue[i] == "Enforcement") {
-      rev$opa_category[i] <- "Enforcement"
-    } else if(rev$queue[i] == "Alcoholic Beverage") {
-      rev$opa_category[i] <- "ABO"
-    } else {
-      rev$opa_category[i] <- "Other"
-    }
-  }
-
+rev <- cleanRevD(rev)
 plotRev()
