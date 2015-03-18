@@ -1,30 +1,23 @@
-#
-# A theme for CS STAT charts and a function to build it
+# plotters.R
+# A ggplot theme and some helpful functions to make making charts a breeze
 #
 # Important: Either use the function here, buildChart, to cut up the chart elements are arrange them properly, or include three line breaks ('\n\n\n') in the chart title of your ggplot call
 #
 #
-# This is what is changed:
+# This is what is included:
 # ==============================
 #
-#
-# theme_opa <- function() {
-#   theme(
-#     axis.text.x = element_text(angle = 45, hjust = .97),
-#     axis.line = element_line(colour = "grey50"),
-#     axis.line.y = element_blank(),
-#     panel.background = element_rect(colour = NA, fill = "white"),
-#     panel.border = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.grid.major.x = element_blank(),
-#     panel.grid.major.y = element_line(colour = "grey50"),
-#     legend.key = element_rect(colour = NA, fill = "white"),
-#     legend.position = "top",
-#     complete = FALSE
-#     )
-# }
+# theme_opa : A sweet little diddy.
+# buildChart : A function that cuts up and rearranges grobs to get that left-justification we've always dreamed of.
+# lineOPA : A generic line chart generator with a few options. See below for details.
+# barOPA : A generic histogram generator. Also, see below.
+# schigoda : All hail the area chart of might.
+# some aesthetic variables used by the chart functions for their color schemes
 #
 # ===============================
+#
+#
+# TODO: fn for facet grids, fn to control ggsave defaults
 
 library("grid")
 library("gridExtra")
