@@ -23,10 +23,10 @@ plotRev <- function() {
   for(i in 1:nrow(d)) {
     if(d$variable[i] == "n") {
       d$variable[i] <- "Visitors"
-    } else if (d$variable[i] == "medianwait") {
-      d$variable[i] <- "Median Wait"
-    } else if (d$variable[i] == "medianserve") {
-      d$variable[i] <- "Median Service"
+    } else if (d$variable[i] == "meanwait") {
+      d$variable[i] <- "Mean Wait"
+    } else if (d$variable[i] == "meanserve") {
+      d$variable[i] <- "Mean Service"
     } else {
       NA
     }
