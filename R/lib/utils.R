@@ -14,15 +14,14 @@ toDate <- function(col) {
   as.POSIXct(col, format = "%m/%d/%Y")
 }
 
-my <- function(df, datecol, subset = TRUE) {
-  df$my <- paste(month(df[,datecol], label = TRUE), year(df[,datecol]))
-  df <- df[order(df[,datecol]),]
-  df$my <- factor(df$my, levels = unique(df$my))
-
-  #filter for last 12 months
-  if(subset == TRUE){
-    df <- subset(df, df$my %in% levels(df$my)[(length(levels(df$my))-12):length(levels(df$my))])
-  }
-
+getOneYear <- function(df, date_col, from_date) {
+  #`df` data frame to subset out into one year-long period
+  #`date_col` column in said data frame which has the date by which you'd like to subset it out. do not pass this in quotes
+  #`from` month of the reporting period, should be formatted "mmm yyyy"
+  
+  date_col <- eval(substitute(date_col), envir = df)
+  l <- as.Date((as.yearmon(from_date) - 1), format = "%b %Y") #sets to reporting period minus one year
+  u <- as.Date((as.yearmon(from_date) + .1), format = "%b %Y") #sets to reporting period plus one month
+  df <- filter(df, date_col >= ymd(l) & date_col < ymd(u))
   return(df)
 }
