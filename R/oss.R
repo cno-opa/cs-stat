@@ -24,18 +24,18 @@ ossSP <- function() {
                category == "Inspections" |
                category == "Mechanical" |
                category == "Plan Review") %>%
-        group_by(my, category)
+        group_by(month_start, category)
 
-  d_all <- group_by(d, my) %>%
+  d_all <- group_by(d, month_start) %>%
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  d_cat <- group_by(d, my, category) %>%
+  d_cat <- group_by(d, month_start, category) %>%
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "my", "value", "Safety and Permits volume")
-  p_times <- lineOPA(filter(d_all, variable != "n"), "my", "value", "Safety and Permits timeliness", group = "variable", legend.labels = c("Median wait time", "Median service time") )
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "Safety and Permits volume")
+  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "Safety and Permits timeliness", group = "variable", legend.labels = c("Median wait time", "Median service time") )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
@@ -46,13 +46,13 @@ ossSP <- function() {
   #facet chart
   d_cat$highlight <- "no"
 
-  for(i in 1:length(d_cat$my)) {
+  for(i in 1:length(d_cat$month_start)) {
     if(d_cat$category[i] == "Plan Review" & d_cat$variable[i] == "medianserve") {
       d_cat$highlight[i] <- "yes"
     }
   }
 
-  brks <- unique(d$my)[seq(1, 13, 5)]
+  brks <- unique(d$month_start)[seq(1, 13, 5)]
 
   #relabel
   d_cat$variable <- as.character(d_cat$variable)
@@ -68,7 +68,7 @@ ossSP <- function() {
     }
   }
 
-  p_facet <- ggplot(d_cat, aes(my, value, group = category, colour = highlight)) +
+  p_facet <- ggplot(d_cat, aes(month_start, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
              labs(title = "Saftey and Permits stats by queue", x = "", y = "") +
@@ -94,18 +94,18 @@ ossCPNC <- function() {
               category == "Other" |
               category == "Tour Guide"
              ) %>%
-        group_by(my, category)
+        group_by(month_start, category)
 
-  d_all <- group_by(d, my) %>%
+  d_all <- group_by(d, month_start) %>%
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  d_cat <- group_by(d, my, category) %>%
+  d_cat <- group_by(d, month_start, category) %>%
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "my", "value", "Taxi Cab Bureau volume")
-  p_times <- lineOPA(filter(d_all, variable != "n"), "my", "value", "Taxi Cab Bureau timeliness", ylab = "Minutes", group = "variable", legend.labels = c("Median wait time", "Median service time") )
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "Taxi Cab Bureau volume")
+  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "Taxi Cab Bureau timeliness", ylab = "Minutes", group = "variable", legend.labels = c("Median wait time", "Median service time") )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
@@ -116,13 +116,13 @@ ossCPNC <- function() {
   #facet grid
   d_cat$highlight <- "no"
 
-  for(i in 1:length(d_cat$my)) {
+  for(i in 1:length(d_cat$month_start)) {
     if(d_cat$category[i] == "Driver/Operator" & d_cat$variable[i] == "medianwait") {
       d_cat$highlight[i] <- "yes"
     }
   }
 
-  brks <- unique(d$my)[seq(1, 13, 5)]
+  brks <- unique(d$month_start)[seq(1, 13, 5)]
 
   #relabel
   d_cat$variable <- as.character(d_cat$variable)
@@ -138,7 +138,7 @@ ossCPNC <- function() {
     }
   }
 
-  p_facet <- ggplot(d_cat, aes(my, value, group = category, colour = highlight)) +
+  p_facet <- ggplot(d_cat, aes(month_start, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
              labs(title = "CPNC stats by queue", x = "", y = "") +
@@ -165,18 +165,18 @@ ossEtc <- function() {
               category == "VCC" |
               category == "Zoning"
               )%>%
-        group_by(my, category)
+        group_by(month_start, category)
 
-  d_all <- group_by(d, my) %>%
+  d_all <- group_by(d, month_start) %>%
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  d_cat <- group_by(d, my, category) %>%
+  d_cat <- group_by(d, month_start, category) %>%
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "my", "value", "CPC, VCC, etc. volume")
-  p_times <- lineOPA(filter(d_all, variable != "n"), "my", "value", "CPC, VCC, etc. timeliness", ylab = "Minutes", group = "variable", legend.labels = c("Median wait time", "Median service time") )
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "CPC, VCC, etc. volume")
+  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "CPC, VCC, etc. timeliness", ylab = "Minutes", group = "variable", legend.labels = c("Median wait time", "Median service time") )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
@@ -187,13 +187,13 @@ ossEtc <- function() {
   #facet grid
   d_cat$highlight <- "no"
 
-  for(i in 1:length(d_cat$my)) {
+  for(i in 1:length(d_cat$month_start)) {
     if(d_cat$category[i] == "Payment" & d_cat$variable[i] == "n") {
       d_cat$highlight[i] <- "yes"
     }
   }
 
-  brks <- unique(d$my)[seq(1, 13, 5)]
+  brks <- unique(d$month_start)[seq(1, 13, 5)]
 
   #relabel
   d_cat$variable <- as.character(d_cat$variable)
@@ -209,7 +209,7 @@ ossEtc <- function() {
     }
   }
 
-  p_facet <- ggplot(d_cat, aes(my, value, group = category, colour = highlight)) +
+  p_facet <- ggplot(d_cat, aes(month_start, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
              labs(title = "VCC, HDLC, etc. stats by queue", x = "", y = "") +

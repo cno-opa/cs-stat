@@ -74,13 +74,10 @@ cleanIssued <- function(permits) {
   permits <- filter(permits, !is.na(filingdate))
 
   #month issued
-  permits$month_issued <- as.factor(as.yearmon(permits$issuedate))
+  #permits$month_issued <- as.factor(as.yearmon(permits$issuedate))
 
   #determine residential vs.commercial use type
-  permits$usetype <- NA
-  for(i in 1:nrow(permits)) {
-    permits$usetype[i] <- assignUseType(permits$landuseshort[i], permits$owner[i])
-  }
+  permits$usetype <- sapply(permits$landuseshort, assignUseType, owner = permits$owner)
   permits <- lookupUseType()
   permits <- resolveUseType()
   hist_usetypes <- data.frame(refcode = permits$refcode, usetype = permits$usetype)
@@ -105,30 +102,33 @@ plotPermits <- function() {
 theme_set(theme_opa())
 
 resComm <- function() {
-  d <- filter(issued, usetype == "residential" | usetype == "commercial") %>%
-       group_by(my, usetype) %>%
+  d <- getOneYear(issued, month_end, period) %>%
+       filter(usetype == "residential" | usetype == "commercial") %>%
+       group_by(month_end, usetype) %>%
        summarise(n = n())
 
-  p <- lineOPA(d, "my", "n", "Residential and commercial permits issued", group = "usetype", legend.labels = c("Commercial", "Residential"))
+  p <- lineOPA(d, "month_end", "n", "Residential and commercial permits issued", group = "usetype", legend.labels = c("Commercial", "Residential"))
   p <- buildChart(p)
   ggsave("./output/19-permits-res-comm.png", plot = p, width = 7, height = 6.25)
 }
 
 resCommIssueTime <- function() {
-  d <- filter(issued, usetype == "residential" | usetype == "commercial") %>%
-       group_by(month_issued, usetype) %>%
+  d <- getOneYear(issued, month_end, period) %>%
+       filter(usetype == "residential" | usetype == "commercial") %>%
+       group_by(month_end, usetype) %>%
        summarise(mean_to_issue = mean(daystoissue, na.rm = TRUE))
 
-  p <- lineOPA(d, "month_issued", "mean_to_issue", "Mean days to issue for residential and commercial permits", group = "usetype", legend.labels = c("Commercial", "Residential"))
+  p <- lineOPA(d, "month_end", "mean_to_issue", "Mean days to issue for residential and commercial permits", group = "usetype", legend.labels = c("Commercial", "Residential"))
   p <- buildChart(p)
   ggsave("./output/20-permits-res-comm-days-to-issue.png", plot = p, width = 7, height = 6.25)
 }
 
 sameDay <- function() {
-  d <- filter(issued, opa_category == "Building - All Others" | opa_category == "Building - New Construction") %>%
+  d <- getOneYear(issued, month_end, period) %>%
+       filter(opa_category == "Building - All Others" | opa_category == "Building - New Construction") %>%
        mutate(app_method = ifelse(createdby == "publicwebcrm", "online", "in person")) %>%
        mutate(under_48 = ifelse(sec_to_issue < 172800, TRUE, FALSE)) %>%
-       group_by(month_issued, app_method, under_48) %>%
+       group_by(month_end, app_method, under_48) %>%
        summarise(n = n())
 
   t <- summarise_each(d, funs(sum))$n
@@ -144,7 +144,7 @@ sameDay <- function() {
   d <- melt(d)
   d <- filter(d, variable == "prop")
 
-  p <- lineOPA(d, "month_issued", "value", "Building permits issued within 48 hours of application", group = "app_method", percent = TRUE, legend.labels = c("In Person", "Online"))
+  p <- lineOPA(d, "month_end", "value", "Building permits issued within 48 hours of application", group = "app_method", percent = TRUE, legend.labels = c("In Person", "Online"))
   p <- buildChart(p)
   ggsave("./output/21-permits-48-hours.png", plot = p, width = 7, height = 6.25)
 }

@@ -15,11 +15,11 @@ plotInsp <- function() {
 #
 
 plotBiz <- function() {
-  d <- group_by(biz, my) %>%
+  d <- group_by(biz, month_end) %>%
        summarise(n = n(), under = sum(days < 7)) %>%
        melt()
 
-  p <- schigoda(d, "my", "value", fill = "variable")
+  p <- schigoda(d, "month_end", "value", fill = "variable")
   p <- buildChart(p)
   ggsave("./output/27-inspections-biz.png", plot = p, width = 7, height = 6.25)
 }
@@ -36,3 +36,4 @@ biz <- read.csv("./data/inspections-biz.csv", header = TRUE)
 
 #execute
 biz <- cleanBiz(biz)
+plotBiz()
