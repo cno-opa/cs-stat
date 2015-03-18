@@ -2,10 +2,6 @@ require(lubridate)
 require(dplyr)
 require(zoo)
 
-#set reporting period
-# cat("What is the reporting period?/n/n ##(Use mmm yyyy format, please)##")
-# period <- readLines("stdin", 1, warn = FALSE)
-
 clean <- function(df, datecols, date_start, FUN = toDate, date_end = NULL) {
 
   # convert date columns to date objects

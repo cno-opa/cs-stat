@@ -9,19 +9,29 @@ cleanBiz <- function(data) {
 }
 
 #plot
-
 plotInsp <- function() {
 #
 #
 
 plotBiz <- function() {
-  d <- group_by(biz, month_end) %>%
-       summarise(n = n(), under = sum(days < 7)) %>%
+  d_insp <- getOneYear(biz, month_start, period) %>%
+            group_by(month_start) %>%
+            summarise(n = n())
+
+  d_time <- getOneYear(biz, month_end, period) %>%
+            group_by(month_end) %>%
+            summarise(target = sum(days < 7))
+
+  names(d_insp)[1] <- "date"
+  names(d_time)[1] <- "date"
+  d <- left_join(d_insp, d_time) %>%
        melt()
 
-  p <- schigoda(d, "month_end", "value", fill = "variable")
+  d$date <- as.factor(as.yearmon(d$date))
+
+  p <- barOPA(d, "date", "value", "Number of business license inspections and those under target time", fill = "variable", position = "identity", legend.labels = c("All inspections", "Inspected in seven days or less"))
   p <- buildChart(p)
-  ggsave("./output/27-inspections-biz.png", plot = p, width = 7, height = 6.25)
+  ggsave("./output/30-2-inspections-biz.png", plot = p, width = 7, height = 6.25)
 }
 
 #execute
@@ -36,4 +46,4 @@ biz <- read.csv("./data/inspections-biz.csv", header = TRUE)
 
 #execute
 biz <- cleanBiz(biz)
-plotBiz()
+plotInsp()

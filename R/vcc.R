@@ -2,7 +2,7 @@
 
 #clean
 cleanVCC <- function(permits) {
-  permits <- cleanPermits(permits, subset = FALSE)
+  permits <- cleanPermits(permits)
   permits$numstring <- gsub("(-*[A-Z])", "", permits$numstring)
   return(permits)
 }
@@ -30,15 +30,19 @@ crossAndBuild <- function() {
   }
 
   #save looked-up data
-  save(vcc, file = paste0("./data/context/vcc-cross-ref-", Sys.Date()))
+  save(vcc, file = paste0("./data/context/vcc-cross-ref-", Sys.Date(), ".csv"))
 
   #join to preprocessed historical data
   vcc_all <- rbind(vcc, vcc_hist)
 
+  #fix weirdness with date factors
+  vcc_all$month_start <- as.factor(as.yearmon(vcc_all$month_start))
+  vcc_all$month_end <- as.factor(as.yearmon(vcc_all$month_end))
+
   #determine if target was met
   vcc_all$under_target <- NA
   for(i in 1:nrow(vcc_all)) {
-    if( year(as.yearmon(vcc_all$my[i])) == 2014 ) {
+    if( year(as.yearmon(vcc_all$month_end[i])) == 2014 ) {
       if(vcc_all$daystoissue[i] <= 5) {
         vcc_all$under_target[i] <- TRUE
       } else if(vcc_all$daystoissue[i] > 5) {
@@ -48,7 +52,7 @@ crossAndBuild <- function() {
       }
     }
 
-    if( year(as.yearmon(vcc_all$my[i])) == 2015 ) {
+    if( year(as.yearmon(vcc_all$month_end[i])) == 2015 ) {
       if(vcc_all$daystoissue[i] <= 7) {
         vcc_all$under_target[i] <- TRUE
       } else if(vcc_all$daystoissue[i] > 7) {
@@ -72,35 +76,31 @@ plotVCC <- function() {
 theme_set(theme_opa())
 
 timeliness <- function() {
-  date_cutoff <- max(as.yearmon(vcc_all$my)) - 1
 
-  d <- filter(vcc_all, staff == "staff" & as.yearmon(my) >= date_cutoff) %>%
-       group_by(my) %>%
+  d <- getOneYear(vcc_all, month_end, period) %>%
+       filter(staff == "staff") %>%
+       group_by(month_end) %>%
        summarise(n = n(), target = sum(under_target == TRUE)) %>%
        melt()
 
-  d$my <- as.factor(as.yearmon(d$my))
-
-  p <- schigoda(d, "my", "value", title = "Staff approvable reviews finished over and under target time", fill = "variable", legend.labels = c("All", "Inspections within target time"))
+  p <- schigoda(d, "month_end", "value", title = "Staff approvable reviews finished over and under target time", fill = "variable", legend.labels = c("All", "Inspections within target time"))
   p <- buildChart(p)
   ggsave("./output/31-vcc-review.png", plot = p, width = 7, height = 6.25)
 
-  pb <- barOPA(d, "my", "value", title = "Staff approvable reviews finished over and under target time", fill = "variable", position = "identity", legend.labels = c("All", "Inspections within target time"))
+  pb <- barOPA(d, "month_end", "value", title = "Staff approvable reviews finished over and under target time", fill = "variable", position = "identity", legend.labels = c("All", "Inspections within target time"))
   pb <- buildChart(pb)
   ggsave("./output/31b-vcc-review.png", plot = pb, width = 7, height = 6.25)
 }
 
 responsiveness <- function() {
-  date_cutoff <- max(as.yearmon(vcc_all$my)) - 1
 
-  d <- filter(vcc_all, staff == "staff" & as.yearmon(my) >= date_cutoff) %>%
-       group_by(my) %>%
+  d <- getOneYear(vcc_all, month_end, period) %>%
+       filter(staff == "staff") %>%
+       group_by(month_end) %>%
        summarise(violation_responses = sum(violation == "Y"), not_responses = sum(violation == "N")) %>%
        melt()
 
-  d$my <- as.factor(as.yearmon(d$my))
-
-  p <- barOPA(d, "my", "value", "Number of applications approved due to violations", fill = "variable", position = "stack", legend.labels = c("In response to violations", "Not in response to violations"))
+  p <- barOPA(d, "month_end", "value", "Number of applications approved due to violations", fill = "variable", position = "stack", legend.labels = c("In response to violations", "Not in response to violations"))
   p <- buildChart(p)
   ggsave("./output/32-vcc-responses.png", plot = p, width = 7, height = 6.25)
 }
