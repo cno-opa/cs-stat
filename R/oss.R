@@ -46,8 +46,8 @@ ossSP <- function() {
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "Safety and Permits volume")
-  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "Safety and Permits timeliness", group = "variable", legend.labels = c("Median wait time", "Median service time") )
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "Safety and Permits visitors")
+  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "Safety and Permits processing times (minutes)", group = "variable", legend.labels = c("Median wait time", "Median service time") )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
@@ -116,8 +116,8 @@ ossCPNC <- function() {
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "Taxi Cab Bureau volume")
-  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "Taxi Cab Bureau timeliness", ylab = "Minutes", group = "variable", legend.labels = c("Median wait time", "Median service time") )
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "Taxi Cab Bureau visitors")
+  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "Taxi Cab Bureau processing times (minutes)", group = "variable", legend.labels = c("Median wait time", "Median service time") )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
@@ -153,7 +153,7 @@ ossCPNC <- function() {
   p_facet <- ggplot(d_cat, aes(month_start, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
-             labs(title = "CPNC stats by queue", x = "", y = "") +
+             labs(title = "Taxi Cab Bureau stats by queue", x = "", y = "") +
              scale_colour_manual(values = c("grey70", "tomato")) +
              scale_x_discrete(breaks = brks) +
              theme(panel.grid.major.y = element_blank(),
@@ -187,8 +187,8 @@ ossEtc <- function() {
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "CPC, VCC, etc. volume")
-  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "CPC, VCC, etc. timeliness", ylab = "Minutes", group = "variable", legend.labels = c("Median wait time", "Median service time") )
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "CPC, VCC, etc. visitors")
+  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "CPC, VCC, etc. processing time (minutes)", group = "variable", legend.labels = c("Median wait time", "Median service time") )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)

@@ -156,7 +156,7 @@ lineOPA <- function(data, x, y, title = "Title!", group = 1, percent = FALSE, ..
           labs(title = title, x = "", y = "")
 
   if( !is.null(dots$ylab) ) {
-    base + labs(y = dots$ylab)
+    base <- base + labs(y = dots$ylab)
   }
 
   if(group == 1) {
@@ -203,7 +203,7 @@ barOPA <- function(data, x, y, title = "Title", stat = "identity", position = "i
           expand_limits(y = 0)
 
   if( !is.null(dots$ylab) ) {
-    base + labs(y = dots$ylab)
+    base <- base + labs(y = dots$ylab)
   }
 
   if( !is.null(dots$labels) ) {

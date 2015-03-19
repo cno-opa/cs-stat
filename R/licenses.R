@@ -108,7 +108,7 @@ cpnc <- function() {
   p_n <- buildChart(p_n)
   ggsave("./output/25-licenses-cpnc-n.png", plot = p_n, width = 7, height = 6.25)
 
-  p_m <- lineOPA(filter(d, variable == "days_to_issue"), "month_end", "value", "Average days to issue CPNC licenses", group = "type")
+  p_m <- lineOPA(filter(d, variable == "days_to_issue"), "month_end", "value", "Average days to issue a CPNC license", group = "type")
   p_m <- buildChart(p_m)
   ggsave("./output/26-licenses-cpnc-mean.png", plot = p_m, width = 7, height = 6.25)
 }

@@ -85,7 +85,7 @@ holdTime <- function() {
        group_by(date) %>%
        summarise(n = value)
 
-  p <- lineOPA(d, "date", "n", "Average hold time")
+  p <- lineOPA(d, "date", "n", "Average hold time (seconds)")
   p <- buildChart(p)
   ggsave("./output/6-311-hold-time.png", plot = p, width = 7, height = 6.25)
 }
@@ -95,7 +95,7 @@ firstCall <- function() {
        group_by(date) %>%
        summarise(n = value)
 
-  p <- lineOPA(d, "date", "n", "First call resolution", percent = TRUE)
+  p <- lineOPA(d, "date", "n", "First call resolution rate", percent = TRUE)
   p <- buildChart(p)
   ggsave("./output/7-311-first-call.png", plot = p, width = 7, height = 6.25)
 }
@@ -221,7 +221,7 @@ taxiComplaints <- function() {
   p_d <- lineOPA(filter(d, variable == "mean_close" | variable == "age_open_eom"),
                  "date",
                  "value",
-                 "Ages of complaints against drivers",
+                 "Age statistics on complaints against drivers",
                  group = "variable",
                  legend.labels = c("Mean days to close", "Age of open complaints at end of month")
                 )

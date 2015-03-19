@@ -155,7 +155,7 @@ sameDay <- function() {
   d <- melt(d)
   d <- filter(d, variable == "prop")
 
-  p <- lineOPA(d, "month_end", "value", "Building permits issued within 48 hours of application", group = "app_method", percent = TRUE, legend.labels = c("In Person", "Online"))
+  p <- lineOPA(d, "month_end", "value", "Percent of building permits issued within 48 hours of application", group = "app_method", percent = TRUE, legend.labels = c("In Person", "Online"))
   p <- buildChart(p)
   ggsave("./output/21-permits-48-hours.png", plot = p, width = 7, height = 6.25)
 }
