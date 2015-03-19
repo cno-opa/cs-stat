@@ -19,6 +19,8 @@ cleanQLS <- function() {
   qls$date <- gsub("[.]", " ", qls$date)
   qls$date <- as.factor(as.yearmon(qls$date))
 
+  qls <- getOneYear(qls, date, period)
+
   return(qls)
 }
 
@@ -44,11 +46,10 @@ cleanSource <- function() {
   sourceD$x_8 <- NULL
   sourceD$open_dt <- mdy(sourceD$open_dt)
   sourceD$closed_dt <- mdy(sourceD$closed_dt)
-  sourceD$my <- as.factor(as.yearmon(sourceD$open_dt))
-  sourceD$month_closed <- as.factor(as.yearmon(sourceD$closed_dt))
-  sourceD$open_end_month <- ifelse(sourceD$my != sourceD$month_closed, TRUE, FALSE)
+  sourceD$month_start <- as.factor(as.yearmon(sourceD$open_dt))
+  sourceD$month_end <- as.factor(as.yearmon(sourceD$closed_dt))
+  sourceD$open_end_month <- ifelse(sourceD$month_start != sourceD$month_end, TRUE, FALSE)
   sourceD$age__calendar <- as.numeric(as.character(sourceD$age__calendar))
-  sourceD$age__business <- as.numeric(as.character(sourceD$age__business))
   return(sourceD)
 }
 
@@ -117,18 +118,16 @@ topRequest <- function() {
   top <- as.character(top)
 
   sourceD$type <- as.character(sourceD$type)
-  date_cut <- max(sourceD$open_dt)
-  date_cut <- ymd(paste( (year(date_cut) - 1), month(date_cut), "01", sep = "-"))
 
-       #filter(qls, measure == top[1] | measure == top[2] | measure == top[3]) <== use that when 311 doesn't insist on changing their type designations around
-  d <- filter(sourceD, agrepl(top[1], type, max.distance = 0.3) | agrepl(top[2], type, max.distance = 0.3) | agrepl(top[3], type, max.distance = 0.3)) %>%
-       filter(open_dt > date_cut) %>%
-       group_by(my, type) %>%
+       # filter(qls, measure == top[1] | measure == top[2] | measure == top[3]) <== use that when 311 doesn't insist on changing their type designations around
+  d <- getOneYear(sourceD, month_start, period) %>%
+       filter(agrepl(top[1], type, max.distance = 0.3) | agrepl(top[2], type, max.distance = 0.3) | agrepl(top[3], type, max.distance = 0.3)) %>%
+       group_by(month_start, type) %>%
        summarise(n = n()) %>%
        melt()
 
   p <- lineOPA(d,
-               "my",
+               "month_start",
                "value",
                "Top service requests",
                group = "type",
@@ -138,24 +137,23 @@ topRequest <- function() {
 }
 
 taxiComplaints <- function() {
-  # for easily subsetting only last 12 months
   taxi <- filter(sourceD, title == "Taxi - Complaint")
-  date_cut <- max(taxi$open_dt)
-  date_cut <- ymd(paste( (year(date_cut) - 1), month(date_cut), "01", sep = "-"))
-  months_pre_cut <- seq(date_cut, max(taxi$open_dt), "month")
+  months_in_period <- seq(ymd(as.Date(as.yearmon(period) - 1, format = "%b %Y")),
+                          ymd(as.Date(as.yearmon(period), format = "%b %Y")),
+                          "month")
 
   # number closed per month
-  n_closed <- filter(taxi, closed_dt >= date_cut) %>%
-              group_by(month_closed) %>%
+  n_closed <- getOneYear(taxi, month_end, period) %>%
+              group_by(month_end) %>%
               summarise(closed = n())
 
   # number opened per month
-  n_opened <- filter(taxi, open_dt >= date_cut) %>%
-              group_by(my) %>%
+  n_opened <- getOneYear(taxi, month_start, period) %>%
+              group_by(month_start) %>%
               summarise(opened = n())
 
   # number still open at end of each month
-  n_open <- data.frame(date = months_pre_cut)
+  n_open <- data.frame(date = months_in_period)
 
   calcOpen <- function(date) {
     date_end_month <- ymd( paste(year(date), month(date), days_in_month(month(date))) )
@@ -170,12 +168,12 @@ taxiComplaints <- function() {
   n_open$date <- as.factor(as.yearmon(n_open$date))
 
   # mean days to close for all complaints closed in each month
-  d_closed <- filter(taxi, closed_dt >= date_cut) %>%
-              group_by(month_closed) %>%
+  d_closed <- getOneYear(taxi, month_end, period) %>%
+              group_by(month_end) %>%
               summarise(mean_close = mean(age__calendar))
 
   # mean age of every open complaint at end of each month
-  d_open <- data.frame(date = months_pre_cut)
+  d_open <- data.frame(date = months_in_period)
 
   calcOpenAge <- function(date) {
     date_end_month <- ymd( paste(year(date), month(date), days_in_month(month(date))) )
