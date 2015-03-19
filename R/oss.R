@@ -19,6 +19,7 @@ cleanOss <- function() {
   oss <- filter(oss, lengthofservice < 480) #remove entries that take over 8 hours, or one working day
   oss <- filter(oss, !grepl("appointment", tolower(serviceprovided)) & !grepl("meeting", tolower(serviceprovided)))
   oss$category <- as.factor( oss_lookup$category[match(oss$queue, oss_lookup$lookup)] )
+  oss <- getOneYear(oss, month_start, period)
 
   return(oss)
 }
@@ -224,7 +225,7 @@ ossEtc <- function() {
   p_facet <- ggplot(d_cat, aes(month_start, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
-             labs(title = "VCC, HDLC, etc. stats by queue", x = "", y = "") +
+             labs(title = "CPC, VCC, etc. stats by queue", x = "", y = "") +
              scale_colour_manual(values = c("grey70", "tomato")) +
              scale_x_discrete(breaks = brks) +
              theme(panel.grid.major.y = element_blank(),
