@@ -1,5 +1,16 @@
-#cleaning and plotting for One Stop Shop
+# oss.R
+#
+# data sources:
+# ============================
+#
+# oss.csv - csv generated from Lobby Central OSS report.
+#
+# ============================
+#
+#
 
+
+# clean
 cleanOss <- function() {
   load("./data/context/oss-lookup.Rdata")
 
@@ -12,6 +23,7 @@ cleanOss <- function() {
   return(oss)
 }
 
+# plot
 plotOss <- function() {
 #
 #
@@ -43,7 +55,7 @@ ossSP <- function() {
   ggsave("./output/10-oss-sp-visitors.png", plot = p_vol, width = 7, height = 6.25)
   ggsave("./output/11-oss-sp-times.png", plot = p_times, width = 7, height = 6.25)
 
-  #facet chart
+  # facet chart
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
@@ -113,7 +125,7 @@ ossCPNC <- function() {
   ggsave("./output/13-oss-cpnc-visitors.png", plot = p_vol, width = 7, height = 6.25)
   ggsave("./output/14-oss-cpnc-times.png", plot = p_times, width = 7, height = 6.25)
 
-  #facet grid
+  # facet chart
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
@@ -124,7 +136,7 @@ ossCPNC <- function() {
 
   brks <- unique(d$month_start)[seq(1, 13, 5)]
 
-  #relabel
+  # relabel
   d_cat$variable <- as.character(d_cat$variable)
   for(i in 1:nrow(d_cat)) {
     if(d_cat$variable[i] == "n") {
@@ -184,7 +196,7 @@ ossEtc <- function() {
   ggsave("./output/16-oss-etc-visitors.png", plot = p_vol, width = 7, height = 6.25)
   ggsave("./output/17-oss-etc-times.png", plot = p_times, width = 7, height = 6.25)
 
-  #facet grid
+  # facet grid
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
@@ -195,7 +207,7 @@ ossEtc <- function() {
 
   brks <- unique(d$month_start)[seq(1, 13, 5)]
 
-  #relabel
+  # relabel
   d_cat$variable <- as.character(d_cat$variable)
   for(i in 1:nrow(d_cat)) {
     if(d_cat$variable[i] == "n") {
@@ -227,18 +239,18 @@ ossEtc <- function() {
 
 }
 
-#execute
+# execute
 ossSP()
 ossCPNC()
 ossEtc()
 
 #
-#end plotOss
+# end plotOss
 }
 
-#load
+# load
 oss <- read.csv("./data/oss.csv", sep = ";", header = TRUE)
 
-#execute
+# execute
 oss <- cleanOss()
 plotOss()

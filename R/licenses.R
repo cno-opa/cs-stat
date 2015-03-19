@@ -1,5 +1,15 @@
-#wut for licenses
+# licenses.R
+#
+# data sources:
+# ============================
+#
+# licenses.csv - csv generated from LAMA licenses module query.
+#
+# ============================
+#
+#
 
+# clean
 cleanL <- function(df) {
 
   categorize <- function(type) {
@@ -30,6 +40,7 @@ cleanL <- function(df) {
   return(df)
 }
 
+# plot
 plotL <- function() {
 #
 #
@@ -102,7 +113,7 @@ cpnc <- function() {
   ggsave("./output/26-licenses-cpnc-mean.png", plot = p_m, width = 7, height = 6.25)
 }
 
-#execute
+# execute
 mech()
 elec()
 biz()
@@ -112,9 +123,9 @@ cpnc()
 #
 }
 
-#load
+# load
 l <- read.csv("./data/licenses.csv", header = TRUE)
 
-#execute
+# execute
 l <- cleanL(l)
 plotL()

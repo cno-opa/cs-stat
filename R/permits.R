@@ -1,5 +1,18 @@
-# wut for permits
+# permits.R
+#
+# data sources:
+# ============================
+#
+# permits-applied.csv - csv of permits applied for, but not neccessarily issued. Generated from LAMA permits module query.
+# permits-issued.csv - csv of permits issued. Generated from LAMA permit module query.
+# permits-hdlc.csv - csv of HDLC permits only. Generated from LAMA permit module query.
+#
+# ============================
+#
+#
 
+
+# clean
 cleanIssued <- function(permits) {
   load("./data/context/permits-lookup.Rdata")
   load("./data/context/historical-usetypes.Rdata")
@@ -63,7 +76,7 @@ cleanIssued <- function(permits) {
     return(permits)
   }
 
-  #issue time in seconds
+  # issue time in seconds
   permits$sec_to_issue <- as.POSIXct(permits$IssueDate, format = "%m/%d/%Y %H:%M:%S") - as.POSIXct(permits$FilingDate, format = "%m/%d/%Y %H:%M:%S")
 
   #master cleanse
@@ -73,17 +86,14 @@ cleanIssued <- function(permits) {
   permits <- filter(permits, !grepl("voided", exitreason))
   permits <- filter(permits, !is.na(filingdate))
 
-  #month issued
-  #permits$month_issued <- as.factor(as.yearmon(permits$issuedate))
-
-  #determine residential vs.commercial use type
+  # determine residential vs.commercial use type
   permits$usetype <- sapply(permits$landuseshort, assignUseType, owner = permits$owner)
   permits <- lookupUseType()
   permits <- resolveUseType()
   hist_usetypes <- data.frame(refcode = permits$refcode, usetype = permits$usetype)
   save(hist_usetypes, file = "./data/context/historical-usetypes.Rdata") #save it for posterity
 
-  #permit type recode and online lookup
+  # permit type recode and online lookup
   permits$online <- tolower(permits$type) %in% online_permits$permit
   permits$opa_category <- permits_lookup$opa_category[match(permits$type, permits_lookup$type)]
 
@@ -95,6 +105,7 @@ cleanIssued <- function(permits) {
 #   return(permits)
 # }
 
+# plot
 plotPermits <- function() {
 #
 #
@@ -149,7 +160,7 @@ sameDay <- function() {
   ggsave("./output/21-permits-48-hours.png", plot = p, width = 7, height = 6.25)
 }
 
-#execute
+# execute
 resComm()
 resCommIssueTime()
 sameDay()
@@ -159,11 +170,12 @@ sameDay()
 }
 
 # load
-# applied <- read.csv("./data/permits-applied.csv", header = TRUE)
 issued <- read.csv("./data/permits-issued.csv", header = TRUE)
+#applied <- read.csv("./data/permits-applied.csv", header = TRUE)
 #hdlc <- read.csv("./data/permits-hdlc.csv", header = TRUE)
 
 # execute
-#applied <- cleanPermits(applied)
+
 issued <- cleanIssued(issued)
+#applied <- cleanPermits(applied)
 plotPermits()

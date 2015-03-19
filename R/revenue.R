@@ -1,6 +1,16 @@
-# wut for revenue
+# rev.R
+#
+# data sources:
+# ============================
+#
+# rev.csv - csv generated from Lobby Central OSS report.
+#
+# ============================
+#
+#
 
-#clean
+
+# clean
 cleanRevD <- function(data) {
   categorize <- function(type) {
     if(type == "Account Maint." | type == "Administration" | type == "Account Admin.") {
@@ -22,14 +32,14 @@ cleanRevD <- function(data) {
   return(data)
 }
 
-#plot
+# plot
 plotRev <- function() {
   d <- group_by(rev, month_start, opa_category) %>%
        summarise(n = n(), meanwait = mean(timewaited), meanserv = mean(lengthofservice)) %>%
        filter(opa_category != "Other") %>%
        melt()
 
-  #facet chart
+  # facet chart
   d$highlight <- "no"
 
   for(i in 1:length(d$month_start)) {
@@ -40,7 +50,7 @@ plotRev <- function() {
 
   brks <- unique(d$month_start)[seq(1, 13, 5)]
 
-  #relabel
+  # relabel
   d$variable <- as.character(d$variable)
   for(i in 1:nrow(d)) {
     if(d$variable[i] == "n") {
@@ -71,9 +81,9 @@ plotRev <- function() {
   ggsave("./output/21-rev-facet.png", plot = p_facet, width = 7, height = 6.25)
 }
 
-#load
+# load
 rev <- read.csv("./data/revenue.csv", sep = ";", header = TRUE)
 
-#execute
+# execute
 rev <- cleanRevD(rev)
 plotRev()

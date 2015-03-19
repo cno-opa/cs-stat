@@ -1,6 +1,19 @@
-#wut for VCC
+# vcc.R
+#
+# data sources:
+# ============================
+#
+# vcc.csv - csv of VCC permits. Generated from LAMA permits query.
+# vcc-xf.csv - csv of VCC permits with information not stored in LAMA, such as whether permit is filed in response to a violation, and whether is is staff approvable. Produced by VCC staff monthly.
+# vcc-hist.Rdata - same data as vcc.csv, just going back to 2014.
+# vcc-hist-xf.Rdata - same data as vcc-xf, just going back to 2014. Both of these are needed for this script to work.
+#
+# ============================
+#
+#
 
-#clean
+
+# clean
 cleanVCC <- function(permits) {
   permits <- cleanPermits(permits)
   permits$numstring <- gsub("(-*[A-Z])", "", permits$numstring)
@@ -16,7 +29,7 @@ cleanVCCXf <- function(data) {
 crossAndBuild <- function() {
   load("./data/context/vcc-hist.Rdata")
 
-  #get staff approvable and whether or not in response to a violation
+  # get staff approvable and whether or not in response to a violation
   vcc$staff <- NA
   vcc$violation <- NA
   for(i in 1:nrow(vcc)) {
@@ -29,17 +42,17 @@ crossAndBuild <- function() {
     vcc$violation[i] <- as.character(lookup_val_violation)
   }
 
-  #save looked-up data
+  # save looked-up data
   save(vcc, file = paste0("./data/context/vcc-cross-ref-", Sys.Date(), ".csv"))
 
-  #join to preprocessed historical data
+  # join to preprocessed historical data
   vcc_all <- rbind(vcc, vcc_hist)
 
-  #fix weirdness with date factors
+  # fix weirdness with date factors
   vcc_all$month_start <- as.factor(as.yearmon(vcc_all$month_start))
   vcc_all$month_end <- as.factor(as.yearmon(vcc_all$month_end))
 
-  #determine if target was met
+  # determine if target was met
   vcc_all$under_target <- NA
   for(i in 1:nrow(vcc_all)) {
     if( year(as.yearmon(vcc_all$month_end[i])) == 2014 ) {
@@ -67,8 +80,7 @@ crossAndBuild <- function() {
 
 }
 
-#plot
-
+# plot
 plotVCC <- function() {
 #
 #
@@ -105,7 +117,7 @@ responsiveness <- function() {
   ggsave("./output/32-vcc-responses.png", plot = p, width = 7, height = 6.25)
 }
 
-#execute
+# execute
 timeliness()
 responsiveness()
 
@@ -113,11 +125,11 @@ responsiveness()
 #
 }
 
-#load
+# load
 vcc <- read.csv("./data/vcc.csv", header = TRUE)
 vcc_xf <- read.csv("./data/vcc-xf.csv", header = TRUE)
 
-#execute
+# execute
 vcc <- cleanVCC(vcc)
 vcc_xf <- cleanVCCXf(vcc_xf)
 vcc_all <- crossAndBuild()

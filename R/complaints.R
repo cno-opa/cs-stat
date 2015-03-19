@@ -1,6 +1,15 @@
-#wut for complaints
+# complaints.R
+#
+# data sources:
+# ============================
+#
+# complaints.R - csv pulled from LAMA Violations report.
+#
+# ============================
+#
+#
 
-#clean
+# clean
 cleanSPComplaints <- function(data) {
 
   categorize <- function(type) {
@@ -21,7 +30,7 @@ cleanSPComplaints <- function(data) {
   return(data)
 }
 
-#plot
+# plot
 plotComplaints <- function() {
 #
 #
@@ -73,7 +82,7 @@ openEndOfMonth <- function() {
   ggsave("./output/30-complaints-open.png", plot = p, width = 7, height = 6.25)
 }
 
-#execute
+# execute
 building()
 zoning()
 openEndOfMonth()
@@ -82,9 +91,9 @@ openEndOfMonth()
 #
 }
 
-#load
+# load
 complaints <- read.csv("./data/complaints.csv", header = TRUE)
 
-#execute
+# execute
 complaints <- cleanSPComplaints(complaints)
 plotComplaints()

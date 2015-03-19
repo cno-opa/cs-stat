@@ -1,6 +1,17 @@
-# wut for 311
+# 311.R
+#
+# data sources:
+# ============================
+#
+# 311-intake.xlsx - produced by 311 business analysts monthly.
+# 311-source.csv - source data for all 311 requests. Must be cleaned a little in Excel and saved as csv.
+#
+# ============================
+#
+#
 
-#clean
+
+# clean
 cleanQLS <- function() {
   qls <- melt(qls)
   names(qls) <- slugify(names(qls))
@@ -41,7 +52,7 @@ cleanSource <- function() {
   return(sourceD)
 }
 
-#plots
+# plots
 plot311 <- function() {
 #
 #
@@ -127,23 +138,23 @@ topRequest <- function() {
 }
 
 taxiComplaints <- function() {
-  #for easily subsetting only last 12 months
+  # for easily subsetting only last 12 months
   taxi <- filter(sourceD, title == "Taxi - Complaint")
   date_cut <- max(taxi$open_dt)
   date_cut <- ymd(paste( (year(date_cut) - 1), month(date_cut), "01", sep = "-"))
   months_pre_cut <- seq(date_cut, max(taxi$open_dt), "month")
 
-  #number closed per month
+  # number closed per month
   n_closed <- filter(taxi, closed_dt >= date_cut) %>%
               group_by(month_closed) %>%
               summarise(closed = n())
 
-  #number opened per month
+  # number opened per month
   n_opened <- filter(taxi, open_dt >= date_cut) %>%
               group_by(my) %>%
               summarise(opened = n())
 
-  #number still open at end of each month
+  # number still open at end of each month
   n_open <- data.frame(date = months_pre_cut)
 
   calcOpen <- function(date) {
@@ -158,12 +169,12 @@ taxiComplaints <- function() {
   n_open$open_at_end <- lapply(n_open$date, calcOpen)
   n_open$date <- as.factor(as.yearmon(n_open$date))
 
-  #mean days to close for all complaints closed in each month
+  # mean days to close for all complaints closed in each month
   d_closed <- filter(taxi, closed_dt >= date_cut) %>%
               group_by(month_closed) %>%
               summarise(mean_close = mean(age__calendar))
 
-  #mean age of every open complaint at end of each month
+  # mean age of every open complaint at end of each month
   d_open <- data.frame(date = months_pre_cut)
 
   calcOpenAge <- function(date) {
@@ -181,7 +192,7 @@ taxiComplaints <- function() {
   d_open$age_open_eom <- lapply(d_open$date, calcOpenAge)
   d_open$date <- as.factor(as.yearmon(d_open$date))
 
-  #join into single table for plots
+  # join into single table for plots
   names(n_closed)[1]  <- "date"
   names(n_opened)[1]  <- "date"
   names(n_open)[1]    <- "date"
@@ -221,7 +232,7 @@ taxiComplaints <- function() {
 
 }
 
-#execute
+# execute
 callVol()
 callAbandon()
 holdTime()
@@ -234,12 +245,12 @@ taxiComplaints()
 #
 }
 
-#load
+# load
 qls <- read.xls("./data/311.xlsx", sheet = "QLS", na.strings = c("", "#N/A", "NA", "#DIV/0!", "REF!"), strip.white = TRUE, perl = "C:/Strawberry/perl/bin/perl.exe")
 ops <- read.xls("./data/311.xlsx", sheet = "operator performance", na.strings = c("", "#N/A", "NA", "#DIV/0!, #REF!"), strip.white = TRUE, perl = "C:/Strawberry/perl/bin/perl.exe")
 sourceD <- read.csv("./data/311-source.csv", header = TRUE)
 
-#execute
+# execute
 qls <- cleanQLS()
 ops <- cleanOps()
 sourceD <- cleanSource()

@@ -1,6 +1,16 @@
-#wut for inspections
+# inspections.R
+#
+# data sources:
+# ============================
+#
+# inspections-biz.csv - csv generated from LAMA inspections report.
+#
+# ============================
+#
+#
 
-#clean
+
+# clean
 cleanBiz <- function(data) {
   data <- cleanInspections(data) %>%
           filter(type == "Business License" | type == "Temporary Business License") %>%
@@ -8,7 +18,7 @@ cleanBiz <- function(data) {
   return(data)
 }
 
-#plot
+# plot
 plotInsp <- function() {
 #
 #
@@ -34,16 +44,16 @@ plotBiz <- function() {
   ggsave("./output/30-2-inspections-biz.png", plot = p, width = 7, height = 6.25)
 }
 
-#execute
+# execute
 plotBiz()
 
 #
 #
 }
 
-#load
+# load
 biz <- read.csv("./data/inspections-biz.csv", header = TRUE)
 
-#execute
+# execute
 biz <- cleanBiz(biz)
 plotInsp()
