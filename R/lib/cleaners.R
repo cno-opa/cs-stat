@@ -1,3 +1,23 @@
+# cleaners.R
+# A set of generic cleaner functions to handle routine tasks.
+# The basic clean() fn lets you pass in which data frame columns contain dates, what the date conversion function is, and case start and end dates
+#
+#
+# Works for the following data sources:
+# ==============================
+#
+# One Stop Shop service reports
+# LAMA permitting data
+# LAMA licenses data
+# LAMA inspections reports
+# LAMA violations data
+#
+# ===============================
+#
+#
+# TODO: integrate one-year subsetter into clean() ?
+
+
 require(lubridate)
 require(dplyr)
 require(zoo)

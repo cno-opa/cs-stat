@@ -1,4 +1,7 @@
-#generic utility functions
+# utils.R
+# generic utility functions used by cleaners.R, plotters.R, and most of the scripts
+#
+#
 
 require(stringr)
 require(dplyr)
