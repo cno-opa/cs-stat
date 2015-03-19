@@ -25,7 +25,8 @@ cleanSPComplaints <- function(data) {
   data <- cleanComplaints(data)
 
   data <- filter(data, origin == "Business" | origin == "Police" | origin == "Citizen")
-  data$open_eom <- ifelse(month(data$d_filed) < month(data$firstinspection), TRUE, FALSE)
+  #data$open_eom <- ifelse(month(data$d_filed) < month(data$firstinspection), TRUE, FALSE)
+  data <- filter(data, !grepl("ESP", data$numstring))
   data$opa_category <- sapply(data$type, categorize)
   return(data)
 }
@@ -72,6 +73,19 @@ zoning <- function() {
 }
 
 openEndOfMonth <- function() {
+
+  countOpen <- function(month_year, df, date_start, date_end) {
+    date_start <- eval(substitute(date_start), envir = df)
+
+    month_year <- as.Date(as.yearmon(month_year))
+    eom <- ymd(paste(year(month_year), month(month_year), days_in_month(month(month_year)), sep="-"))
+    f <- filter(df, date_start <= eom)
+    date_end <- eval(substitute(date_end), envir = f)
+    f <- filter(f, date_end > eom | is.na(date_end))
+    n <- nrow(f)
+    return(n)
+  }
+
   d <- getOneYear(complaints, month_start, period) %>%
        filter(open_eom == TRUE) %>%
        group_by(month_start) %>%

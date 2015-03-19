@@ -13,6 +13,7 @@
 # clean
 cleanBiz <- function(data) {
   data <- cleanInspections(data) %>%
+          filter(inspection == "Zoning") %>%
           filter(type == "Business License" | type == "Temporary Business License") %>%
           filter(days >= 0)
   return(data)
@@ -52,8 +53,8 @@ plotBiz()
 }
 
 # load
-biz <- read.csv("./data/inspections-biz.csv", header = TRUE)
+inspections <- read.csv("./data/inspections-biz.csv", header = TRUE)
 
 # execute
-biz <- cleanBiz(biz)
+biz <- cleanBiz(inspections)
 plotInsp()
