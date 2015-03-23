@@ -54,11 +54,11 @@ plotRev <- function() {
   d$variable <- as.character(d$variable)
   for(i in 1:nrow(d)) {
     if(d$variable[i] == "n") {
-      d$variable[i] <- "Visitors"
+      d$variable[i] <- "Customers"
     } else if (d$variable[i] == "meanwait") {
-      d$variable[i] <- "Mean Wait"
+      d$variable[i] <- "Wait Time"
     } else if (d$variable[i] == "meanserve") {
-      d$variable[i] <- "Mean Service"
+      d$variable[i] <- "Service Time"
     } else {
       NA
     }
@@ -67,7 +67,7 @@ plotRev <- function() {
   p_facet <-ggplot(d, aes(month_start, value, group = opa_category, colour = highlight)) +
             geom_line(size = 1) +
             facet_grid(variable ~ opa_category, scales = "free_y") +
-            labs(title = "Revenue stats by queue", x = "", y = "") +
+            labs(title = "Revenue stats by queue (times in minutes)", x = "", y = "") +
             scale_colour_manual(values = c("grey70", "tomato")) +
             scale_x_discrete(breaks = brks) +
             theme(panel.grid.major.y = element_blank(),
@@ -75,7 +75,8 @@ plotRev <- function() {
                   legend.position = "none",
                   strip.background = element_blank(),
                   strip.text.x = element_text(face = "bold"),
-                  strip.text.y = element_text(face = "bold")
+                  strip.text.y = element_text(face = "bold"),
+                  axis.text.x = element_blank()
                  )
   p_facet <- buildChart(p_facet)
   ggsave("./output/21-rev-facet.png", plot = p_facet, width = 7, height = 6.25)

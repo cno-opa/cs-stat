@@ -71,11 +71,11 @@ ossSP <- function() {
   d_cat$variable <- as.character(d_cat$variable)
   for(i in 1:nrow(d_cat)) {
     if(d_cat$variable[i] == "n") {
-      d_cat$variable[i] <- "Visitors"
+      d_cat$variable[i] <- "Customers"
     } else if (d_cat$variable[i] == "medianwait") {
-      d_cat$variable[i] <- "Median Wait"
+      d_cat$variable[i] <- "Wait Time"
     } else if (d_cat$variable[i] == "medianserve") {
-      d_cat$variable[i] <- "Median Service"
+      d_cat$variable[i] <- "Service Time"
     } else {
       NA
     }
@@ -84,7 +84,7 @@ ossSP <- function() {
   p_facet <- ggplot(d_cat, aes(month_start, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
-             labs(title = "Saftey and Permits stats by queue", x = "", y = "") +
+             labs(title = "Saftey and Permits stats by queue (times in minutes)", x = "", y = "") +
              scale_colour_manual(values = c("grey70", "tomato")) +
              scale_x_discrete(breaks = brks) +
              theme(panel.grid.major.y = element_blank(),
@@ -92,7 +92,8 @@ ossSP <- function() {
                    legend.position = "none",
                    strip.background = element_blank(),
                    strip.text.x = element_text(face = "bold"),
-                   strip.text.y = element_text(face = "bold")
+                   strip.text.y = element_text(face = "bold"),
+                   axis.text.x = element_blank()
                   )
   p_facet <- buildChart(p_facet)
   ggsave("./output/12-oss-sp-facet.png", plot = p_facet, width = 7, height = 6.25)
@@ -103,7 +104,7 @@ ossCPNC <- function() {
               category == "Brake Tag" |
               category == "Citation" |
               category == "CPNC" |
-              category == "Driver/Operator" |
+              category == "Driver" |
               category == "Other" |
               category == "Tour Guide"
              ) %>%
@@ -130,7 +131,7 @@ ossCPNC <- function() {
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
-    if(d_cat$category[i] == "Driver/Operator" & d_cat$variable[i] == "medianwait") {
+    if(d_cat$category[i] == "Driver" & d_cat$variable[i] == "medianwait") {
       d_cat$highlight[i] <- "yes"
     }
   }
@@ -141,11 +142,11 @@ ossCPNC <- function() {
   d_cat$variable <- as.character(d_cat$variable)
   for(i in 1:nrow(d_cat)) {
     if(d_cat$variable[i] == "n") {
-      d_cat$variable[i] <- "Visitors"
+      d_cat$variable[i] <- "Customers"
     } else if (d_cat$variable[i] == "medianwait") {
-      d_cat$variable[i] <- "Median Wait"
+      d_cat$variable[i] <- "Wait Time"
     } else if (d_cat$variable[i] == "medianserve") {
-      d_cat$variable[i] <- "Median Service"
+      d_cat$variable[i] <- "Service Time"
     } else {
       NA
     }
@@ -154,7 +155,7 @@ ossCPNC <- function() {
   p_facet <- ggplot(d_cat, aes(month_start, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
-             labs(title = "Taxi Cab Bureau stats by queue", x = "", y = "") +
+             labs(title = "Taxi Cab Bureau stats by queue (times in minutes)", x = "", y = "") +
              scale_colour_manual(values = c("grey70", "tomato")) +
              scale_x_discrete(breaks = brks) +
              theme(panel.grid.major.y = element_blank(),
@@ -162,7 +163,8 @@ ossCPNC <- function() {
                    legend.position = "none",
                    strip.background = element_blank(),
                    strip.text.x = element_text(face = "bold"),
-                   strip.text.y = element_text(face = "bold")
+                   strip.text.y = element_text(face = "bold"),
+                   axis.text.x = element_blank()
                   )
   p_facet <- buildChart(p_facet)
   ggsave("./output/15-oss-cpnc-facet.png", plot = p_facet, width = 7, height = 6.25)
@@ -170,11 +172,11 @@ ossCPNC <- function() {
 
 ossEtc <- function() {
   d <- filter(oss,
-              category == "Business Intake" |
+              category == "Business" |
               category == "CPC" |
               category == "HDLC" |
               category == "Payment" |
-              category == "Special Event" |
+              category == "Event" |
               category == "VCC" |
               category == "Zoning"
               )%>%
@@ -197,7 +199,7 @@ ossEtc <- function() {
   ggsave("./output/16-oss-etc-visitors.png", plot = p_vol, width = 7, height = 6.25)
   ggsave("./output/17-oss-etc-times.png", plot = p_times, width = 7, height = 6.25)
 
-  # facet grid
+  # facet chart
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
@@ -212,11 +214,11 @@ ossEtc <- function() {
   d_cat$variable <- as.character(d_cat$variable)
   for(i in 1:nrow(d_cat)) {
     if(d_cat$variable[i] == "n") {
-      d_cat$variable[i] <- "Visitors"
+      d_cat$variable[i] <- "Customers"
     } else if (d_cat$variable[i] == "medianwait") {
-      d_cat$variable[i] <- "Median Wait"
+      d_cat$variable[i] <- "Wait Time"
     } else if (d_cat$variable[i] == "medianserve") {
-      d_cat$variable[i] <- "Median Service"
+      d_cat$variable[i] <- "Service Time"
     } else {
       NA
     }
@@ -225,7 +227,7 @@ ossEtc <- function() {
   p_facet <- ggplot(d_cat, aes(month_start, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
-             labs(title = "CPC, VCC, etc. stats by queue", x = "", y = "") +
+             labs(title = "CPC, VCC, etc. stats by queue (time in minutes)", x = "", y = "") +
              scale_colour_manual(values = c("grey70", "tomato")) +
              scale_x_discrete(breaks = brks) +
              theme(panel.grid.major.y = element_blank(),
@@ -233,7 +235,8 @@ ossEtc <- function() {
                    legend.position = "none",
                    strip.background = element_blank(),
                    strip.text.x = element_text(face = "bold"),
-                   strip.text.y = element_text(face = "bold")
+                   strip.text.y = element_text(face = "bold"),
+                   axis.text.x = element_blank()
                   )
   p_facet <- buildChart(p_facet)
   ggsave("./output/18-oss-etc-facet.png", plot = p_facet, width = 7, height = 6.25)
