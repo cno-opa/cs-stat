@@ -25,7 +25,6 @@ cleanSPComplaints <- function(data) {
   data <- cleanComplaints(data)
 
   data <- filter(data, origin == "Business" | origin == "Police" | origin == "Citizen")
-  #data$open_eom <- ifelse(month(data$d_filed) < month(data$firstinspection), TRUE, FALSE)
   data <- filter(data, !grepl("ESP", data$numstring))
   data$opa_category <- sapply(data$type, categorize)
   return(data)
@@ -46,7 +45,7 @@ building <- function() {
        filter(month_end != "NA NA") %>%
        melt()
 
-  p <- barOPA(d, "month_end", "value", "Building inspections, and inspections done under 7 days", fill = "variable", position = "identity", legend.labels = c("All", "Inspections in less than 7 days"))
+  p <- barOPA(d, "month_end", "value", "Building inspections, and days to completion", fill = "variable", position = "identity", legend.labels = c("More than 7 days", "Less than 7 days"))
   p <- buildChart(p)
   ggsave("./output/28-complaints-building.png", plot = p, width = 7, height = 6.25)
 }
@@ -59,7 +58,7 @@ zoning <- function() {
        filter(month_end != "NA NA") %>%
        melt()
 
-  p <- barOPA(d, "month_end", "value", title = "Zoning inspections, and inspections done under 7 days", fill = "variable", position = "identity", legend.labels = c("All", "Inspections in less than 7 days"))
+  p <- barOPA(d, "month_end", "value", title = "Zoning inspections, and days to completion", fill = "variable", position = "identity", legend.labels = c("More than 7 days", "Less than 7 days"))
   p <- buildChart(p)
   ggsave("./output/29-complaints-zoning.png", plot = p, width = 7, height = 6.25)
 }

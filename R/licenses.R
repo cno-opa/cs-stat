@@ -55,7 +55,7 @@ mech <- function() {
        filter(!is.na(oneday)) %>%
        melt()
 
-  p <- barOPA(d, "month_end", "value", "Number of mechanical licenses issued, and issued in one day", fill = "variable", position = "identity", legend.labels = c("All licenses", "Issued in one day"))
+  p <- barOPA(d, "month_end", "value", "Mechanical licenses, number and days to issue", fill = "variable", position = "identity", legend.labels = c("More than one day", "Same day"))
   p <- buildChart(p)
   ggsave("./output/22-licenses-mech.png", plot = p, width = 7, height = 6.25)
 }
@@ -68,7 +68,7 @@ elec <- function() {
        filter(!is.na(oneday)) %>%
        melt()
 
-  p <- barOPA(d, "month_end", "value", "Number of electrical licenses issued, and issued in one day", fill = "variable", position = "identity", legend.labels = c("All licenses", "Issued in one day"))
+  p <- barOPA(d, "month_end", "value", "Electrical licenses, number and days to issue", fill = "variable", position = "identity", legend.labels = c("More than one day", "Same day"))
   p <- buildChart(p)
   ggsave("./output/23-licenses-elec.png", plot = p, width = 7, height = 6.25)
 }
@@ -80,7 +80,7 @@ biz <- function() {
        summarise(all = n(), tenday = sum(daystoissue <= 10), fiveday = sum(daystoissue <= 5), oneday = sum(daystoissue <= 1) ) %>%
        melt()
 
-  p <- barOPA(d, "month_end", "value", "Number and days to issue for business licenses", fill = "variable", position = "identity", legend.labels = c("All licenses", "Ten days", "Five days", "One day"))
+  p <- barOPA(d, "month_end", "value", "Business licenses, number and days to issue", fill = "variable", position = "identity", legend.labels = c("More than ten days", "Ten days", "Five days", "One day"))
   p <- buildChart(p)
   ggsave("./output/24-licenses-biz.png", plot = p, width = 7, height = 6.25)
 }
