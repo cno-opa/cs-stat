@@ -118,7 +118,7 @@ resComm <- function() {
        group_by(month_end, usetype) %>%
        summarise(n = n())
 
-  p <- lineOPA(d, "month_end", "n", "Residential and commercial permits issued", group = "usetype", legend.labels = c("Commercial", "Residential"))
+  p <- lineOPA(d, "month_end", "n", "Residential and commercial permits issued", group = "usetype", legend.labels = c("Commercial", "Residential"), labels = "n")
   p <- buildChart(p)
   ggsave("./output/19-permits-res-comm.png", plot = p, width = 7, height = 6.25)
 }
@@ -129,7 +129,7 @@ resCommIssueTime <- function() {
        group_by(month_end, usetype) %>%
        summarise(mean_to_issue = mean(daystoissue, na.rm = TRUE))
 
-  p <- lineOPA(d, "month_end", "mean_to_issue", "Mean days to issue for residential and commercial permits", group = "usetype", legend.labels = c("Commercial", "Residential"))
+  p <- lineOPA(d, "month_end", "mean_to_issue", "Mean days to issue for residential and commercial permits", group = "usetype", legend.labels = c("Commercial", "Residential"), labels = "round(mean_to_issue)")
   p <- buildChart(p)
   ggsave("./output/20-permits-res-comm-days-to-issue.png", plot = p, width = 7, height = 6.25)
 }
@@ -155,7 +155,7 @@ sameDay <- function() {
   d <- melt(d)
   d <- filter(d, variable == "prop")
 
-  p <- lineOPA(d, "month_end", "value", "Percent of building permits issued within 48 hours of application", group = "app_method", percent = TRUE, legend.labels = c("In Person", "Online"))
+  p <- lineOPA(d, "month_end", "value", "Percent of building permits issued within 48 hours of application", group = "app_method", percent = TRUE, legend.labels = c("In Person", "Online"), labels = "percent(value)")
   p <- buildChart(p)
   ggsave("./output/21-permits-48-hours.png", plot = p, width = 7, height = 6.25)
 }

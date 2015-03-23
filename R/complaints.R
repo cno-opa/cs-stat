@@ -87,11 +87,10 @@ openEndOfMonth <- function() {
   }
 
   d <- getOneYear(complaints, month_start, period) %>%
-       filter(open_eom == TRUE) %>%
        group_by(month_start) %>%
        summarise(n = n())
 
-  p <- lineOPA(d, "month_start", "n", "Number of complaints with no first inspection by end of month")
+  p <- lineOPA(d, "month_start", "n", "Number of complaints with no first inspection by end of month", labels = "n")
   p <- buildChart(p)
   ggsave("./output/30-complaints-open.png", plot = p, width = 7, height = 6.25)
 }

@@ -78,8 +78,8 @@ theme_opa <- function (base_size = 14, base_family = "")
 }
 
 #aesthetic variables
-lightBlue <- "#23b6ff"
-darkBlue <- "#002537"
+lightBlue <- "#72d0ff"
+darkBlue <- "#005983"
 red <- "tomato"
 
 #chart builder!
@@ -115,7 +115,7 @@ buildChart <- function(p) {
   return(built)
 }
 
-lineOPA <- function(data, x, y, title = "Title!", group = 1, percent = FALSE, ...) {
+lineOPA <- function(data, x, y, title = "Title!", group = 1, percent = FALSE, last_label = TRUE, ...) {
   # most of the options are passed as dots parameters:
   # set data labels with `labels = "label_column"`
   # set highlight with `highlight = "group_to_highlight"`
@@ -170,9 +170,25 @@ lineOPA <- function(data, x, y, title = "Title!", group = 1, percent = FALSE, ..
     base <- base + scale_colour_manual( values = blues, labels = legend.labels )
   }
 
-  if( !is.null(dots$labels) ) {
+  if( !is.null(dots$labels) & last_label == TRUE ) {
+    #hacky way to get labels data when there is more than one series. pulls all data in df for the named period
+    getLabelsData <- function() {
+      if(group != 1) {
+        d <- data[data[,1] == period,]
+        return(d)
+      } else {
+        return(data[nrow(data), ])
+      }
+    }
+
+    labels_data <- getLabelsData()
+
     base <- base +
-            geom_text(size = 4, colour = "grey33", vjust = -.5, aes_string(label = dots$labels, y = y))
+            geom_text(data = labels_data, size = 4, colour = "grey33", hjust = -0.2, aes_string(label = dots$labels, y = y)) +
+            scale_x_discrete(expand = c(0, 1.5)) #extend the width of the plot area so label doesn't get cut off
+  } else if( !is.null(dots$labels) ) {
+    base <- base +
+            geom_text(size = 4, colour = "grey33", vjust = -0.5, aes_string(label = dots$labels, y = y))
   }
 
   if(percent == FALSE) {

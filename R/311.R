@@ -65,7 +65,7 @@ callVol <- function() {
        group_by(date) %>%
        summarise(n = value)
 
-  p <- lineOPA(d, "date", "n", "Call Volume")
+  p <- lineOPA(d, "date", "n", "Call Volume", labels = "n")
   p <- buildChart(p)
   ggsave("./output/4-311-calls.png", plot = p, width = 7, height = 6.25)
 }
@@ -75,7 +75,7 @@ callAbandon <- function() {
        group_by(date) %>%
        summarise(n = value)
 
-  p <- lineOPA(d, "date", "n", "Abandonment Rate", percent = TRUE)
+  p <- lineOPA(d, "date", "n", "Abandonment Rate", percent = TRUE, labels = "percent(n)")
   p <- buildChart(p)
   ggsave("./output/5-311-abandonment.png", plot = p, width = 7, height = 6.25)
 }
@@ -85,7 +85,7 @@ holdTime <- function() {
        group_by(date) %>%
        summarise(n = value)
 
-  p <- lineOPA(d, "date", "n", "Average hold time (seconds)")
+  p <- lineOPA(d, "date", "n", "Average hold time (seconds)", labels = "n")
   p <- buildChart(p)
   ggsave("./output/6-311-hold-time.png", plot = p, width = 7, height = 6.25)
 }
@@ -95,7 +95,7 @@ firstCall <- function() {
        group_by(date) %>%
        summarise(n = value)
 
-  p <- lineOPA(d, "date", "n", "First call resolution rate", percent = TRUE)
+  p <- lineOPA(d, "date", "n", "First call resolution rate", percent = TRUE, labels = "percent(n)")
   p <- buildChart(p)
   ggsave("./output/7-311-first-call.png", plot = p, width = 7, height = 6.25)
 }
@@ -213,7 +213,8 @@ taxiComplaints <- function() {
                  "value",
                  "Number of complaints against drivers",
                  group = "variable",
-                 legend.labels = c("Closed", "Opened", "Open at end of month")
+                 legend.labels = c("Closed", "Opened", "Open at end of month"),
+                 labels = "value"
                 )
   p_n <- buildChart(p_n)
   ggsave("./output/27-311-taxi-complaints-n.png", plot = p_n, width = 7, height = 6.25)
@@ -223,7 +224,8 @@ taxiComplaints <- function() {
                  "value",
                  "Age statistics on complaints against drivers",
                  group = "variable",
-                 legend.labels = c("Mean days to close", "Age of open complaints at end of month")
+                 legend.labels = c("Mean days to close", "Age of open complaints at end of month"),
+                 labels = "round(value)"
                 )
   p_d <- buildChart(p_d)
   ggsave("./output/27-2-311-taxi-complaints-time.png", plot = p_d, width = 7, height = 6.25)
