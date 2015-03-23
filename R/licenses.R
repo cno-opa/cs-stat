@@ -55,13 +55,9 @@ mech <- function() {
        filter(!is.na(oneday)) %>%
        melt()
 
-  p <- schigoda(d, "month_end", "value", "Number of mechanical licenses issued, and issued in one day", fill = "variable", legend.labels = c("All licenses", "Issued in one day"))
+  p <- barOPA(d, "month_end", "value", "Number of mechanical licenses issued, and issued in one day", fill = "variable", position = "identity", legend.labels = c("All licenses", "Issued in one day"))
   p <- buildChart(p)
   ggsave("./output/22-licenses-mech.png", plot = p, width = 7, height = 6.25)
-
-  pb <- barOPA(d, "month_end", "value", "Number of mechanical licenses issued, and issued in one day", fill = "variable", position = "identity", legend.labels = c("All licenses", "Issued in one day"))
-  pb <- buildChart(pb)
-  ggsave("./output/22b-licenses-mech.png", plot = pb, width = 7, height = 6.25)
 }
 
 elec <- function() {
@@ -72,13 +68,9 @@ elec <- function() {
        filter(!is.na(oneday)) %>%
        melt()
 
-  p <- schigoda(d, "month_end", "value", title = "Number of electrical licenses issued, and issued in one day", fill = "variable", legend.labels = c("All licenses", "Issued in one day"))
+  p <- barOPA(d, "month_end", "value", "Number of electrical licenses issued, and issued in one day", fill = "variable", position = "identity", legend.labels = c("All licenses", "Issued in one day"))
   p <- buildChart(p)
   ggsave("./output/23-licenses-elec.png", plot = p, width = 7, height = 6.25)
-
-  pb <- barOPA(d, "month_end", "value", "Number of electrical licenses issued, and issued in one day", fill = "variable", position = "identity", legend.labels = c("All licenses", "Issued in one day"))
-  pb <- buildChart(pb)
-  ggsave("./output/23b-licenses-elec.png", plot = pb, width = 7, height = 6.25)
 }
 
 biz <- function() {
@@ -88,13 +80,9 @@ biz <- function() {
        summarise(all = n(), tenday = sum(daystoissue <= 10), fiveday = sum(daystoissue <= 5), oneday = sum(daystoissue <= 1) ) %>%
        melt()
 
-  p <- schigoda(d, "month_end", "value", title = "Number and days to issue for business licenses", fill = "variable", legend.labels = c("All licenses", "Ten days", "Five days", "One day"))
+  p <- barOPA(d, "month_end", "value", "Number and days to issue for business licenses", fill = "variable", position = "identity", legend.labels = c("All licenses", "Ten days", "Five days", "One day"))
   p <- buildChart(p)
   ggsave("./output/24-licenses-biz.png", plot = p, width = 7, height = 6.25)
-
-  pb <- barOPA(d, "month_end", "value", "Number and days to issue for business licenses", fill = "variable", position = "identity", legend.labels = c("All licenses", "Ten days", "Five days", "One day"))
-  pb <- buildChart(pb)
-  ggsave("./output/24b-licenses-biz.png", plot = pb, width = 7, height = 6.25)
 }
 
 cpnc <- function() {

@@ -95,13 +95,9 @@ timeliness <- function() {
        summarise(n = n(), target = sum(under_target == TRUE)) %>%
        melt()
 
-  p <- schigoda(d, "month_end", "value", title = "Staff approvable reviews finished over and under target time", fill = "variable", legend.labels = c("All", "Inspections within target time"))
+  p <- barOPA(d, "month_end", "value", title = "Staff approvable reviews finished over and under target time", fill = "variable", position = "identity", legend.labels = c("All", "Inspections within target time"))
   p <- buildChart(p)
   ggsave("./output/31-vcc-review.png", plot = p, width = 7, height = 6.25)
-
-  pb <- barOPA(d, "month_end", "value", title = "Staff approvable reviews finished over and under target time", fill = "variable", position = "identity", legend.labels = c("All", "Inspections within target time"))
-  pb <- buildChart(pb)
-  ggsave("./output/31b-vcc-review.png", plot = pb, width = 7, height = 6.25)
 }
 
 responsiveness <- function() {
