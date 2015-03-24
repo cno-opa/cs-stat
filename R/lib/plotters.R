@@ -192,14 +192,18 @@ lineOPA <- function(data, x, y, title = "Title!", group = 1, percent = FALSE, la
   }
 
   if(percent == FALSE) {
-    brks <- pretty_breaks(4)(0:ymax)
+    brks <- pretty_breaks(4, min.n = 4)(0:ymax)
     yul  <- brks[length(brks)]
     base <- base + scale_y_continuous(breaks = brks) + expand_limits(y = c(0, yul))
   } else {
-    yul  <- ymax + 0.05
-    incr <- yul/4
-    brks <- seq(0, yul, incr)
-    base <- base + scale_y_continuous(breaks = brks, labels = percent(brks)) + expand_limits(y = c(0, yul))
+    brks <- pretty_breaks(4, min.n = 4)(0:ymax)
+    for(i in 1:length(brks)) {
+      if(brks[i] > 1) {
+        brks[i] <- 1
+      }
+    }
+    brks <- unique(brks)
+    base <- base + scale_y_continuous(breaks = brks, labels = percent(brks)) + expand_limits(y = c(0, brks[length(brks)]))
   }
 
   return(base)
@@ -213,10 +217,16 @@ barOPA <- function(data, x, y, title = "Title", stat = "identity", position = "i
 
   dots <- eval(substitute(alist(...)))
 
+  #get max y value and set breaks
+  ymax <- max(data[y], na.rm = TRUE)
+  brks <- pretty_breaks(4, min.n = 4)(0:ymax)
+  yul  <- brks[length(brks)]
+
+  #the basic base
   base <- ggplot(data, aes_string(x = x, y = y, fill = dots$fill)) +
           geom_bar(stat = stat, position = position) +
           labs(title = title, y = "", x = "") +
-          expand_limits(y = 0)
+          scale_y_continuous(breaks = brks) + expand_limits(y = c(0, yul))
 
   if( !is.null(dots$ylab) ) {
     base <- base + labs(y = dots$ylab)

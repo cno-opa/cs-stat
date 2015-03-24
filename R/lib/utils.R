@@ -29,3 +29,15 @@ getOneYear <- function(df, date_col, from_date) {
   df <- filter(df, ymd(date_col) >= ymd(l) & ymd(date_col) < ymd(u))
   return(df)
 }
+
+prettyPercentBreaks <- function(range, n) {
+  # returns a range of pretty values in or near range boundaries for small ranges, like when you're dealing with percents
+  # note this does not return negative values
+
+  if(min(range) < 0) stop("Sorry, this just returns a range for positive values. Use pretty_breaks() to get a range with negative values")
+
+  diff <- max(range) - min(range)
+  incr <- diff/(n)
+  ints <- seq(min(range), max(range), incr)
+
+}
