@@ -25,22 +25,12 @@ plotInsp <- function() {
 #
 
 plotBiz <- function() {
-  d_insp <- getOneYear(biz, month_start, period) %>%
-            group_by(month_start) %>%
-            summarise(n = n())
-
-  d_time <- getOneYear(biz, month_end, period) %>%
-            group_by(month_end) %>%
-            summarise(target = sum(days < 7))
-
-  names(d_insp)[1] <- "date"
-  names(d_time)[1] <- "date"
-  d <- left_join(d_insp, d_time) %>%
+  d <- getOneYear(biz, month_end, period) %>%
+       group_by(month_end) %>%
+       summarise(n = n(), target = sum(days < 7)) %>%
        melt()
 
-  d$date <- as.factor(as.yearmon(d$date))
-
-  p <- barOPA(d, "date", "value", "Number of business license inspections and those under target time", fill = "variable", position = "identity", legend.labels = c("All inspections", "Inspected in seven days or less"))
+  p <- barOPA(d, "month_end", "value", "Number of business license inspections and those under target time", fill = "variable", position = "identity", legend.labels = c("All inspections", "Inspected in seven days or less"))
   p <- buildChart(p)
   ggsave("./output/30-2-inspections-biz.png", plot = p, width = 7.42, height = 5.75)
 }
