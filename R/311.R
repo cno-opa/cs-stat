@@ -27,6 +27,7 @@ cleanQLS <- function() {
 cleanOps <- function() {
   ops <- melt(ops, id.vars = "Agent")
   names(ops) <- slugify(names(ops))
+  levels(ops$agent) <- unique(ops$agent)
   ops$variable <- gsub("[.]", " ", ops$variable)
   ops$value <- gsub("%", "", ops$value)
   ops$value <- as.numeric(ops$value)
@@ -67,7 +68,7 @@ callVol <- function() {
 
   p <- lineOPA(d, "date", "n", "Call Volume", labels = "n")
   p <- buildChart(p)
-  ggsave("./output/4-311-calls.png", plot = p, width = 7, height = 6.25)
+  ggsave("./output/4-311-calls.png", plot = p, width = 7.42, height = 5.75)
 }
 
 callAbandon <- function() {
@@ -77,7 +78,7 @@ callAbandon <- function() {
 
   p <- lineOPA(d, "date", "n", "Abandonment Rate", percent = TRUE, labels = "percent(n)")
   p <- buildChart(p)
-  ggsave("./output/5-311-abandonment.png", plot = p, width = 7, height = 6.25)
+  ggsave("./output/5-311-abandonment.png", plot = p, width = 7.42, height = 5.75)
 }
 
 holdTime <- function() {
@@ -87,7 +88,7 @@ holdTime <- function() {
 
   p <- lineOPA(d, "date", "n", "Average hold time (seconds)", labels = "n")
   p <- buildChart(p)
-  ggsave("./output/6-311-hold-time.png", plot = p, width = 7, height = 6.25)
+  ggsave("./output/6-311-hold-time.png", plot = p, width = 7.42, height = 5.75)
 }
 
 firstCall <- function() {
@@ -97,15 +98,28 @@ firstCall <- function() {
 
   p <- lineOPA(d, "date", "n", "First call resolution rate", percent = TRUE, labels = "percent(n)")
   p <- buildChart(p)
-  ggsave("./output/7-311-first-call.png", plot = p, width = 7, height = 6.25)
+  ggsave("./output/7-311-first-call.png", plot = p, width = 7.42, height = 5.75)
 }
 
 operators <- function() {
-  p <- barOPA(ops, "agent", "value", "Operator scores", ylab = "Score (%)", position = "dodge", fill = "variable")
+  d <- filter(ops, !is.na(value) & value > 0)
+  p <- barOPA(d, "agent", "value", "Operator scores", ylab = "Score (%)", position = "dodge", fill = "variable")
   p <- p + theme(legend.text = element_text(size = rel(0.65))) +
            guides(fill = guide_legend(nrow = 2))
   p <- buildChart(p)
-  ggsave("./output/8-311-operators.png", plot = p, width = 7, height = 6.25)
+  ggsave("./output/8-311-operators.png", plot = p, width = 7.42, height = 5.75)
+
+  #historical total score line chart
+  load("./data/context/ops-score-hist.Rdata")
+  add <- filter(ops, variable == "Total Score") %>%
+         arrange(agent)
+  add <- data.frame(date = period, variable = add$agent, value = add$value)
+  # ops_hist <- rbind(ops_hist, add)
+  # save(ops_hist, file = "./data/context/ops-score-hist.Rdata")
+
+  p_l <- lineOPA(ops_hist, "date", "value", "Total operator scores by operator", group = "variable", percent = TRUE)
+  p_l <- buildChart(p_l)
+  ggsave("./output/8-2-311-operators.png", plot = p_l, width = 7.42, height = 5.75)
 }
 
 topRequest <- function() {
@@ -133,7 +147,7 @@ topRequest <- function() {
                group = "type",
                highlight = "Street Light")
   p <- buildChart(p)
-  ggsave("./output/9-311-top-requests.png", plot = p, width = 7, height = 6.25)
+  ggsave("./output/9-311-top-requests.png", plot = p, width = 7.42, height = 5.75)
 }
 
 taxiComplaints <- function() {
@@ -217,7 +231,7 @@ taxiComplaints <- function() {
                  labels = "value"
                 )
   p_n <- buildChart(p_n)
-  ggsave("./output/27-311-taxi-complaints-n.png", plot = p_n, width = 7, height = 6.25)
+  ggsave("./output/27-311-taxi-complaints-n.png", plot = p_n, width = 7.42, height = 5.75)
 
   p_d <- lineOPA(filter(d, variable == "mean_close" | variable == "age_open_eom"),
                  "date",
@@ -228,7 +242,7 @@ taxiComplaints <- function() {
                  labels = "round(value)"
                 )
   p_d <- buildChart(p_d)
-  ggsave("./output/27-2-311-taxi-complaints-time.png", plot = p_d, width = 7, height = 6.25)
+  ggsave("./output/27-2-311-taxi-complaints-time.png", plot = p_d, width = 7.42, height = 5.75)
 
 }
 

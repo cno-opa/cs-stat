@@ -79,7 +79,7 @@ plotRev <- function() {
                   axis.text.x = element_blank()
                  )
   p_facet <- buildChart(p_facet)
-  ggsave("./output/21-rev-facet.png", plot = p_facet, width = 7, height = 6.25)
+  ggsave("./output/21-rev-facet.png", plot = p_facet, width = 7.42, height = 5.75)
 }
 
 # load

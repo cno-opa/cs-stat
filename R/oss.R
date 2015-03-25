@@ -47,14 +47,14 @@ ossSP <- function() {
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "Safety and Permits visitors", labels = "value")
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "Safety and Permits customers", labels = "value")
   p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "Safety and Permits processing times (minutes)", group = "variable", legend.labels = c("Median wait time", "Median service time"), labels = "value" )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
 
-  ggsave("./output/10-oss-sp-visitors.png", plot = p_vol, width = 7, height = 6.25)
-  ggsave("./output/11-oss-sp-times.png", plot = p_times, width = 7, height = 6.25)
+  ggsave("./output/10-oss-sp-visitors.png", plot = p_vol, width = 7.42, height = 5.75)
+  ggsave("./output/11-oss-sp-times.png", plot = p_times, width = 7.42, height = 5.75)
 
   # facet chart
   d_cat$highlight <- "no"
@@ -96,7 +96,7 @@ ossSP <- function() {
                    axis.text.x = element_blank()
                   )
   p_facet <- buildChart(p_facet)
-  ggsave("./output/12-oss-sp-facet.png", plot = p_facet, width = 7, height = 6.25)
+  ggsave("./output/12-oss-sp-facet.png", plot = p_facet, width = 7.42, height = 5.75)
 }
 
 ossCPNC <- function() {
@@ -118,14 +118,14 @@ ossCPNC <- function() {
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "Taxi Cab Bureau visitors", labels = "value")
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "Taxi Cab Bureau customers", labels = "value")
   p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "Taxi Cab Bureau processing times (minutes)", group = "variable", legend.labels = c("Median wait time", "Median service time"), labels = "value" )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
 
-  ggsave("./output/13-oss-cpnc-visitors.png", plot = p_vol, width = 7, height = 6.25)
-  ggsave("./output/14-oss-cpnc-times.png", plot = p_times, width = 7, height = 6.25)
+  ggsave("./output/13-oss-cpnc-visitors.png", plot = p_vol, width = 7.42, height = 5.75)
+  ggsave("./output/14-oss-cpnc-times.png", plot = p_times, width = 7.42, height = 5.75)
 
   # facet chart
   d_cat$highlight <- "no"
@@ -167,7 +167,7 @@ ossCPNC <- function() {
                    axis.text.x = element_blank()
                   )
   p_facet <- buildChart(p_facet)
-  ggsave("./output/15-oss-cpnc-facet.png", plot = p_facet, width = 7, height = 6.25)
+  ggsave("./output/15-oss-cpnc-facet.png", plot = p_facet, width = 7.42, height = 5.75)
 }
 
 ossEtc <- function() {
@@ -190,14 +190,14 @@ ossEtc <- function() {
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "CPC, VCC, etc. visitors", labels = "value")
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "CPC, VCC, etc. customers", labels = "value")
   p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "CPC, VCC, etc. processing time (minutes)", group = "variable", legend.labels = c("Median wait time", "Median service time"), labels = "value" )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
 
-  ggsave("./output/16-oss-etc-visitors.png", plot = p_vol, width = 7, height = 6.25)
-  ggsave("./output/17-oss-etc-times.png", plot = p_times, width = 7, height = 6.25)
+  ggsave("./output/16-oss-etc-visitors.png", plot = p_vol, width = 7.42, height = 5.75)
+  ggsave("./output/17-oss-etc-times.png", plot = p_times, width = 7.42, height = 5.75)
 
   # facet chart
   d_cat$highlight <- "no"
@@ -239,7 +239,7 @@ ossEtc <- function() {
                    axis.text.x = element_blank()
                   )
   p_facet <- buildChart(p_facet)
-  ggsave("./output/18-oss-etc-facet.png", plot = p_facet, width = 7, height = 6.25)
+  ggsave("./output/18-oss-etc-facet.png", plot = p_facet, width = 7.42, height = 5.75)
 
 }
 

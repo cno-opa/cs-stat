@@ -47,7 +47,7 @@ building <- function() {
 
   p <- barOPA(d, "month_end", "value", "Building inspections, and days to completion", fill = "variable", position = "identity", legend.labels = c("More than 7 days", "Less than 7 days"))
   p <- buildChart(p)
-  ggsave("./output/28-complaints-building.png", plot = p, width = 7, height = 6.25)
+  ggsave("./output/28-complaints-building.png", plot = p, width = 7.42, height = 5.75)
 }
 
 zoning <- function() {
@@ -60,7 +60,7 @@ zoning <- function() {
 
   p <- barOPA(d, "month_end", "value", title = "Zoning inspections, and days to completion", fill = "variable", position = "identity", legend.labels = c("More than 7 days", "Less than 7 days"))
   p <- buildChart(p)
-  ggsave("./output/29-complaints-zoning.png", plot = p, width = 7, height = 6.25)
+  ggsave("./output/29-complaints-zoning.png", plot = p, width = 7.42, height = 5.75)
 }
 
 openEndOfMonth <- function() {
@@ -83,7 +83,7 @@ openEndOfMonth <- function() {
 
   p <- lineOPA(d, "month_start", "n", "Number of complaints with no first inspection by end of month", labels = "n")
   p <- buildChart(p)
-  ggsave("./output/30-complaints-open.png", plot = p, width = 7, height = 6.25)
+  ggsave("./output/30-complaints-open.png", plot = p, width = 7.42, height = 5.75)
 }
 
 # execute

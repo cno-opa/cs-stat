@@ -57,7 +57,7 @@ mech <- function() {
 
   p <- barOPA(d, "month_end", "value", "Mechanical licenses, number and days to issue", fill = "variable", position = "identity", legend.labels = c("More than one day", "Same day"))
   p <- buildChart(p)
-  ggsave("./output/22-licenses-mech.png", plot = p, width = 7, height = 6.25)
+  ggsave("./output/22-licenses-mech.png", plot = p, width = 7.42, height = 5.75)
 }
 
 elec <- function() {
@@ -70,7 +70,7 @@ elec <- function() {
 
   p <- barOPA(d, "month_end", "value", "Electrical licenses, number and days to issue", fill = "variable", position = "identity", legend.labels = c("More than one day", "Same day"))
   p <- buildChart(p)
-  ggsave("./output/23-licenses-elec.png", plot = p, width = 7, height = 6.25)
+  ggsave("./output/23-licenses-elec.png", plot = p, width = 7.42, height = 5.75)
 }
 
 biz <- function() {
@@ -82,7 +82,7 @@ biz <- function() {
 
   p <- barOPA(d, "month_end", "value", "Business licenses, number and days to issue", fill = "variable", position = "identity", legend.labels = c("More than ten days", "Ten days", "Five days", "One day"))
   p <- buildChart(p)
-  ggsave("./output/24-licenses-biz.png", plot = p, width = 7, height = 6.25)
+  ggsave("./output/24-licenses-biz.png", plot = p, width = 7.42, height = 5.75)
 }
 
 cpnc <- function() {
@@ -94,11 +94,11 @@ cpnc <- function() {
 
   p_n <- lineOPA(filter(d, variable == "n"), "month_end", "value", "Number of CPNC licenses issued", group = "type", labels = "value")
   p_n <- buildChart(p_n)
-  ggsave("./output/25-licenses-cpnc-n.png", plot = p_n, width = 7, height = 6.25)
+  ggsave("./output/25-licenses-cpnc-n.png", plot = p_n, width = 7.42, height = 5.75)
 
   p_m <- lineOPA(filter(d, variable == "days_to_issue"), "month_end", "value", "Average days to issue a CPNC license", group = "type", labels = "round(value)")
   p_m <- buildChart(p_m)
-  ggsave("./output/26-licenses-cpnc-mean.png", plot = p_m, width = 7, height = 6.25)
+  ggsave("./output/26-licenses-cpnc-mean.png", plot = p_m, width = 7.42, height = 5.75)
 }
 
 # execute
