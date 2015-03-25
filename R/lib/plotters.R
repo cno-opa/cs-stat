@@ -196,7 +196,9 @@ lineOPA <- function(data, x, y, title = "Title!", group = 1, percent = FALSE, la
     yul  <- brks[length(brks)]
     base <- base + scale_y_continuous(breaks = brks) + expand_limits(y = c(0, yul))
   } else {
-    brks <- pretty_breaks(4, min.n = 4)(0:ymax)
+    #hack to get pretty_breaks to work for percents. can also use prettyPercentBreaks() in utils
+    ymax <- ymax * 100
+    brks <- (pretty_breaks(4, min.n = 4)(0:ymax))/100
     for(i in 1:length(brks)) {
       if(brks[i] > 1) {
         brks[i] <- 1

@@ -30,14 +30,25 @@ getOneYear <- function(df, date_col, from_date) {
   return(df)
 }
 
-prettyPercentBreaks <- function(range, n) {
+prettyPercentBreaks <- function(m, n) {
   # returns a range of pretty values in or near range boundaries for small ranges, like when you're dealing with percents
+  # `m` is max value in your vector
   # note this does not return negative values
 
-  if(min(range) < 0) stop("Sorry, this just returns a range for positive values. Use pretty_breaks() to get a range with negative values")
+  if(min(m) < 0) stop("Sorry, this just returns a range for positive values. Use pretty_breaks() to get a range with negative values")
 
-  diff <- max(range) - min(range)
-  incr <- diff/(n)
-  ints <- seq(min(range), max(range), incr)
+  #get initial inteval and round up to number of significant digits in it
+  int <- m/n
+  sigs <- nchar(strsplit( as.character(int), ".", fixed = TRUE )[[1]][2])
+  if(sigs > 2) sigs <- 2
+  int <- round(int, sigs)
 
+  #recalc with m, as max, one interval above m user entered
+  m <- m + int
+  int <- m/n
+  sigs <- nchar(strsplit( as.character(int), ".", fixed = TRUE )[[1]][2])
+  if(sigs > 2) sigs <- 2
+  int <- round(int, sigs)
+
+  return(seq(0, m, int))
 }
