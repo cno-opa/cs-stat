@@ -112,7 +112,7 @@ cpnc()
 }
 
 # load
-l <- read.csv("./data/licenses.csv", header = TRUE)
+l <- read.csv("./data/licenses-issued.csv", header = TRUE)
 
 # execute
 l <- cleanL(l)
