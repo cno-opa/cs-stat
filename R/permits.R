@@ -100,10 +100,15 @@ cleanIssued <- function(permits) {
   return(permits)
 }
 
-# cleanHDLC <- function(permits) {
-#   permits <- cleanPermits(permits)
-#   return(permits)
-# }
+cleanHDLC <- function(permits) {
+  exclude <- read.csv("./data/permits-hdlc-exclude.csv", header = FALSE)
+  colnames(exclude) <- c("numstring", "filed", "issued", "type", "landuse", "event")
+  permits <- cleanPermits(permits)
+  exclude <- filter(exclude, event != "NULL")
+  permits <- filter(permits, !(permits$numstring %in% exclude$numstring))
+
+  return(permits)
+}
 
 # plot
 plotPermits <- function() {
@@ -160,10 +165,22 @@ sameDay <- function() {
   ggsave("./output/21-permits-48-hours.png", plot = p, width = 7.42, height = 5.75)
 }
 
+hdlcReview <- function() {
+  d <- getOneYear(hdlc, month_end, period) %>%
+       group_by(month_end) %>%
+       summarise(n = n(), target = sum(daystoissue <= 5)) %>%
+       melt()
+
+  p <- barOPA(d, "month_end", "value", "Number and days to issue HDLC permits", fill = "variable", legend.labels = c("All permits", "Permits issued in five days"))
+  p <- buildChart(p)
+  ggsave("./output/21-2-permits-hdlc.png", plot = p, width = 7.42, height = 5.75)
+}
+
 # execute
 resComm()
 resCommIssueTime()
 sameDay()
+hdlcReview()
 
 #
 #
@@ -171,11 +188,12 @@ sameDay()
 
 # load
 issued <- read.csv("./data/permits-issued.csv", header = TRUE)
+hdlc <- read.csv("./data/permits-hdlc.csv", header = TRUE)
 #applied <- read.csv("./data/permits-applied.csv", header = TRUE)
-#hdlc <- read.csv("./data/permits-hdlc.csv", header = TRUE)
 
 # execute
 
 issued <- cleanIssued(issued)
+hdlc <- cleanHDLC(hdlc)
 #applied <- cleanPermits(applied)
 plotPermits()
