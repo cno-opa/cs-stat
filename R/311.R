@@ -13,11 +13,23 @@
 
 # clean
 cleanQLS <- function() {
-  qls <- melt(qls)
+  qls <- melt(qls, id.vars = c("Measure", "Type"))
   names(qls) <- slugify(names(qls))
   names(qls) <- c("measure", "type", "date", "value")
   qls$date <- gsub("[.]", " ", qls$date)
   qls$date <- as.factor(as.yearmon(qls$date))
+
+  #strip out % if they're in there
+  convPercent <- function(x) {
+    if(grepl("%", x)) {
+      x <- gsub("%", "", x)
+      x <- as.numeric(x)/100
+    } else {
+      x
+    }
+  }
+
+  qls$value <- sapply(qls$value, convPercent)
 
   qls <- getOneYear(qls, date, period)
 
@@ -25,8 +37,11 @@ cleanQLS <- function() {
 }
 
 cleanOps <- function() {
+  colnames(ops) <- sapply(ops[1,], function(x) as.character(x[1]))
+  ops <- ops[-1,]
   ops <- melt(ops, id.vars = "Agent")
   names(ops) <- slugify(names(ops))
+  ops$agent <- factor(ops$agent)
   levels(ops$agent) <- unique(ops$agent)
   ops$variable <- gsub("[.]", " ", ops$variable)
   ops$value <- gsub("%", "", ops$value)
@@ -145,7 +160,9 @@ topRequest <- function() {
                "value",
                "Top service requests",
                group = "type",
-               highlight = "Street Light")
+               highlight = "Code Enforcement General Request")
+  p <- p + theme(legend.text = element_text(size = rel(0.65))) +
+           guides(fill = guide_legend(nrow = 2))
   p <- buildChart(p)
   ggsave("./output/9-311-top-requests.png", plot = p, width = 7.42, height = 5.75)
 }

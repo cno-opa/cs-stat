@@ -131,7 +131,7 @@ ossCPNC <- function() {
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
-    if(d_cat$category[i] == "Driver" & d_cat$variable[i] == "medianwait") {
+    if(d_cat$category[i] == "Driver" & d_cat$variable[i] == "n") {
       d_cat$highlight[i] <- "yes"
     }
   }
@@ -203,7 +203,7 @@ ossEtc <- function() {
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
-    if(d_cat$category[i] == "Payment" & d_cat$variable[i] == "n") {
+    if(d_cat$category[i] == "Event" & d_cat$variable[i] == "medianwait") {
       d_cat$highlight[i] <- "yes"
     }
   }
