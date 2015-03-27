@@ -52,3 +52,16 @@ prettyPercentBreaks <- function(m, n) {
 
   return(seq(0, m, int))
 }
+
+dateFromYearMon <- function(ym, eom = TRUE) {
+                    if(eom == TRUE) {
+                      ym <- as.Date(as.yearmon(ym))
+                      dateObj <- ymd(paste(
+                                      year(ym),
+                                      month(ym),
+                                      days_in_month(month(ym)),
+                                      sep = "-"
+                                    ))
+                      return(dateObj)
+                    }
+                  }

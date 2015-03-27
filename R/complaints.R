@@ -65,25 +65,29 @@ zoning <- function() {
 
 openEndOfMonth <- function() {
 
-  countOpen <- function(month_year, df, date_start, date_end) {
-    date_start <- eval(substitute(date_start), envir = df)
+  # this counts all complaints opened before the end of each month and closed after the end of each month, or not closed. It returns a number around 220 for each month, which makes me think there are 220 artifacts in LAMA
 
-    month_year <- as.Date(as.yearmon(month_year))
-    eom <- ymd(paste(year(month_year), month(month_year), days_in_month(month(month_year)), sep="-"))
-    f <- filter(df, date_start <= eom)
-    date_end <- eval(substitute(date_end), envir = f)
-    f <- filter(f, date_end > eom | is.na(date_end))
-    n <- nrow(f)
-    return(n)
-  }
+  # countOpen <- function(month_year, df, date_start, date_end) {
+  #   date_start <- eval(substitute(date_start), envir = df)
+  #
+  #   month_year <- as.Date(as.yearmon(month_year))
+  #   eom <- ymd(paste(year(month_year), month(month_year), days_in_month(month(month_year)), sep="-"))
+  #   f <- filter(df, date_start <= eom)
+  #   date_end <- eval(substitute(date_end), envir = f)
+  #   f <- filter(f, date_end > eom | is.na(date_end))
+  #   n <- nrow(f)
+  #   return(n)
+  # }
+
+  # so this alternative measure might work best
 
   d <- getOneYear(complaints, month_start, period) %>%
        group_by(month_start) %>%
-       summarise(n = n())
+       summarise(n = sum(daystoinspect > 30 | is.na(daystoinspect)))
 
-  p <- lineOPA(d, "month_start", "n", "Number of complaints with no first inspection by end of month", labels = "n")
+  p <- lineOPA(d, "month_start", "n", "Complaints with no first inspection within 30 days", labels = "n")
   p <- buildChart(p)
-  ggsave("./output/30-complaints-open.png", plot = p, width = 7.42, height = 5.75)
+  ggsave("./output/30-complaints-no-first-inspect.png", plot = p, width = 7.42, height = 5.75)
 }
 
 # execute
