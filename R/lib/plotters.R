@@ -73,7 +73,7 @@ theme_opa <- function (base_size = 14, base_family = "")
 
     plot.background = element_rect(colour = "white"),
     plot.title = element_text(size = rel(1.2), hjust = 0.05),
-    plot.margin = unit(c(1, 1, 0.5, 0.5), "lines"),
+    plot.margin = unit(c(1, 1, 1, 1), "lines"),
     complete = TRUE)
 }
 
@@ -90,6 +90,7 @@ buildChart <- function(p) {
     gtl <- gt[[1]]
 
   t <- gtable_filter(gt, "title")[[1]]
+  t[[1]]$just <- "left"
 
   p <- p + theme(legend.position = "none", plot.title = element_blank())
 
