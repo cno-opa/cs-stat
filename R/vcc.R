@@ -105,10 +105,11 @@ responsiveness <- function() {
   d <- getOneYear(vcc_all, month_end, period) %>%
        filter(staff == "staff") %>%
        group_by(month_end) %>%
-       summarise(not_response = sum(violation == "N"), in_response = sum(violation == "Y")) %>%
+       summarise(not_response = sum(violation == "N"), response = sum(violation == "Y")) %>%
        melt()
 
   p <- barOPA(d, "month_end", "value", "Number of applications approved due to violations", fill = "variable", position = "stack", legend.labels = c("In response to violations", "Not in response to violations"))
+  p + scale_fill_manual(values = c(lightBlue, darkBlue))
   p <- buildChart(p)
   ggsave("./output/32-vcc-responses.png", plot = p, width = 7.42, height = 5.75)
 }
