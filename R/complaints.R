@@ -76,18 +76,28 @@ openEndOfMonth <- function() {
     date_end <- eval(substitute(date_end), envir = f)
     f <- filter(f, date_end > eom | is.na(date_end))
     n <- nrow(f)
-    return(f)
+    return(n)
   }
 
-  # so this alternative measure might work best
+
+
+  # supplementary measure
 
   d <- getOneYear(complaints, month_start, period) %>%
        group_by(month_start) %>%
        summarise(n = sum(daystoinspect > 30 | is.na(daystoinspect)))
 
+  f <- filter(complaints, ymd(d_filed) > ymd("2013-01-01"))
+
+  backlog <- data.frame(month = d$month_start, open = sapply(d$month_start, countOpen, df = f, date_start = d_filed, date_end = firstinspection))
+
   p <- lineOPA(d, "month_start", "n", "Complaints with no first inspection within 30 days", labels = "n")
   p <- buildChart(p)
   ggsave("./output/30-complaints-no-first-inspect.png", plot = p, width = 7.42, height = 5.75)
+
+  p_backlog <- lineOPA(backlog, "month", "open", "Number of open complaints at end of each month", labels = "open")
+  p_backlog <- buildChart(p_backlog)
+  ggsave("./output/30-2-complaints-open-eom.png", plot = p_backlog, width = 7.42, height = 5.75)
 }
 
 # execute
