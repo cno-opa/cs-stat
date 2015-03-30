@@ -239,16 +239,22 @@ taxiComplaints <- function() {
 
   d <- melt(d)
 
-  p_n <- lineOPA(filter(d, variable == "closed" | variable == "opened" | variable == "open_at_end"),
+  p_open <- lineOPA(filter(d, variable == "open_at_end"),
                  "date",
                  "value",
-                 "Number of complaints against drivers",
-                 group = "variable",
-                 legend.labels = c("Closed", "Opened", "Open at end of month"),
+                 "Number of open complaints against drivers at end of month",
                  labels = "value"
                 )
-  p_n <- buildChart(p_n)
-  ggsave("./output/27-311-taxi-complaints-n.png", plot = p_n, width = 7.42, height = 5.75)
+  p_open <- buildChart(p_open)
+  ggsave("./output/27-311-taxi-complaints-open.png", plot = p_open, width = 7.42, height = 5.75)
+
+  d_net <- data.frame(month = unique(d$date), net = (d$value[d$variable == "opened"] - d$value[d$variable == "closed"]))
+
+  p_net <- lineOPA(d_net, "month", "net", "Net complaints logged against taxi drivers per month", labels = "net") +
+           scale_y_continuous( breaks = 0 )
+
+  p_net <- buildChart(p_net)
+  ggsave("./output/27-3-311-taxi-complaints-net.png", plot = p_net, width = 7.42, height = 5.75)
 
   p_d <- lineOPA(filter(d, variable == "mean_close" | variable == "age_open_eom"),
                  "date",
