@@ -35,7 +35,7 @@ cleanRevD <- function(data) {
 # plot
 plotRev <- function() {
   d <- group_by(rev, month_start, opa_category) %>%
-       summarise(n = n(), meanwait = mean(timewaited), meanserv = mean(lengthofservice)) %>%
+       summarise(n = n(), meanwait = mean(timewaited), meanserve = mean(lengthofservice)) %>%
        filter(opa_category != "Other") %>%
        melt()
 
@@ -43,7 +43,7 @@ plotRev <- function() {
   d$highlight <- "no"
 
   for(i in 1:length(d$month_start)) {
-   if(d$opa_category[i] == "Accounts" & d$variable[i] == "meanwait") {
+   if(d$opa_category[i] == "Accounts" & d$variable[i] == "meanwait" | d$opa_category[i] == "ABO" & d$variable[i] == "meanserve") {
      d$highlight[i] <- "yes"
    }
   }
@@ -67,7 +67,7 @@ plotRev <- function() {
   p_facet <-ggplot(d, aes(month_start, value, group = opa_category, colour = highlight)) +
             geom_line(size = 1) +
             facet_grid(variable ~ opa_category, scales = "free_y") +
-            labs(title = "Revenue stats by queue (times in minutes)", x = "", y = "") +
+            labs(title = "Revenue stats by queue (minutes), Feb 2014 - Feb 2015", x = "", y = "") +
             scale_colour_manual(values = c("grey70", "tomato")) +
             scale_x_discrete(breaks = brks) +
             theme(panel.grid.major.y = element_blank(),

@@ -84,7 +84,7 @@ ossSP <- function() {
   p_facet <- ggplot(d_cat, aes(month_start, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
-             labs(title = "Saftey and Permits stats by queue (times in minutes)", x = "", y = "") +
+             labs(title = "Saftey and Permits stats by queue (minutes), Feb 2014 - Feb 2015", x = "", y = "") +
              scale_colour_manual(values = c("grey70", "tomato")) +
              scale_x_discrete(breaks = brks) +
              theme(panel.grid.major.y = element_blank(),
@@ -131,7 +131,7 @@ ossCPNC <- function() {
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
-    if(d_cat$category[i] == "Driver" & d_cat$variable[i] == "n") {
+    if(d_cat$category[i] == "Driver" & d_cat$variable[i] == "n" | d_cat$category[i] == "Tour Guide" & d_cat$variable[i] == "medianwait" | d_cat$category[i] == "CPNC" & d_cat$variable[i] == "medianwait" ) {
       d_cat$highlight[i] <- "yes"
     }
   }
@@ -155,7 +155,7 @@ ossCPNC <- function() {
   p_facet <- ggplot(d_cat, aes(month_start, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
-             labs(title = "Taxi Cab Bureau stats by queue (times in minutes)", x = "", y = "") +
+             labs(title = "Taxi Cab Bureau stats by queue (minutes), Feb 2014 - Feb 2015", x = "", y = "") +
              scale_colour_manual(values = c("grey70", "tomato")) +
              scale_x_discrete(breaks = brks) +
              theme(panel.grid.major.y = element_blank(),
@@ -227,7 +227,7 @@ ossEtc <- function() {
   p_facet <- ggplot(d_cat, aes(month_start, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
-             labs(title = "CPC, VCC, etc. stats by queue (time in minutes)", x = "", y = "") +
+             labs(title = "CPC, VCC, etc. stats by queue (minutes), Feb 2014 - Feb 2015", x = "", y = "") +
              scale_colour_manual(values = c("grey70", "tomato")) +
              scale_x_discrete(breaks = brks) +
              theme(panel.grid.major.y = element_blank(),

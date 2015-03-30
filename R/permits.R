@@ -171,7 +171,7 @@ hdlcReview <- function() {
        summarise(n = n(), target = sum(daystoissue <= 5)) %>%
        melt()
 
-  p <- barOPA(d, "month_end", "value", "Number and days to issue HDLC permits", fill = "variable", legend.labels = c("All permits", "Permits issued in five days"))
+  p <- barOPA(d, "month_end", "value", "Number and days to issue HDLC permits", fill = "variable", legend.labels = c("Issued in more than five days", "Issued in five days"))
   p <- buildChart(p)
   ggsave("./output/21-2-permits-hdlc.png", plot = p, width = 7.42, height = 5.75)
 }

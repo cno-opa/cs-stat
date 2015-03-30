@@ -109,7 +109,7 @@ responsiveness <- function() {
        melt()
 
   p <- barOPA(d, "month_end", "value", "Number of applications approved due to violations", fill = "variable", position = "stack", legend.labels = c("In response to violations", "Not in response to violations"))
-  p + scale_fill_manual(values = c(lightBlue, darkBlue))
+  p <- p + scale_fill_manual(values = c(lightBlue, darkBlue))
   p <- buildChart(p)
   ggsave("./output/32-vcc-responses.png", plot = p, width = 7.42, height = 5.75)
 }

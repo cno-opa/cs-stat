@@ -67,17 +67,17 @@ openEndOfMonth <- function() {
 
   # this counts all complaints opened before the end of each month and closed after the end of each month, or not closed. It returns a number around 220 for each month, which makes me think there are 220 artifacts in LAMA
 
-  # countOpen <- function(month_year, df, date_start, date_end) {
-  #   date_start <- eval(substitute(date_start), envir = df)
-  #
-  #   month_year <- as.Date(as.yearmon(month_year))
-  #   eom <- ymd(paste(year(month_year), month(month_year), days_in_month(month(month_year)), sep="-"))
-  #   f <- filter(df, date_start <= eom)
-  #   date_end <- eval(substitute(date_end), envir = f)
-  #   f <- filter(f, date_end > eom | is.na(date_end))
-  #   n <- nrow(f)
-  #   return(n)
-  # }
+  countOpen <- function(month_year, df, date_start, date_end) {
+    date_start <- eval(substitute(date_start), envir = df)
+
+    month_year <- as.Date(as.yearmon(month_year))
+    eom <- ymd(paste(year(month_year), month(month_year), days_in_month(month(month_year)), sep="-"))
+    f <- filter(df, date_start <= eom)
+    date_end <- eval(substitute(date_end), envir = f)
+    f <- filter(f, date_end > eom | is.na(date_end))
+    n <- nrow(f)
+    return(f)
+  }
 
   # so this alternative measure might work best
 
