@@ -124,7 +124,7 @@ set_kpis <- function() {
             summarise(measure = "Percent of permits applied for online", value = sum(createdby == "publicwebcrm")/n())
 
   median_comm <- filter(issued, usetype == "commercial" & issuedate <= cutoff & issuedate >= cutup) %>%
-                 summarise(measure = "Median days to issue commerical permit", value = median(daystoissue, na.rm = TRUE))
+                 summarise(measure = "Median days to issue commercial permit", value = median(daystoissue, na.rm = TRUE))
 
   median_res <- filter(issued, usetype == "residential" & issuedate <= cutoff & issuedate >= cutup) %>%
                 summarise(measure = "Median days to issue residential permit", value = median(daystoissue, na.rm = TRUE))

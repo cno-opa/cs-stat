@@ -14,4 +14,5 @@
 print_kpis <- function() {
   load('./data/kpi.Rdata')
   print(kpi)
+  write.csv(kpi, "./output/kpi.csv", row.names = FALSE)
 }
