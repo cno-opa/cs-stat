@@ -52,7 +52,7 @@ plotBiz <- function() {
 
   p <- barOPA(d, "month_end", "value", "Business license inspections and days to inspection", fill = "variable", position = "identity", legend.labels = c("Inspected in more than 7 days", "Inspected in 7 days or less"))
   p <- buildChart(p)
-  ggsave("./output/30-2-inspections-biz.png", plot = p, width = 7.42, height = 5.75)
+  ggsave("./output/42-inspections-biz.png", plot = p, width = 7.42, height = 5.75)
 }
 
 # execute

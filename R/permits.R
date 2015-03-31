@@ -152,7 +152,7 @@ resComm <- function() {
 
   p <- lineOPA(d, "month_end", "n", "Residential and commercial permits issued", group = "usetype", legend.labels = c("Commercial", "Residential"), labels = "n")
   p <- buildChart(p)
-  ggsave("./output/19-permits-res-comm.png", plot = p, width = 7.42, height = 5.75)
+  ggsave("./output/26-permits-res-comm.png", plot = p, width = 7.42, height = 5.75)
 }
 
 resCommIssueTime <- function() {
@@ -163,7 +163,7 @@ resCommIssueTime <- function() {
 
   p <- lineOPA(d, "month_end", "mean_to_issue", "Mean days to issue for residential and commercial permits", group = "usetype", legend.labels = c("Commercial", "Residential"), labels = "round(mean_to_issue)")
   p <- buildChart(p)
-  ggsave("./output/20-permits-res-comm-days-to-issue.png", plot = p, width = 7.42, height = 5.75)
+  ggsave("./output/27-permits-res-comm-days-to-issue.png", plot = p, width = 7.42, height = 5.75)
 }
 
 sameDay <- function() {
@@ -189,7 +189,7 @@ sameDay <- function() {
 
   p <- lineOPA(d, "month_end", "value", "Percent of building permits issued within 48 hours of application", group = "app_method", percent = TRUE, legend.labels = c("In Person", "Online"), labels = "percent(value)")
   p <- buildChart(p)
-  ggsave("./output/21-permits-48-hours.png", plot = p, width = 7.42, height = 5.75)
+  ggsave("./output/28-permits-48-hours.png", plot = p, width = 7.42, height = 5.75)
 }
 
 hdlcReview <- function() {
@@ -200,7 +200,7 @@ hdlcReview <- function() {
 
   p <- barOPA(d, "month_end", "value", "Number and days to issue HDLC permits", fill = "variable", legend.labels = c("Issued in more than five days", "Issued in five days"))
   p <- buildChart(p)
-  ggsave("./output/21-2-permits-hdlc.png", plot = p, width = 7.42, height = 5.75)
+  ggsave("./output/29-permits-hdlc.png", plot = p, width = 7.42, height = 5.75)
 }
 
 # execute

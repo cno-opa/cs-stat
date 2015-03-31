@@ -71,7 +71,7 @@ building <- function() {
 
   p <- barOPA(d, "month_end", "value", "Building inspections, and days to completion", fill = "variable", position = "identity", legend.labels = c("More than 7 days", "Less than 7 days"))
   p <- buildChart(p)
-  ggsave("./output/28-complaints-building.png", plot = p, width = 7.42, height = 5.75)
+  ggsave("./output/40-complaints-building.png", plot = p, width = 7.42, height = 5.75)
 }
 
 zoning <- function() {
@@ -84,7 +84,7 @@ zoning <- function() {
 
   p <- barOPA(d, "month_end", "value", title = "Zoning inspections, and days to completion", fill = "variable", position = "identity", legend.labels = c("More than 7 days", "Less than 7 days"))
   p <- buildChart(p)
-  ggsave("./output/29-complaints-zoning.png", plot = p, width = 7.42, height = 5.75)
+  ggsave("./output/41-complaints-zoning.png", plot = p, width = 7.42, height = 5.75)
 }
 
 openEndOfMonth <- function() {
@@ -103,8 +103,6 @@ openEndOfMonth <- function() {
     return(n)
   }
 
-
-
   # supplementary measure
 
   d <- getOneYear(complaints, month_start, period) %>%
@@ -117,11 +115,11 @@ openEndOfMonth <- function() {
 
   p <- lineOPA(d, "month_start", "n", "Complaints with no first inspection within 30 days", labels = "n")
   p <- buildChart(p)
-  ggsave("./output/30-complaints-no-first-inspect.png", plot = p, width = 7.42, height = 5.75)
+  ggsave("./output/43-complaints-no-first-inspect.png", plot = p, width = 7.42, height = 5.75)
 
   p_backlog <- lineOPA(backlog, "month", "open", "Number of open complaints at end of each month", labels = "open")
   p_backlog <- buildChart(p_backlog)
-  ggsave("./output/30-2-complaints-open-eom.png", plot = p_backlog, width = 7.42, height = 5.75)
+  ggsave("./output/44-complaints-open-eom.png", plot = p_backlog, width = 7.42, height = 5.75)
 }
 
 # execute

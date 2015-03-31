@@ -97,7 +97,7 @@ timeliness <- function() {
 
   p <- barOPA(d, "month_end", "value", title = "Staff approvable reviews finished over and under target time", fill = "variable", position = "identity", legend.labels = c("Over target time", "Under target time"))
   p <- buildChart(p)
-  ggsave("./output/31-vcc-review.png", plot = p, width = 7.42, height = 5.75)
+  ggsave("./output/50-vcc-review.png", plot = p, width = 7.42, height = 5.75)
 }
 
 responsiveness <- function() {
@@ -111,7 +111,7 @@ responsiveness <- function() {
   p <- barOPA(d, "month_end", "value", "Number of applications approved due to violations", fill = "variable", position = "stack", legend.labels = c("In response to violations", "Not in response to violations"))
   p <- p + scale_fill_manual(values = c(lightBlue, darkBlue))
   p <- buildChart(p)
-  ggsave("./output/32-vcc-responses.png", plot = p, width = 7.42, height = 5.75)
+  ggsave("./output/51-vcc-responses.png", plot = p, width = 7.42, height = 5.75)
 }
 
 # execute

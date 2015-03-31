@@ -84,8 +84,8 @@ ossSP <- function() {
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
 
-  ggsave("./output/10-oss-sp-visitors.png", plot = p_vol, width = 7.42, height = 5.75)
-  ggsave("./output/11-oss-sp-times.png", plot = p_times, width = 7.42, height = 5.75)
+  ggsave("./output/14-oss-sp-visitors.png", plot = p_vol, width = 7.42, height = 5.75)
+  ggsave("./output/15-oss-sp-times.png", plot = p_times, width = 7.42, height = 5.75)
 
   # facet chart
   d_cat$highlight <- "no"
@@ -127,7 +127,7 @@ ossSP <- function() {
                    axis.text.x = element_blank()
                   )
   p_facet <- buildChart(p_facet)
-  ggsave("./output/12-oss-sp-facet.png", plot = p_facet, width = 7.42, height = 5.75)
+  ggsave("./output/16-oss-sp-facet.png", plot = p_facet, width = 7.42, height = 5.75)
 }
 
 ossCPNC <- function() {
@@ -155,8 +155,8 @@ ossCPNC <- function() {
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
 
-  ggsave("./output/13-oss-cpnc-visitors.png", plot = p_vol, width = 7.42, height = 5.75)
-  ggsave("./output/14-oss-cpnc-times.png", plot = p_times, width = 7.42, height = 5.75)
+  ggsave("./output/18-oss-cpnc-visitors.png", plot = p_vol, width = 7.42, height = 5.75)
+  ggsave("./output/19-oss-cpnc-times.png", plot = p_times, width = 7.42, height = 5.75)
 
   # facet chart
   d_cat$highlight <- "no"
@@ -198,7 +198,7 @@ ossCPNC <- function() {
                    axis.text.x = element_blank()
                   )
   p_facet <- buildChart(p_facet)
-  ggsave("./output/15-oss-cpnc-facet.png", plot = p_facet, width = 7.42, height = 5.75)
+  ggsave("./output/20-oss-cpnc-facet.png", plot = p_facet, width = 7.42, height = 5.75)
 }
 
 ossEtc <- function() {
@@ -227,14 +227,14 @@ ossEtc <- function() {
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
 
-  ggsave("./output/16-oss-etc-visitors.png", plot = p_vol, width = 7.42, height = 5.75)
-  ggsave("./output/17-oss-etc-times.png", plot = p_times, width = 7.42, height = 5.75)
+  ggsave("./output/22-oss-etc-visitors.png", plot = p_vol, width = 7.42, height = 5.75)
+  ggsave("./output/23-oss-etc-times.png", plot = p_times, width = 7.42, height = 5.75)
 
   # facet chart
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
-    if(d_cat$category[i] == "Event" & d_cat$variable[i] == "medianwait") {
+    if(d_cat$category[i] == "Event" & d_cat$variable[i] == "medianwait" | d_cat$category[i] == "Payment" & d_cat$variable[i] == "n") {
       d_cat$highlight[i] <- "yes"
     }
   }
@@ -270,7 +270,7 @@ ossEtc <- function() {
                    axis.text.x = element_blank()
                   )
   p_facet <- buildChart(p_facet)
-  ggsave("./output/18-oss-etc-facet.png", plot = p_facet, width = 7.42, height = 5.75)
+  ggsave("./output/24-oss-etc-facet.png", plot = p_facet, width = 7.42, height = 5.75)
 
 }
 
