@@ -13,9 +13,16 @@ init <- function(subdir) {
   cat("Running!\n")
 }
 
+reset_kpi <- function() {
+  kpi <- data.frame(measure = NA, value = NA)
+  save(kpi, file = "./data/kpi.Rdata")
+}
+
 # sequence of script executions
 init("R/lib")
+reset_kpi()
 init("R")
+print_kpis()
 
 # finish
 cat("Finished!")

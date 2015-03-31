@@ -24,6 +24,37 @@ cleanOss <- function() {
   return(oss)
 }
 
+set_kpis <- function() {
+  load("./data/kpi.Rdata")
+  cutoff <- dateFromYearMon(period)
+  cutup <- ymd(paste(
+              strsplit(period, " ")[[1]][2],
+              "01",
+              "01",
+              sep = "-"
+              ))
+
+  wait_build <- filter(oss, category == "Building" & datein <= cutoff & datein >= cutup) %>%
+                summarise(measure = "Median wait for building permit", value = median(timewaited))
+
+  wait_any <- filter(oss, datein <= cutoff & datein >= cutup) %>%
+                    summarise(measure = "Median wait for any permit", value = median(timewaited))
+
+  wait_biz <- filter(oss, category == "Business" & datein <= cutoff & datein >= cutup) %>%
+                    summarise(measure = "Median wait for business license", value = median(timewaited))
+
+  wait_pay <- filter(oss, category == "Payment" & datein <= cutoff & datein >= cutup) %>%
+                    summarise(measure = "Median wait for payment", value = median(timewaited))
+
+  kpi <- rbind(kpi,
+               wait_build,
+               wait_any,
+               wait_biz,
+               wait_pay)
+
+  save(kpi, file = "./data/kpi.Rdata")
+}
+
 # plot
 plotOss <- function() {
 #
@@ -258,3 +289,4 @@ oss <- read.csv("./data/oss.csv", sep = ";", header = TRUE)
 # execute
 oss <- cleanOss()
 plotOss()
+set_kpis()

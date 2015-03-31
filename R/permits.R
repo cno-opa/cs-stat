@@ -110,6 +110,33 @@ cleanHDLC <- function(permits) {
   return(permits)
 }
 
+set_kpis <- function() {
+  load("./data/kpi.Rdata")
+  cutoff <- dateFromYearMon(period)
+  cutup <- ymd(paste(
+              strsplit(period, " ")[[1]][2],
+              "01",
+              "01",
+              sep = "-"
+              ))
+
+  online <- applied[applied$filingdate <= cutoff & applied$filingdate >= cutup & applied$online == TRUE,] %>%
+            summarise(measure = "Percent of permits applied for online", value = sum(createdby == "publicwebcrm")/n())
+
+  median_comm <- filter(issued, usetype == "commercial" & issuedate <= cutoff & issuedate >= cutup) %>%
+                 summarise(measure = "Median days to issue commerical permit", value = median(daystoissue, na.rm = TRUE))
+
+  median_res <- filter(issued, usetype == "residential" & issuedate <= cutoff & issuedate >= cutup) %>%
+                summarise(measure = "Median days to issue residential permit", value = median(daystoissue, na.rm = TRUE))
+
+  kpi <- rbind(kpi,
+               median_comm,
+               median_res
+              )
+
+  save(kpi, file = "./data/kpi.Rdata")
+}
+
 # plot
 plotPermits <- function() {
 #
@@ -189,11 +216,14 @@ hdlcReview()
 # load
 issued <- read.csv("./data/permits-issued.csv", header = TRUE)
 hdlc <- read.csv("./data/permits-hdlc.csv", header = TRUE)
-#applied <- read.csv("./data/permits-applied.csv", header = TRUE)
+applied <- read.csv("./data/permits-applied.csv", header = TRUE)
 
 # execute
 
 issued <- cleanIssued(issued)
 hdlc <- cleanHDLC(hdlc)
-#applied <- cleanPermits(applied)
+applied <- cleanPermits(applied)
+  load("./data/context/online-permits.Rdata")
+  applied$online <- tolower(applied$type) %in% online_permits$permit
 plotPermits()
+set_kpis()

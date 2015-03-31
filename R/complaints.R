@@ -30,6 +30,30 @@ cleanSPComplaints <- function(data) {
   return(data)
 }
 
+set_kpis <- function() {
+  load("./data/kpi.Rdata")
+  cutoff <- dateFromYearMon(period)
+  cutup <- ymd(paste(
+              strsplit(period, " ")[[1]][2],
+              "01",
+              "01",
+              sep = "-"
+              ))
+
+  building <- filter(complaints, opa_category == "Building" & firstinspection <= cutoff & firstinspection >= cutup) %>%
+              summarise(measure = "Median days to respond to building complaints", value = median(daystoinspect, na.rm = TRUE))
+
+  zoning <- filter(complaints, opa_category == "Zoning" & firstinspection <= cutoff & firstinspection >= cutup) %>%
+              summarise(measure = "Median days to respond to zoning complaints", value = median(daystoinspect, na.rm = TRUE))
+
+  kpi <- rbind(kpi,
+               building,
+               zoning)
+
+  save(kpi, file = "./data/kpi.Rdata")
+}
+
+
 # plot
 plotComplaints <- function() {
 #
@@ -115,3 +139,4 @@ complaints <- read.csv("./data/complaints.csv", header = TRUE)
 # execute
 complaints <- cleanSPComplaints(complaints)
 plotComplaints()
+set_kpis()

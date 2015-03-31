@@ -19,6 +19,24 @@ cleanBiz <- function(data) {
   return(data)
 }
 
+set_kpis <- function() {
+  load("./data/kpi.Rdata")
+  cutoff <- dateFromYearMon(period)
+  cutup <- ymd(paste(
+              strsplit(period, " ")[[1]][2],
+              "01",
+              "01",
+              sep = "-"
+              ))
+
+  b <- filter(biz, date >= cutup & date <= cutoff) %>%
+       summarise(measure = "Median days to business license inspection", value = median(days, na.rm = TRUE))
+
+  kpi <- rbind(kpi, b)
+
+  save(kpi, file = "./data/kpi.Rdata")
+}
+
 # plot
 plotInsp <- function() {
 #
@@ -50,3 +68,4 @@ inspections <- read.csv("./data/inspections-biz.csv", header = TRUE)
 # execute
 biz <- cleanBiz(inspections)
 plotInsp()
+set_kpis()

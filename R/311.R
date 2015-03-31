@@ -69,6 +69,18 @@ cleanSource <- function() {
   return(sourceD)
 }
 
+set_kpis <- function() {
+  load("./data/kpi.Rdata")
+  y <- strsplit(period, " ")[[1]][2]
+  k <- filter(qls, measure == "Abandonment Rate" | measure == "First Call Resolution")
+  k <- filter(k, grepl(y, date))
+  k$value <- as.numeric(k$value)
+  k <- group_by(k, measure) %>%
+       summarise(value = mean(value))
+  kpi <- rbind(kpi, k)
+  save(kpi, file = "./data/kpi.Rdata")
+}
+
 # plots
 plot311 <- function() {
 #
@@ -291,4 +303,5 @@ sourceD <- read.csv("./data/311-source.csv", header = TRUE)
 qls <- cleanQLS()
 ops <- cleanOps()
 sourceD <- cleanSource()
+set_kpis()
 plot311()
