@@ -263,7 +263,7 @@ taxiComplaints <- function() {
   d_net <- data.frame(month = unique(d$date), net = (d$value[d$variable == "opened"] - d$value[d$variable == "closed"]))
 
   p_net <- lineOPA(d_net, "month", "net", "Net complaints logged against taxi drivers per month", labels = "net") +
-           scale_y_continuous( breaks = 0 )
+           scale_y_continuous( breaks = pretty_breaks(4, min.n = 4)(min(d_net$net):max(d_net$net)) )
 
   p_net <- buildChart(p_net)
   ggsave("./output/27-3-311-taxi-complaints-net.png", plot = p_net, width = 7.42, height = 5.75)
