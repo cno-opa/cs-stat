@@ -78,8 +78,8 @@ ossSP <- function() {
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "Safety and Permits customers", labels = "value")
-  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "Safety and Permits processing times (minutes)", group = "variable", legend.labels = c("Median wait time", "Median service time"), labels = "value" )
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "Safety and Permits customers", labels = "format(value, big.mark = \",\", scientific = FALSE)")
+  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "Safety and Permits processing times (minutes)", group = "variable", legend.labels = c("Median wait time", "Median service time"), labels = "format(value, big.mark = \",\", scientific = FALSE)" )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
@@ -149,8 +149,8 @@ ossCPNC <- function() {
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "Taxi Cab Bureau customers", labels = "value")
-  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "Taxi Cab Bureau processing times (minutes)", group = "variable", legend.labels = c("Median wait time", "Median service time"), labels = "value" )
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "Taxi Cab Bureau customers", labels = "format(value, big.mark = \",\", scientific = FALSE)")
+  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "Taxi Cab Bureau processing times (minutes)", group = "variable", legend.labels = c("Median wait time", "Median service time"), labels = "format(value, big.mark = \",\", scientific = FALSE)" )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
@@ -221,8 +221,8 @@ ossEtc <- function() {
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "CPC, VCC, etc. customers", labels = "value")
-  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "CPC, VCC, etc. processing time (minutes)", group = "variable", legend.labels = c("Median wait time", "Median service time"), labels = "value" )
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "CPC, VCC, etc. customers", labels = "format(value, big.mark = \",\", scientific = FALSE)")
+  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "CPC, VCC, etc. processing time (minutes)", group = "variable", legend.labels = c("Median wait time", "Median service time"), labels = "format(value, big.mark = \",\", scientific = FALSE)" )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)

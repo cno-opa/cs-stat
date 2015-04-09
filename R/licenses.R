@@ -92,7 +92,7 @@ cpnc <- function() {
        summarise(n = n(), days_to_issue = mean(daystoissue)) %>%
        melt()
 
-  p_n <- lineOPA(filter(d, variable == "n"), "month_end", "value", "Number of CPNC licenses issued", group = "type", labels = "value")
+  p_n <- lineOPA(filter(d, variable == "n"), "month_end", "value", "Number of CPNC licenses issued", group = "type", labels = "format(value, big.mark = \",\", scientific = FALSE)")
   p_n <- buildChart(p_n)
   ggsave("./output/37-licenses-cpnc-n.png", plot = p_n, width = 7.42, height = 5.75)
 

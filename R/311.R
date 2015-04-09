@@ -93,7 +93,7 @@ callVol <- function() {
        group_by(date) %>%
        summarise(n = value)
 
-  p <- lineOPA(d, "date", "n", "Call Volume", labels = "n")
+  p <- lineOPA(d, "date", "n", "Call Volume", labels = "format(n, big.mark = \",\", scientific = FALSE)")
   p <- buildChart(p)
   ggsave("./output/6-311-calls.png", plot = p, width = 7.42, height = 5.75)
 }
@@ -113,7 +113,7 @@ holdTime <- function() {
        group_by(date) %>%
        summarise(n = value)
 
-  p <- lineOPA(d, "date", "n", "Average hold time (seconds)", labels = "n")
+  p <- lineOPA(d, "date", "n", "Average hold time (seconds)", labels = "format(n, big.mark = \",\", scientific = FALSE)")
   p <- buildChart(p)
   ggsave("./output/8-311-hold-time.png", plot = p, width = 7.42, height = 5.75)
 }
@@ -135,18 +135,6 @@ operators <- function() {
            guides(fill = guide_legend(nrow = 2))
   p <- buildChart(p)
   ggsave("./output/10-311-operators.png", plot = p, width = 7.42, height = 5.75)
-
-  #historical total score line chart
-  # load("./data/context/ops-score-hist.Rdata")
-  # add <- filter(ops, variable == "Total Score") %>%
-  #        arrange(agent)
-  # add <- data.frame(date = period, variable = add$agent, value = add$value)
-  # # ops_hist <- rbind(ops_hist, add)
-  # # save(ops_hist, file = "./data/context/ops-score-hist.Rdata")
-  #
-  # p_l <- lineOPA(ops_hist, "date", "value", "Total operator scores by operator", group = "variable", percent = TRUE)
-  # p_l <- buildChart(p_l)
-  # ggsave("./output/6-311-operators.png", plot = p_l, width = 7.42, height = 5.75)
 }
 
 topRequest <- function() {
@@ -255,14 +243,14 @@ taxiComplaints <- function() {
                  "date",
                  "value",
                  "Number of open complaints against drivers at end of month",
-                 labels = "value"
+                 labels = "format(value, big.mark = \",\", scientific = FALSE)"
                 )
   p_open <- buildChart(p_open)
   ggsave("./output/46-311-taxi-complaints-open.png", plot = p_open, width = 7.42, height = 5.75)
 
   d_net <- data.frame(month = unique(d$date), net = (d$value[d$variable == "opened"] - d$value[d$variable == "closed"]))
 
-  p_net <- lineOPA(d_net, "month", "net", "Net complaints logged against taxi drivers per month", labels = "net") +
+  p_net <- lineOPA(d_net, "month", "net", "Net complaints logged against taxi drivers per month", labels = "format(net, big.mark = \",\", scientific = FALSE)") +
            scale_y_continuous( breaks = pretty_breaks(4, min.n = 4)(min(d_net$net):max(d_net$net)) )
 
   p_net <- buildChart(p_net)

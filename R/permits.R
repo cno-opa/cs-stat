@@ -150,7 +150,7 @@ resComm <- function() {
        group_by(month_end, usetype) %>%
        summarise(n = n())
 
-  p <- lineOPA(d, "month_end", "n", "Residential and commercial permits issued", group = "usetype", legend.labels = c("Commercial", "Residential"), labels = "n")
+  p <- lineOPA(d, "month_end", "n", "Residential and commercial permits issued", group = "usetype", legend.labels = c("Commercial", "Residential"), labels = "format(n, big.mark = \",\", scientific = FALSE)")
   p <- buildChart(p)
   ggsave("./output/26-permits-res-comm.png", plot = p, width = 7.42, height = 5.75)
 }
