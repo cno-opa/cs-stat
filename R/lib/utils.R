@@ -30,6 +30,19 @@ getOneYear <- function(df, date_col, from_date) {
   return(df)
 }
 
+getTwoYears <- function(df, date_col, from_date) {
+  #`df` data frame to subset out into one year-long period
+  #`date_col` column in said data frame which has the month-year date by which you'd like to subset it out. do not pass this in quotes
+  #`from` month of the reporting period, should be formatted "mmm yyyy"
+
+  date_col <- eval(substitute(date_col), envir = df)
+  date_col <- as.Date(as.yearmon(date_col), format = "%b %Y")
+  l <- as.Date((as.yearmon(from_date) - 2), format = "%b %Y") #sets to reporting period minus two years
+  u <- as.Date((as.yearmon(from_date) + .1), format = "%b %Y") #sets to reporting period plus one month
+  df <- filter(df, ymd(date_col) >= ymd(l) & ymd(date_col) < ymd(u))
+  return(df)
+}
+
 prettyPercentBreaks <- function(m, n) {
   # returns a range of pretty values in or near range boundaries for small ranges, like when you're dealing with percents
   # `m` is max value in your vector

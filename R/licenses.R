@@ -48,7 +48,7 @@ plotL <- function() {
 theme_set(theme_opa())
 
 mech <- function() {
-  d <- getOneYear(l, month_end, period) %>%
+  d <- getTwoYears(l, month_end, period) %>%
        filter(opa_category == "Mechanical") %>%
        group_by(month_end) %>%
        summarise(all = n(), oneday = sum(daystoissue <= 1)) %>%
@@ -61,7 +61,7 @@ mech <- function() {
 }
 
 elec <- function() {
-  d <- getOneYear(l, month_end, period) %>%
+  d <- getTwoYears(l, month_end, period) %>%
        filter(opa_category == "Electrical") %>%
        group_by(month_end) %>%
        summarise(all = n(), oneday = sum(daystoissue <= 1)) %>%
@@ -74,7 +74,7 @@ elec <- function() {
 }
 
 biz <- function() {
-  d <- getOneYear(l, month_end, period) %>%
+  d <- getTwoYears(l, month_end, period) %>%
        filter(opa_category == "Business") %>%
        group_by(month_end) %>%
        summarise(all = n(), tenday = sum(daystoissue <= 10), fiveday = sum(daystoissue <= 5), oneday = sum(daystoissue <= 1) ) %>%
@@ -86,7 +86,7 @@ biz <- function() {
 }
 
 cpnc <- function() {
-  d <- getOneYear(l, month_end, period) %>%
+  d <- getTwoYears(l, month_end, period) %>%
        filter(opa_category == "CPNC") %>%
        group_by(month_end, type) %>%
        summarise(n = n(), days_to_issue = mean(daystoissue)) %>%

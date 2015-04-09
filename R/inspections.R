@@ -45,7 +45,7 @@ plotInsp <- function() {
 theme_set(theme_opa())
 
 plotBiz <- function() {
-  d <- getOneYear(biz, month_end, period) %>%
+  d <- getTwoYears(biz, month_end, period) %>%
        group_by(month_end) %>%
        summarise(n = n(), target = sum(days < 7)) %>%
        melt()

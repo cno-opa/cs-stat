@@ -186,7 +186,7 @@ lineOPA <- function(data, x, y, title = "Title!", group = 1, percent = FALSE, la
 
     base <- base +
             geom_text(data = labels_data, size = 4, colour = "grey33", hjust = -0.2, aes_string(label = dots$labels, y = y)) +
-            scale_x_discrete(expand = c(0, 1.5)) #extend the width of the plot area so label doesn't get cut off
+            scale_x_discrete(expand = c(0, 2.4)) #extend the width of the plot area so label doesn't get cut off
   } else if( !is.null(dots$labels) ) {
     base <- base +
             geom_text(size = 4, colour = "grey33", vjust = -0.5, aes_string(label = dots$labels, y = y))

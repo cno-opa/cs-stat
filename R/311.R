@@ -31,7 +31,7 @@ cleanQLS <- function() {
 
   qls$value <- sapply(qls$value, convPercent)
 
-  qls <- getOneYear(qls, date, period)
+  qls <- getTwoYears(qls, date, period)
 
   return(qls)
 }
@@ -149,7 +149,7 @@ topRequest <- function() {
   sourceD$type <- as.character(sourceD$type)
 
        # filter(qls, measure == top[1] | measure == top[2] | measure == top[3]) <== use that when 311 doesn't insist on changing their type designations around
-  d <- getOneYear(sourceD, month_start, period) %>%
+  d <- getTwoYears(sourceD, month_start, period) %>%
        filter(agrepl(top[1], type, max.distance = 0.3) | agrepl(top[2], type, max.distance = 0.3) | agrepl(top[3], type, max.distance = 0.3)) %>%
        group_by(month_start, type) %>%
        summarise(n = n()) %>%
@@ -169,17 +169,17 @@ topRequest <- function() {
 
 taxiComplaints <- function() {
   taxi <- filter(sourceD, title == "Taxi - Complaint")
-  months_in_period <- seq(ymd(as.Date(as.yearmon(period) - 1, format = "%b %Y")),
+  months_in_period <- seq(ymd(as.Date(as.yearmon(period) - 2, format = "%b %Y")),
                           ymd(as.Date(as.yearmon(period), format = "%b %Y")),
                           "month")
 
   # number closed per month
-  n_closed <- getOneYear(taxi, month_end, period) %>%
+  n_closed <- getTwoYears(taxi, month_end, period) %>%
               group_by(month_end) %>%
               summarise(closed = n())
 
   # number opened per month
-  n_opened <- getOneYear(taxi, month_start, period) %>%
+  n_opened <- getTwoYears(taxi, month_start, period) %>%
               group_by(month_start) %>%
               summarise(opened = n())
 
@@ -199,7 +199,7 @@ taxiComplaints <- function() {
   n_open$date <- as.factor(as.yearmon(n_open$date))
 
   # mean days to close for all complaints closed in each month
-  d_closed <- getOneYear(taxi, month_end, period) %>%
+  d_closed <- getTwoYears(taxi, month_end, period) %>%
               group_by(month_end) %>%
               summarise(mean_close = mean(age__calendar))
 

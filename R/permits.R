@@ -145,7 +145,7 @@ plotPermits <- function() {
 theme_set(theme_opa())
 
 resComm <- function() {
-  d <- getOneYear(issued, month_end, period) %>%
+  d <- getTwoYears(issued, month_end, period) %>%
        filter(usetype == "residential" | usetype == "commercial") %>%
        group_by(month_end, usetype) %>%
        summarise(n = n())
@@ -156,7 +156,7 @@ resComm <- function() {
 }
 
 resCommIssueTime <- function() {
-  d <- getOneYear(issued, month_end, period) %>%
+  d <- getTwoYears(issued, month_end, period) %>%
        filter(usetype == "residential" | usetype == "commercial") %>%
        group_by(month_end, usetype) %>%
        summarise(mean_to_issue = mean(daystoissue, na.rm = TRUE))
@@ -167,7 +167,7 @@ resCommIssueTime <- function() {
 }
 
 sameDay <- function() {
-  d <- getOneYear(issued, month_end, period) %>%
+  d <- getTwoYears(issued, month_end, period) %>%
        filter(opa_category == "Building - All Others" | opa_category == "Building - New Construction") %>%
        mutate(app_method = ifelse(createdby == "publicwebcrm", "online", "in person")) %>%
        mutate(under_48 = ifelse(sec_to_issue < 172800, TRUE, FALSE)) %>%
@@ -193,7 +193,7 @@ sameDay <- function() {
 }
 
 hdlcReview <- function() {
-  d <- getOneYear(hdlc, month_end, period) %>%
+  d <- getTwoYears(hdlc, month_end, period) %>%
        group_by(month_end) %>%
        summarise(n = n(), target = sum(daystoissue <= 5)) %>%
        melt()
