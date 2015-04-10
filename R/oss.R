@@ -221,8 +221,8 @@ ossEtc <- function() {
            summarise(n = n(), medianwait = median(as.numeric(timewaited)), medianserve = median(as.numeric(lengthofservice))) %>%
            melt()
 
-  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "CPC, VCC, etc. customers", labels = "format(value, big.mark = \",\", scientific = FALSE)")
-  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "CPC, VCC, etc. processing time (minutes)", group = "variable", legend.labels = c("Median wait time", "Median service time"), labels = "format(value, big.mark = \",\", scientific = FALSE)" )
+  p_vol <- lineOPA(filter(d_all, variable == "n"), "month_start", "value", "CPC, VCC, HDLC customers", labels = "format(value, big.mark = \",\", scientific = FALSE)")
+  p_times <- lineOPA(filter(d_all, variable != "n"), "month_start", "value", "CPC, VCC, HDLC processing time (minutes)", group = "variable", legend.labels = c("Median wait time", "Median service time"), labels = "format(value, big.mark = \",\", scientific = FALSE)" )
 
   p_vol <- buildChart(p_vol)
   p_times <- buildChart(p_times)
@@ -258,7 +258,7 @@ ossEtc <- function() {
   p_facet <- ggplot(d_cat, aes(month_start, value, group = category, colour = highlight)) +
              geom_line(size = 1) +
              facet_grid(variable ~ category, scales = "free_y") +
-             labs(title = "CPC, VCC, etc. stats by queue (minutes), Feb 2014 - Feb 2015", x = "", y = "") +
+             labs(title = "CPC, VCC, HDLC stats by queue (minutes)", x = "", y = "") +
              scale_colour_manual(values = c("grey70", "tomato")) +
              scale_x_discrete(breaks = brks) +
              theme(panel.grid.major.y = element_blank(),
