@@ -61,6 +61,27 @@ plotComplaints <- function() {
 
 theme_set(theme_opa())
 
+months_in_period <- seq(ymd(as.Date(as.yearmon(r_period) - 2, format = "%b %Y")),
+                        ymd(as.Date(as.yearmon(r_period), format = "%b %Y")),
+                        "month")
+
+calcOpenAge <- function(data, month) {
+  date_end_month <- dateFromYearMon(month)
+
+  #anti join method
+  opened_before <- filter(data, d_filed <= date_end_month)
+  closed_before <- filter(data, firstinspection <= date_end_month)
+  o <- anti_join(opened_before, closed_before, by = "num")
+  o$age <- date_end_month - o$d_filed
+
+  return( as.numeric(mean(o$age, na.rm = TRUE), units ="days") )
+}
+
+calcMeanClose <- function(data, month) {
+  f <- filter(data, as.character(month_end) == as.character(month))
+  return( mean(f$daystoinspect, na.rm = TRUE))
+}
+
 building <- function() {
   d <- getTwoYears(complaints, month_end, r_period) %>%
        filter(opa_category == "Building") %>%
@@ -72,6 +93,17 @@ building <- function() {
   p <- barOPA(d, "month_end", "value", "Building inspections, and days to completion", fill = "variable", position = "identity", legend.labels = c("More than 7 days", "Less than 7 days"))
   p <- buildChart(p)
   ggsave("./output/40-complaints-building.png", plot = p, width = 7.42, height = 5.75)
+
+  #age stats on building complaints
+  f_complaints <- filter(complaints, opa_category == "Building")
+  ages = data.frame(date = as.factor(as.yearmon(months_in_period)))
+  ages$open_age <- sapply(ages$date, calcOpenAge, data = f_complaints)
+  ages$mean_close <- sapply(ages$date, calcMeanClose, data = f_complaints)
+  ages <- melt(ages, id.vars = "date")
+
+  p_age <- lineOPA(ages, "date", "value", "Age statistics on building complaints", group = "variable", labels = "round(value)", legend.labels = c("Average age of open complaints", "Average days to close complaints") )
+  p_age <- buildChart(p_age)
+  ggsave("./output/NEW-complaints-building-ages.png", plot = p_age, width = 7.42, height = 5.75)
 }
 
 zoning <- function() {
@@ -85,6 +117,17 @@ zoning <- function() {
   p <- barOPA(d, "month_end", "value", title = "Zoning inspections, and days to completion", fill = "variable", position = "identity", legend.labels = c("More than 7 days", "Less than 7 days"))
   p <- buildChart(p)
   ggsave("./output/41-complaints-zoning.png", plot = p, width = 7.42, height = 5.75)
+
+  #age stats on zoning complaints
+  f_complaints <- filter(complaints, opa_category == "Zoning")
+  ages = data.frame(date = as.factor(as.yearmon(months_in_period)))
+  ages$open_age <- sapply(ages$date, calcOpenAge, data = f_complaints)
+  ages$mean_close <- sapply(ages$date, calcMeanClose, data = f_complaints)
+  ages <- melt(ages, id.vars = "date")
+
+  p_age <- lineOPA(ages, "date", "value", "Age statistics on zoning complaints", group = "variable", labels = "round(value)", legend.labels = c("Average age of open complaints", "Average days to close complaints") )
+  p_age <- buildChart(p_age)
+  ggsave("./output/NEW-complaints-zoning-ages.png", plot = p_age, width = 7.42, height = 5.75)
 }
 
 openEndOfMonth <- function() {
