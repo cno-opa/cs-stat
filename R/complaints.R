@@ -32,9 +32,9 @@ cleanSPComplaints <- function(data) {
 
 set_kpis <- function() {
   load("./data/kpi.Rdata")
-  cutoff <- dateFromYearMon(period)
+  cutoff <- dateFromYearMon(r_period)
   cutup <- ymd(paste(
-              strsplit(period, " ")[[1]][2],
+              strsplit(r_period, " ")[[1]][2],
               "01",
               "01",
               sep = "-"
@@ -62,7 +62,7 @@ plotComplaints <- function() {
 theme_set(theme_opa())
 
 building <- function() {
-  d <- getTwoYears(complaints, month_end, period) %>%
+  d <- getTwoYears(complaints, month_end, r_period) %>%
        filter(opa_category == "Building") %>%
        group_by(month_end) %>%
        summarise(n = n(), target = sum(daystoinspect <= 7, na.rm = TRUE)) %>%
@@ -75,7 +75,7 @@ building <- function() {
 }
 
 zoning <- function() {
-  d <- getTwoYears(complaints, month_end, period) %>%
+  d <- getTwoYears(complaints, month_end, r_period) %>%
        filter(opa_category == "Zoning") %>%
        group_by(month_end) %>%
        summarise(n = n(), target = sum(daystoinspect <= 7, na.rm = TRUE)) %>%
@@ -105,7 +105,7 @@ openEndOfMonth <- function() {
 
   # supplementary measure
 
-  d <- getTwoYears(complaints, month_start, period) %>%
+  d <- getTwoYears(complaints, month_start, r_period) %>%
        group_by(month_start) %>%
        summarise(n = sum(daystoinspect > 30 | is.na(daystoinspect)))
 

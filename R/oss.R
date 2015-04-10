@@ -19,16 +19,16 @@ cleanOss <- function() {
   oss <- filter(oss, lengthofservice < 480) #remove entries that take over 8 hours, or one working day
   oss <- filter(oss, !grepl("appointment", tolower(serviceprovided)) & !grepl("meeting", tolower(serviceprovided)))
   oss$category <- as.factor( oss_lookup$category[match(oss$queue, oss_lookup$lookup)] )
-  oss <- getTwoYears(oss, month_start, period)
+  oss <- getTwoYears(oss, month_start, r_period)
 
   return(oss)
 }
 
 set_kpis <- function() {
   load("./data/kpi.Rdata")
-  cutoff <- dateFromYearMon(period)
+  cutoff <- dateFromYearMon(r_period)
   cutup <- ymd(paste(
-              strsplit(period, " ")[[1]][2],
+              strsplit(r_period, " ")[[1]][2],
               "01",
               "01",
               sep = "-"

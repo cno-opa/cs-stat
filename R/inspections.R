@@ -21,9 +21,9 @@ cleanBiz <- function(data) {
 
 set_kpis <- function() {
   load("./data/kpi.Rdata")
-  cutoff <- dateFromYearMon(period)
+  cutoff <- dateFromYearMon(r_period)
   cutup <- ymd(paste(
-              strsplit(period, " ")[[1]][2],
+              strsplit(r_period, " ")[[1]][2],
               "01",
               "01",
               sep = "-"
@@ -45,7 +45,7 @@ plotInsp <- function() {
 theme_set(theme_opa())
 
 plotBiz <- function() {
-  d <- getTwoYears(biz, month_end, period) %>%
+  d <- getTwoYears(biz, month_end, r_period) %>%
        group_by(month_end) %>%
        summarise(n = n(), target = sum(days < 7)) %>%
        melt()

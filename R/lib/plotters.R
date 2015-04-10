@@ -175,7 +175,7 @@ lineOPA <- function(data, x, y, title = "Title!", group = 1, percent = FALSE, la
     #hacky way to get labels data when there is more than one series. pulls all data in df for the named period
     getLabelsData <- function() {
       if(group != 1) {
-        d <- data[data[,1] == period,]
+        d <- data[data[,1] == r_period,]
         return(d)
       } else {
         return(data[nrow(data), ])

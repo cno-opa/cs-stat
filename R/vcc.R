@@ -89,7 +89,7 @@ theme_set(theme_opa())
 
 timeliness <- function() {
 
-  d <- getTwoYears(vcc_all, month_end, period) %>%
+  d <- getTwoYears(vcc_all, month_end, r_period) %>%
        filter(staff == "staff") %>%
        group_by(month_end) %>%
        summarise(n = n(), target = sum(under_target == TRUE)) %>%
@@ -102,7 +102,7 @@ timeliness <- function() {
 
 responsiveness <- function() {
 
-  d <- getTwoYears(vcc_all, month_end, period) %>%
+  d <- getTwoYears(vcc_all, month_end, r_period) %>%
        filter(staff == "staff") %>%
        group_by(month_end) %>%
        summarise(not_response = sum(violation == "N"), response = sum(violation == "Y")) %>%
