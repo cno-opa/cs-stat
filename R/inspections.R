@@ -44,8 +44,8 @@ plotInsp <- function() {
 
 theme_set(theme_opa())
 
-plotBiz <- function() {
-  d <- getTwoYears(biz, month_end, r_period) %>%
+plotInsp <- function() {
+  d <- getTwoYears(inspections, month_end, r_period) %>%
        group_by(month_end) %>%
        summarise(n = n(), target = sum(days < 7)) %>%
        melt()
@@ -55,8 +55,32 @@ plotBiz <- function() {
   ggsave("./output/42-inspections-biz.png", plot = p, width = 7.42, height = 5.75)
 }
 
+backlog <- function() {
+  months_in_period <- seq(ymd(as.Date(as.yearmon(r_period) - 2, format = "%b %Y")),
+                          ymd(as.Date(as.yearmon(r_period), format = "%b %Y")),
+                          "month")
+  n_open <- data.frame(date = months_in_period)
+
+  calcOpen <- function(d) {
+    date_end_month <- ymd( paste(year(d), month(d), days_in_month(month(d))) )
+
+    opened_before <- filter(inspections, requested <= date_end_month)
+    closed_before <- filter(inspections, date <= date_end_month)
+
+    return(nrow(opened_before) - nrow(closed_before))
+  }
+
+  n_open$open_at_end <- lapply(n_open$date, calcOpen)
+  n_open$date <- as.factor(as.yearmon(n_open$date))
+
+  p <- lineOPA(n_open, "date", "open_at_end", "Business licenses inspection requests outstanding at end of month", labels = "format(open_at_end, big.mark = \",\", scientific = FALSE)")
+  p <- buildChart(p)
+  ggsave("./output/NEW-biz-inspections-backlog.png", plot = p, width = 7.42, height = 5.75)
+}
+
 # execute
-plotBiz()
+plotInsp()
+backlog()
 
 #
 #
@@ -66,6 +90,6 @@ plotBiz()
 inspections <- read.csv("./data/inspections-biz.csv", header = TRUE)
 
 # execute
-biz <- cleanBiz(inspections)
+inspections <- cleanBiz(inspections)
 plotInsp()
 set_kpis()
