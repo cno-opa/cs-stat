@@ -237,7 +237,7 @@ barOPA <- function(data, x, y, title = "Title", stat = "identity", position = "i
 
   if( !is.null(dots$labels) ) {
     base <- base +
-            geom_text(size = 4, colour = "grey33", vjust = -.5, aes_string(label = dots$labels, y = y))
+            geom_text(size = 4, colour = "grey33",  vjust = ifelse(data[y] >= 0, -0.5, 1.5), aes_string(label = dots$labels, y = y))
   }
 
   if( !is.null(dots$fill) ) {
