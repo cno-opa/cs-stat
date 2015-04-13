@@ -30,7 +30,7 @@ theme_opa <- function (base_size = 14, base_family = "")
     rect = element_rect(fill = "white", colour = "black", size = 0.5, linetype = 1),
     text = element_text(family = base_family, face = "plain", colour = "black", size = base_size, hjust = 0.5, vjust = 0.5, angle = 0, lineheight = 0.9),
 
-    axis.text = element_text(size = rel(0.8), colour = "grey50"),
+    axis.text = element_text(size = rel(0.6), colour = "grey50"),
     strip.text = element_text(size = rel(0.8)),
     axis.line = element_blank(),
     axis.line.y = element_blank(),
