@@ -290,3 +290,42 @@ schigoda <- function(data, x, y, title = "Schigoda!", fill, ...) {
 
   return(base)
 }
+
+wiseChart <- function(data, x, y, formula, title = "Title!", title.dates = TRUE) {
+  # attach a highlight column to `data` to highlight certain facets. this data vector will be mapped to the colour aesthetics of the graph
+  #
+
+  brks <- unique(data[,x])[seq(1, 13, 5)]
+
+  if(!("highlight" %in% colnames(data))) {
+    data$highlight <- "no"
+  }
+
+  if(title.dates == TRUE) {
+    if(is.factor(data[,x])) {
+      u <- levels(d[,x])[length(levels(d[,x]))]
+      l <- levels(d[,x])[1]
+    } else {
+      u <- max(data[,x])
+      l <- min(data[,x])
+    }
+    title <- paste(title, as.character(l), "to", as.character(u))
+  }
+
+  base <- ggplot(data, aes_string(x = x, y = y, group = 1, colour = "highlight")) +
+          geom_line(size = 1) +
+          facet_grid(formula, scales = "free_y") +
+          labs(title = title, x = "", y = "") +
+          scale_x_discrete(breaks = brks) +
+          scale_colour_manual(values = c("grey70", "tomato")) +
+          theme(panel.grid.major.y = element_blank(),
+                panel.background = element_rect(fill = "grey90"),
+                legend.position = "none",
+                strip.background = element_blank(),
+                strip.text.x = element_text(face = "bold"),
+                strip.text.y = element_text(face = "bold"),
+                axis.text.x = element_blank()
+               )
+
+  return(base)
+}
