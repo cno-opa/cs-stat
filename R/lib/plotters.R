@@ -293,18 +293,18 @@ schigoda <- function(data, x, y, title = "Schigoda!", fill, ...) {
 
 wiseChart <- function(data, x, y, formula, title = "Title!", title.dates = TRUE) {
   # attach a highlight column to `data` to highlight certain facets. this data vector will be mapped to the colour aesthetics of the graph
-  #
+  # set title.dates = TRUE if you want the title of the graph to have the date range in it. use this to remove dates from the x-axes per Schigoda's Razor
 
-  brks <- unique(data[,x])[seq(1, 13, 5)]
+  brks <- unique(data[,x])[seq(1, 13, 5)] #keep in case you want to turn the x-axis dates on (turned off by theme call below)
 
   if(!("highlight" %in% colnames(data))) {
     data$highlight <- "no"
   }
 
   if(title.dates == TRUE) {
-    if(is.factor(data[,x])) {
-      u <- levels(d[,x])[length(levels(d[,x]))]
-      l <- levels(d[,x])[1]
+    if(is.factor(data[,x]) == TRUE) {
+      u <- levels(data[,x])[length(levels(data[,x]))]
+      l <- levels(data[,x])[1]
     } else {
       u <- max(data[,x])
       l <- min(data[,x])

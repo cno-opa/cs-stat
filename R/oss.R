@@ -96,8 +96,6 @@ ossSP <- function() {
     }
   }
 
-  brks <- unique(d$month_start)[seq(1, 13, 5)]
-
   #relabel
   d_cat$variable <- as.character(d_cat$variable)
   for(i in 1:nrow(d_cat)) {
@@ -112,20 +110,7 @@ ossSP <- function() {
     }
   }
 
-  p_facet <- ggplot(d_cat, aes(month_start, value, group = category, colour = highlight)) +
-             geom_line(size = 1) +
-             facet_grid(variable ~ category, scales = "free_y") +
-             labs(title = "Saftey and Permits stats by queue (minutes), Feb 2014 - Feb 2015", x = "", y = "") +
-             scale_colour_manual(values = c("grey70", "tomato")) +
-             scale_x_discrete(breaks = brks) +
-             theme(panel.grid.major.y = element_blank(),
-                   panel.background = element_rect(fill = "grey90"),
-                   legend.position = "none",
-                   strip.background = element_blank(),
-                   strip.text.x = element_text(face = "bold"),
-                   strip.text.y = element_text(face = "bold"),
-                   axis.text.x = element_blank()
-                  )
+  p_facet <- wiseChart(d_cat, "month_start", "value", "variable ~ category", "Saftey and Permits stats by queue (minutes)")
   p_facet <- buildChart(p_facet)
   ggsave("./output/16-oss-sp-facet.png", plot = p_facet, width = 7.42, height = 5.75)
 }
@@ -167,8 +152,6 @@ ossCPNC <- function() {
     }
   }
 
-  brks <- unique(d$month_start)[seq(1, 13, 5)]
-
   # relabel
   d_cat$variable <- as.character(d_cat$variable)
   for(i in 1:nrow(d_cat)) {
@@ -183,20 +166,7 @@ ossCPNC <- function() {
     }
   }
 
-  p_facet <- ggplot(d_cat, aes(month_start, value, group = category, colour = highlight)) +
-             geom_line(size = 1) +
-             facet_grid(variable ~ category, scales = "free_y") +
-             labs(title = "Taxi Cab Bureau stats by queue (minutes), Feb 2014 - Feb 2015", x = "", y = "") +
-             scale_colour_manual(values = c("grey70", "tomato")) +
-             scale_x_discrete(breaks = brks) +
-             theme(panel.grid.major.y = element_blank(),
-                   panel.background = element_rect(fill = "grey90"),
-                   legend.position = "none",
-                   strip.background = element_blank(),
-                   strip.text.x = element_text(face = "bold"),
-                   strip.text.y = element_text(face = "bold"),
-                   axis.text.x = element_blank()
-                  )
+  p_facet <- wiseChart(d_cat, "month_start", "value", "variable ~ category", "Taxi Cab Bureau stats by queue (minutes)")
   p_facet <- buildChart(p_facet)
   ggsave("./output/20-oss-cpnc-facet.png", plot = p_facet, width = 7.42, height = 5.75)
 }
@@ -239,8 +209,6 @@ ossEtc <- function() {
     }
   }
 
-  brks <- unique(d$month_start)[seq(1, 13, 5)]
-
   # relabel
   d_cat$variable <- as.character(d_cat$variable)
   for(i in 1:nrow(d_cat)) {
@@ -255,20 +223,7 @@ ossEtc <- function() {
     }
   }
 
-  p_facet <- ggplot(d_cat, aes(month_start, value, group = category, colour = highlight)) +
-             geom_line(size = 1) +
-             facet_grid(variable ~ category, scales = "free_y") +
-             labs(title = "CPC, VCC, HDLC stats by queue (minutes)", x = "", y = "") +
-             scale_colour_manual(values = c("grey70", "tomato")) +
-             scale_x_discrete(breaks = brks) +
-             theme(panel.grid.major.y = element_blank(),
-                   panel.background = element_rect(fill = "grey90"),
-                   legend.position = "none",
-                   strip.background = element_blank(),
-                   strip.text.x = element_text(face = "bold"),
-                   strip.text.y = element_text(face = "bold"),
-                   axis.text.x = element_blank()
-                  )
+  p_facet <- wiseChart(d_cat, "month_start", "value", "variable ~ category", "CPC, VCC, HDLC stats by queue (minutes)")
   p_facet <- buildChart(p_facet)
   ggsave("./output/24-oss-etc-facet.png", plot = p_facet, width = 7.42, height = 5.75)
 
