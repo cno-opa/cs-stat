@@ -43,7 +43,7 @@ plotRev <- function() {
   d$highlight <- "no"
 
   for(i in 1:length(d$month_start)) {
-   if(d$opa_category[i] == "Accounts" & d$variable[i] == "meanwait" | d$opa_category[i] == "ABO" & d$variable[i] == "meanserve") {
+   if(d$opa_category[i] == "Business Intake" & d$variable[i] == "n" | d$opa_category[i] == "Business Intake" & d$variable[i] == "meanwait") {
      d$highlight[i] <- "yes"
    }
   }

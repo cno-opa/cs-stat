@@ -64,7 +64,6 @@ cleanSource <- function() {
   sourceD$closed_dt <- mdy(sourceD$closed_dt)
   sourceD$month_start <- as.factor(as.yearmon(sourceD$open_dt))
   sourceD$month_end <- as.factor(as.yearmon(sourceD$closed_dt))
-  sourceD$open_end_month <- ifelse(sourceD$month_start != sourceD$month_end, TRUE, FALSE)
   sourceD$age__calendar <- as.numeric(as.character(sourceD$age__calendar))
   return(sourceD)
 }
@@ -160,7 +159,7 @@ topRequest <- function() {
                "value",
                "Top service requests",
                group = "type",
-               highlight = "Code Enforcement General Request")
+               highlight = "Street Light")
   p <- p + theme(legend.text = element_text(size = rel(0.65))) +
            guides(fill = guide_legend(nrow = 2))
   p <- buildChart(p)

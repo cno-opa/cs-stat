@@ -51,8 +51,7 @@ mech <- function() {
   d <- getTwoYears(l, month_end, r_period) %>%
        filter(opa_category == "Mechanical") %>%
        group_by(month_end) %>%
-       summarise(all = n(), oneday = sum(daystoissue <= 1)) %>%
-       filter(!is.na(oneday)) %>%
+       summarise(all = n(), oneday = sum(daystoissue <= 1, na.rm = TRUE)) %>%
        melt()
 
   p <- barOPA(d, "month_end", "value", "Mechanical licenses, number and days to issue", fill = "variable", position = "identity", legend.labels = c("More than one day", "Same day"))
@@ -64,8 +63,7 @@ elec <- function() {
   d <- getTwoYears(l, month_end, r_period) %>%
        filter(opa_category == "Electrical") %>%
        group_by(month_end) %>%
-       summarise(all = n(), oneday = sum(daystoissue <= 1)) %>%
-       filter(!is.na(oneday)) %>%
+       summarise(all = n(), oneday = sum(daystoissue <= 1, na.rm = TRUE)) %>%
        melt()
 
   p <- barOPA(d, "month_end", "value", "Electrical licenses, number and days to issue", fill = "variable", position = "identity", legend.labels = c("More than one day", "Same day"))
