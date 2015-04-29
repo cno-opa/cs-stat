@@ -21,3 +21,13 @@ Run `main.R` after making sure you have the packages below installed, and you sh
  * stringr
  * scales
  * reshape2
+
+## Charts
+
+These are some of the charts this script produces.
+
+![A basic line chart in the OPA theme](img/line.png)
+
+![The almighty Wise chart](img/facet.png)
+
+![A histogram with positive and negative values styled](img/bar.png)

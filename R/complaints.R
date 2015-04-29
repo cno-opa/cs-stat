@@ -74,12 +74,12 @@ calcOpenAge <- function(data, month) {
   o <- anti_join(opened_before, closed_before, by = "num")
   o$age <- date_end_month - o$d_filed
 
-  return( as.numeric(mean(o$age, na.rm = TRUE), units ="days") )
+  return( as.numeric(median(o$age, na.rm = TRUE), units ="days") )
 }
 
-calcMeanClose <- function(data, month) {
+calcMedianClose <- function(data, month) {
   f <- filter(data, as.character(month_end) == as.character(month))
-  return( mean(f$daystoinspect, na.rm = TRUE))
+  return( median(f$daystoinspect, na.rm = TRUE))
 }
 
 building <- function() {
@@ -98,10 +98,10 @@ building <- function() {
   f_complaints <- filter(complaints, opa_category == "Building")
   ages = data.frame(date = as.factor(as.yearmon(months_in_period)))
   ages$open_age <- sapply(ages$date, calcOpenAge, data = f_complaints)
-  ages$mean_close <- sapply(ages$date, calcMeanClose, data = f_complaints)
+  ages$median_close <- sapply(ages$date, calcMedianClose, data = f_complaints)
   ages <- melt(ages, id.vars = "date")
 
-  p_age <- lineOPA(ages, "date", "value", "Age statistics on building complaints", group = "variable", labels = "round(value)", legend.labels = c("Average age of open complaints", "Average days to close complaints") )
+  p_age <- lineOPA(ages, "date", "value", "Age statistics on building complaints", group = "variable", labels = "round(value)", legend.labels = c("Median age of open complaints", "Median days to close complaints") )
   p_age <- buildChart(p_age)
   ggsave("./output/NEW-complaints-building-ages.png", plot = p_age, width = 7.42, height = 5.75)
 }
@@ -122,10 +122,10 @@ zoning <- function() {
   f_complaints <- filter(complaints, opa_category == "Zoning")
   ages = data.frame(date = as.factor(as.yearmon(months_in_period)))
   ages$open_age <- sapply(ages$date, calcOpenAge, data = f_complaints)
-  ages$mean_close <- sapply(ages$date, calcMeanClose, data = f_complaints)
+  ages$median_close <- sapply(ages$date, calcMedianClose, data = f_complaints)
   ages <- melt(ages, id.vars = "date")
 
-  p_age <- lineOPA(ages, "date", "value", "Age statistics on zoning complaints", group = "variable", labels = "round(value)", legend.labels = c("Average age of open complaints", "Average days to close complaints") )
+  p_age <- lineOPA(ages, "date", "value", "Age statistics on zoning complaints", group = "variable", labels = "round(value)", legend.labels = c("Median age of open complaints", "Median days to close complaints") )
   p_age <- buildChart(p_age)
   ggsave("./output/NEW-complaints-zoning-ages.png", plot = p_age, width = 7.42, height = 5.75)
 }
