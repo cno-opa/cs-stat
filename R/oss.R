@@ -35,16 +35,16 @@ set_kpis <- function() {
               ))
 
   wait_build <- filter(oss, category == "Building" & datein <= cutoff & datein >= cutup) %>%
-                summarise(measure = "Median wait for building permit", value = median(timewaited))
+                summarise(measure = "mean wait for building permit", value = mean(timewaited))
 
   wait_any <- filter(oss, datein <= cutoff & datein >= cutup) %>%
-                    summarise(measure = "Median wait for any permit", value = median(timewaited))
+                    summarise(measure = "mean wait for any permit", value = mean(timewaited))
 
   wait_biz <- filter(oss, category == "Business" & datein <= cutoff & datein >= cutup) %>%
-                    summarise(measure = "Median wait for business license", value = median(timewaited))
+                    summarise(measure = "mean wait for business license", value = mean(timewaited))
 
   wait_pay <- filter(oss, category == "Payment" & datein <= cutoff & datein >= cutup) %>%
-                    summarise(measure = "Median wait for payment", value = median(timewaited))
+                    summarise(measure = "mean wait for payment", value = mean(timewaited))
 
   kpi <- rbind(kpi,
                wait_build,

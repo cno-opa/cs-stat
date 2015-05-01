@@ -30,7 +30,7 @@ set_kpis <- function() {
               ))
 
   b <- filter(inspections, date >= cutup & date <= cutoff) %>%
-       summarise(measure = "Median days to business license inspection", value = median(days, na.rm = TRUE))
+       summarise(measure = "mean days to business license inspection", value = mean(days, na.rm = TRUE))
 
   kpi <- rbind(kpi, b)
 
