@@ -26,6 +26,18 @@ cleanSPComplaints <- function(data) {
 
   data <- filter(data, origin == "Business" | origin == "Police" | origin == "Citizen")
   data <- filter(data, !grepl("ESP", data$numstring))
+  exclude <- filter(data, is.na(firstinspection) & stage == "8.Case-Closed" & initinspectionstatus == "")
+  #d <- data
+  data <- anti_join(data, exclude, by = "codeincidid")
+
+  #create first inspection date based on key status date for entries with case closed and date hidden in keystatus col
+  for(i in 1:nrow(data)) {
+    if( is.na(data$firstinspection[i]) & data$stage[i] == "8.Case-Closed" & data$initinspectionstatus[i] != "" ) {
+      data$firstinspection[i] <- toDate(data$keystatusdate[i])
+    }
+  }
+
+
   data$opa_category <- sapply(data$type, categorize)
   return(data)
 }
@@ -82,6 +94,21 @@ calcMedianClose <- function(data, month) {
   return( median(f$daystoinspect, na.rm = TRUE))
 }
 
+countOpen <- function(month_year, df, date_start, date_end) {
+  date_start <- eval(substitute(date_start), envir = df)
+
+  # #remove cases which have been closed without inspections noted
+  # df <- filter(df, !grepl("been closed", keystatus))
+
+  month_year <- as.Date(as.yearmon(month_year))
+  eom <- ymd(paste(year(month_year), month(month_year), days_in_month(month(month_year)), sep="-"))
+  f <- filter(df, date_start <= eom)
+  date_end <- eval(substitute(date_end), envir = f)
+  f <- filter(f, date_end > eom | is.na(date_end))
+  n <- nrow(f)
+  return(n)
+}
+
 building <- function() {
   d <- getTwoYears(complaints, month_end, r_period) %>%
        filter(opa_category == "Building") %>%
@@ -104,6 +131,12 @@ building <- function() {
   p_age <- lineOPA(ages, "date", "value", "Age statistics on building complaints", group = "variable", labels = "round(value)", legend.labels = c("Median age of open complaints", "Median days to close complaints") )
   p_age <- buildChart(p_age)
   ggsave("./output/NEW-complaints-building-ages.png", plot = p_age, width = 7.42, height = 5.75)
+
+  #volume of backlog
+  backlog <- data.frame(month = d$month_end, open = sapply(d$month_end, countOpen, df = filter(complaints, opa_category == "Building"), date_start = d_filed, date_end = firstinspection))
+  p_backlog <- lineOPA(backlog, "month", "open", "Number of open building complaints at end of each month", labels = "format(open, big.mark = \",\", scientific = FALSE)")
+  p_backlog <- buildChart(p_backlog)
+  ggsave("./output/NEW-complaints-open-eom-building.png", plot = p_backlog, width = 7.42, height = 5.75)
 }
 
 zoning <- function() {
@@ -128,26 +161,17 @@ zoning <- function() {
   p_age <- lineOPA(ages, "date", "value", "Age statistics on zoning complaints", group = "variable", labels = "round(value)", legend.labels = c("Median age of open complaints", "Median days to close complaints") )
   p_age <- buildChart(p_age)
   ggsave("./output/NEW-complaints-zoning-ages.png", plot = p_age, width = 7.42, height = 5.75)
+
+  #volume of backlog
+  backlog <- data.frame(month = d$month_end, open = sapply(d$month_end, countOpen, df = filter(complaints, opa_category == "Zoning"), date_start = d_filed, date_end = firstinspection))
+  p_backlog <- lineOPA(backlog, "month", "open", "Number of open zoning complaints at end of each month", labels = "format(open, big.mark = \",\", scientific = FALSE)")
+  p_backlog <- buildChart(p_backlog)
+  ggsave("./output/NEW-complaints-open-eom-zoning.png", plot = p_backlog, width = 7.42, height = 5.75)
 }
 
 openEndOfMonth <- function() {
 
-  # this counts all complaints opened before the end of each month and closed after the end of each month, or not closed. It returns a number around 220 for each month, which makes me think there are 220 artifacts in LAMA
-
-  countOpen <- function(month_year, df, date_start, date_end) {
-    date_start <- eval(substitute(date_start), envir = df)
-
-    month_year <- as.Date(as.yearmon(month_year))
-    eom <- ymd(paste(year(month_year), month(month_year), days_in_month(month(month_year)), sep="-"))
-    f <- filter(df, date_start <= eom)
-    date_end <- eval(substitute(date_end), envir = f)
-    f <- filter(f, date_end > eom | is.na(date_end))
-    n <- nrow(f)
-    return(n)
-  }
-
   # supplementary measure
-
   d <- getTwoYears(complaints, month_start, r_period) %>%
        group_by(month_start) %>%
        summarise(n = sum(daystoinspect > 30 | is.na(daystoinspect)))

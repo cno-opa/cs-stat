@@ -147,7 +147,7 @@ ossCPNC <- function() {
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
-    if(d_cat$category[i] == "Driver" & d_cat$variable[i] == "n") {
+    if(d_cat$category[i] == "Driver" & d_cat$variable[i] == "n" | d_cat$category[i] == "Driver" & d_cat$variable[i] == "medianwait" | d_cat$category[i] == "Tour Guide" & d_cat$variable[i] == "medianwait" | d_cat$category[i] == "CPNC" & d_cat$variable[i] == "medianwait" ) {
       d_cat$highlight[i] <- "yes"
     }
   }
