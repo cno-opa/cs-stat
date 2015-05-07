@@ -90,11 +90,11 @@ cpnc <- function() {
        summarise(n = n(), days_to_issue = mean(daystoissue)) %>%
        melt()
 
-  p_n <- lineOPA(filter(d, variable == "n"), "month_end", "value", "Number of CPNC licenses issued", group = "type", labels = "format(value, big.mark = \",\", scientific = FALSE)")
+  p_n <- lineOPA(filter(d, variable == "n"), "month_end", "value", "Number of operator permits issued", group = "type", labels = "format(value, big.mark = \",\", scientific = FALSE)")
   p_n <- buildChart(p_n)
   ggsave("./output/37-licenses-cpnc-n.png", plot = p_n, width = 7.42, height = 5.75)
 
-  p_m <- lineOPA(filter(d, variable == "days_to_issue"), "month_end", "value", "Average days to issue a CPNC license", group = "type", labels = "round(value)")
+  p_m <- lineOPA(filter(d, variable == "days_to_issue"), "month_end", "value", "Average days to issue operator license", group = "type", labels = "round(value)")
   p_m <- buildChart(p_m)
   ggsave("./output/38-licenses-cpnc-mean.png", plot = p_m, width = 7.42, height = 5.75)
 }
