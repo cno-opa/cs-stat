@@ -196,10 +196,10 @@ sameDay <- function() {
 hdlcReview <- function() {
   d <- getTwoYears(hdlc, month_end, r_period) %>%
        group_by(month_end) %>%
-       summarise(n = n(), target = sum(daystoissue <= 5)) %>%
+       summarise(n = n(), target = sum(daystoissue <= 3)) %>%
        melt()
 
-  p <- barOPA(d, "month_end", "value", "Number and days to issue HDLC permits", fill = "variable", legend.labels = c("Issued in more than five days", "Issued in five days"))
+  p <- barOPA(d, "month_end", "value", "Number and days to issue HDLC permits", fill = "variable", legend.labels = c("Issued in more than three days", "Issued in three days"))
   p <- buildChart(p)
   ggsave("./output/29-permits-hdlc.png", plot = p, width = 7.42, height = 5.75)
 }
