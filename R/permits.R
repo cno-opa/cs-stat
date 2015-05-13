@@ -107,6 +107,9 @@ cleanHDLC <- function(permits) {
   exclude <- filter(exclude, event != "NULL")
   permits <- filter(permits, !(permits$numstring %in% exclude$numstring))
 
+  #ad hoc item removal
+  permits <- filter(permits, numstring != "13-35091-HDLC", numstring != "13-39018-HDLC", numstring != "13-44935-HDLC", numstring != "14-22548-HDLC", numstring != "14-08200-HDLC", numstring != "14-22548-HDLC", numstring != "14-33457-HDLC")
+
   return(permits)
 }
 
