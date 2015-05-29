@@ -122,7 +122,8 @@ firstCall <- function() {
        group_by(date) %>%
        summarise(n = value)
 
-  p <- lineOPA(d, "date", "n", "First call resolution rate", percent = TRUE, labels = "percent(n)")
+  p <- lineOPA(d, "date", "n", "First call resolution rate", percent = TRUE, labels = "percent(n)") +
+       geom_hline(aes(yintercept = 0.7), colour = "grey55", linetype = "dashed", size = 1)
   p <- buildChart(p)
   ggsave("./output/9-311-first-call.png", plot = p, width = 7.42, height = 5.75)
 }
