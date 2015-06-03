@@ -35,16 +35,16 @@ set_kpis <- function() {
               ))
 
   wait_build <- filter(oss, category == "Building" & datein <= cutoff & datein >= cutup) %>%
-                summarise(measure = "mean wait for building permit", value = mean(timewaited))
+                summarise(measure = "Median wait for building permit", value = median(timewaited))
 
   wait_any <- filter(oss, datein <= cutoff & datein >= cutup) %>%
-                    summarise(measure = "mean wait for any permit", value = mean(timewaited))
+                    summarise(measure = "Median wait for any permit", value = median(timewaited))
 
   wait_biz <- filter(oss, category == "Business" & datein <= cutoff & datein >= cutup) %>%
-                    summarise(measure = "mean wait for business license", value = mean(timewaited))
+                    summarise(measure = "Median wait for business license", value = median(timewaited))
 
   wait_pay <- filter(oss, category == "Payment" & datein <= cutoff & datein >= cutup) %>%
-                    summarise(measure = "mean wait for payment", value = mean(timewaited))
+                    summarise(measure = "Median wait for payment", value = median(timewaited))
 
   kpi <- rbind(kpi,
                wait_build,
@@ -91,7 +91,7 @@ ossSP <- function() {
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
-    if(d_cat$category[i] == "Plan Review" & d_cat$variable[i] == "medianserve" | d_cat$category[i] == "Mechanical" & d_cat$variable[i] == "medianserve" | d_cat$category[i] == "Electrical" & d_cat$variable[i] == "medianserve") {
+    if(d_cat$category[i] == "Electrical" & d_cat$variable[i] == "n" | d_cat$category[i] == "Electrical" & d_cat$variable[i] == "medianserve" | d_cat$category[i] == "Plan Review" & d_cat$variable[i] == "medianserve") {
       d_cat$highlight[i] <- "yes"
     }
   }
@@ -110,7 +110,7 @@ ossSP <- function() {
     }
   }
 
-  p_facet <- wiseChart(d_cat, "month_start", "value", "variable ~ category", "Saftey and Permits stats by queue (minutes)")
+  p_facet <- wiseChart(d_cat, "month_start", "value", "variable ~ category", "Stats by queue (times in median minutes)")
   p_facet <- buildChart(p_facet)
   ggsave("./output/16-oss-sp-facet.png", plot = p_facet, width = 7.42, height = 5.75)
 }
@@ -147,7 +147,7 @@ ossCPNC <- function() {
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
-    if(d_cat$category[i] == "Driver" & d_cat$variable[i] == "n" | d_cat$category[i] == "Driver" & d_cat$variable[i] == "medianwait" | d_cat$category[i] == "Tour Guide" & d_cat$variable[i] == "medianwait" | d_cat$category[i] == "CPNC" & d_cat$variable[i] == "medianwait" ) {
+    if(d_cat$category[i] == "Tour Guide" & d_cat$variable[i] == "medianwait" | d_cat$category[i] == "Tour Guide" & d_cat$variable[i] == "medianserve" ) {
       d_cat$highlight[i] <- "yes"
     }
   }
@@ -166,7 +166,7 @@ ossCPNC <- function() {
     }
   }
 
-  p_facet <- wiseChart(d_cat, "month_start", "value", "variable ~ category", "Taxi Cab Bureau stats by queue (minutes)")
+  p_facet <- wiseChart(d_cat, "month_start", "value", "variable ~ category", "Stats by queue (times in median minutes)")
   p_facet <- buildChart(p_facet)
   ggsave("./output/20-oss-cpnc-facet.png", plot = p_facet, width = 7.42, height = 5.75)
 }
@@ -204,7 +204,7 @@ ossEtc <- function() {
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
-    if(d_cat$category[i] == "Event" & d_cat$variable[i] == "medianserve" | d_cat$category[i] == "Payment" & d_cat$variable[i] == "n") {
+    if(d_cat$category[i] == "HDLC" & d_cat$variable[i] == "medianserve" | d_cat$category[i] == "Payment" & d_cat$variable[i] == "n") {
       d_cat$highlight[i] <- "yes"
     }
   }
@@ -223,7 +223,7 @@ ossEtc <- function() {
     }
   }
 
-  p_facet <- wiseChart(d_cat, "month_start", "value", "variable ~ category", "CPC, VCC, HDLC stats by queue (minutes)")
+  p_facet <- wiseChart(d_cat, "month_start", "value", "variable ~ category", "Stats by queue (times in median minutes)")
   p_facet <- buildChart(p_facet)
   ggsave("./output/24-oss-etc-facet.png", plot = p_facet, width = 7.42, height = 5.75)
 
