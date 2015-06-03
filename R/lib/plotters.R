@@ -317,7 +317,7 @@ wiseChart <- function(data, x, y, formula, title = "Title!", title.dates = TRUE)
           facet_grid(formula, scales = "free_y") +
           labs(title = title, x = "", y = "") +
           scale_x_discrete(breaks = brks) +
-          scale_colour_manual(values = c("grey70", "tomato")) +
+          scale_colour_manual(values = c("grey70", darkBlue)) +
           theme(panel.grid.major.y = element_blank(),
                 panel.background = element_rect(fill = "grey90"),
                 legend.position = "none",
