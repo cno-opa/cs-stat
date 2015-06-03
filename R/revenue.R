@@ -43,7 +43,7 @@ plotRev <- function() {
   d$highlight <- "no"
 
   for(i in 1:length(d$month_start)) {
-   if(d$opa_category[i] == "Business Intake" & d$variable[i] == "n" | d$opa_category[i] == "Business Intake" & d$variable[i] == "meanwait") {
+   if(d$opa_category[i] == "Enforcement" & d$variable[i] == "meanwait" | d$opa_category[i] == "Business Intake" & d$variable[i] == "meanwait" | d$opa_category[i] == "ABO" & d$variable[i] == "n") {
      d$highlight[i] <- "yes"
    }
   }
@@ -62,7 +62,7 @@ plotRev <- function() {
     }
   }
 
-  p_facet <- wiseChart(d, "month_start", "value", "variable ~ opa_category", "Revenue stats by queue (minutes)")
+  p_facet <- wiseChart(d, "month_start", "value", "variable ~ opa_category", "Stats by queue (times in mean minutes)")
   p_facet <- buildChart(p_facet)
   ggsave("./output/32-rev-facet.png", plot = p_facet, width = 7.42, height = 5.75)
 }
