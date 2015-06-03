@@ -170,6 +170,18 @@ resCommIssueTime <- function() {
   ggsave("./output/27-permits-res-comm-days-to-issue.png", plot = p, width = 7.42, height = 5.75)
 }
 
+spVisits <- function() {
+  d <- getTwoYears(applied, month_start, r_period) %>%
+       filter(division == "SP") %>%
+       group_by(month_start) %>%
+       summarise(in_person = sum(createdby != "publicwebcrm"), online = sum(createdby == "publicwebcrm")) %>%
+       melt()
+
+  p <- lineOPA(d, "month_start", "value", "Permits issued by Safety and Permits by application method", group = "variable", labels = "format(value, big.mark = \",\", scientific = FALSE)", legend.labels = c("In person", "Online"))
+  p <- buildChart(p)
+  ggsave("./output/NEW-oss-sp-online-in-person.png", plot = p, width = 7.42, height = 5.75)
+}
+
 sameDay <- function() {
   d <- getTwoYears(issued, month_end, r_period) %>%
        filter(opa_category == "Building - All Others" | opa_category == "Building - New Construction") %>%
@@ -212,6 +224,7 @@ resComm()
 resCommIssueTime()
 sameDay()
 hdlcReview()
+spVisits()
 
 #
 #
