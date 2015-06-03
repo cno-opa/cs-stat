@@ -73,7 +73,7 @@ elec <- function() {
 
 biz <- function() {
   d <- getTwoYears(l, month_end, r_period) %>%
-       filter(opa_category == "Business") %>%
+       filter(opa_category == "Business" & dateFromYearMon(month_end) >= ymd("2014-01-01")) %>%
        group_by(month_end) %>%
        summarise(all = n(), tenday = sum(daystoissue <= 10), fiveday = sum(daystoissue <= 5), oneday = sum(daystoissue <= 1) ) %>%
        melt()
