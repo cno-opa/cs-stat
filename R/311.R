@@ -102,7 +102,9 @@ callAbandon <- function() {
        group_by(date) %>%
        summarise(n = value)
 
-  p <- lineOPA(d, "date", "n", "Abandonment Rate", percent = TRUE, labels = "percent(n)")
+  p <- lineOPA(d, "date", "n", "Abandonment Rate", percent = TRUE, labels = "percent(n)") +
+       geom_hline(aes(yintercept = 0.1), colour = "grey55", linetype = "dashed", size = 1) +
+       scale_y_continuous(breaks = c(0, .04, .08 , .12), limits = c(0, .13), labels = percent)
   p <- buildChart(p)
   ggsave("./output/7-311-abandonment.png", plot = p, width = 7.42, height = 5.75)
 }
@@ -112,7 +114,9 @@ holdTime <- function() {
        group_by(date) %>%
        summarise(n = value)
 
-  p <- lineOPA(d, "date", "n", "Average hold time (seconds)", labels = "format(n, big.mark = \",\", scientific = FALSE)")
+  p <- lineOPA(d, "date", "n", "Average hold time (seconds)", labels = "format(n, big.mark = \",\", scientific = FALSE)") +
+       geom_hline(aes(yintercept = 15), colour = "grey55", linetype = "dashed", size = 1) +
+       scale_y_continuous(breaks = c(0, 4, 8, 12, 16), limits = c(0, 17))
   p <- buildChart(p)
   ggsave("./output/8-311-hold-time.png", plot = p, width = 7.42, height = 5.75)
 }
