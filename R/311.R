@@ -41,8 +41,7 @@ cleanOps <- function() {
   ops <- ops[-1,]
   ops <- melt(ops, id.vars = "Agent")
   names(ops) <- slugify(names(ops))
-  ops$agent <- factor(ops$agent)
-  levels(ops$agent) <- unique(ops$agent)
+  ops$agent <- factor(ops$agent, as.character(unique(ops$agent)))
   ops$variable <- gsub("[.]", " ", ops$variable)
   ops$value <- gsub("%", "", ops$value)
   ops$value <- as.numeric(ops$value)
