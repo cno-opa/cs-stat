@@ -53,10 +53,10 @@ set_kpis <- function() {
               ))
 
   building <- filter(complaints, opa_category == "Building" & firstinspection <= cutoff & firstinspection >= cutup) %>%
-              summarise(measure = "mean days to respond to building complaints", value = mean(daystoinspect, na.rm = TRUE))
+              summarise(measure = "Mean days to respond to building complaints", value = mean(daystoinspect, na.rm = TRUE))
 
   zoning <- filter(complaints, opa_category == "Zoning" & firstinspection <= cutoff & firstinspection >= cutup) %>%
-              summarise(measure = "mean days to respond to zoning complaints", value = mean(daystoinspect, na.rm = TRUE))
+              summarise(measure = "Mean days to respond to zoning complaints", value = mean(daystoinspect, na.rm = TRUE))
 
   kpi <- rbind(kpi,
                building,
