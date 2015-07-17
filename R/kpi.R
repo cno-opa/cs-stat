@@ -52,44 +52,62 @@ calcKPIs <- function(time_period, year_override = NA) {
     stop(e)
   }
 
+  tz(u) <- "America/Chicago"
+  tz(l) <- "America/Chicago"
+
   # 311 KPIs
   qls$eom <- dateFromYearMon(qls$date)
   kpi_abandon_rate <- mean(as.numeric(filter(qls, measure == "Abandonment Rate", eom >= l & eom <= u)$value))
   kpi_call_res <- mean(as.numeric(filter(qls, measure == "First Call Resolution", eom >= l & eom <= u)$value))
 
   # initialize with 311 KPIs
-  kpis <- data.frame(measure = c("311- Abandoment Rate", "311 - First Call Resolution Rate"), value = c(kpi_abandon_rate, kpi_call_res))
+  kpis <- data.frame(measure = c("311 - Abandoment Rate", "311 - First Call Resolution Rate"), value = c(kpi_abandon_rate, kpi_call_res))
 
   # Safety and Permits KPIs
   kpi_wait_bldg            <- filter(oss, category == "Building" & datein >= l & datein <= u) %>%
-                               summarise(measure = "Median wait for building permit", value = median(timewaited))
+                              summarise(measure = "SP - Median wait for building permit", value = median(timewaited))
 
   kpi_wait_any             <- filter(oss, datein >= l & datein <= u) %>%
-                               summarise(measure = "Median wait for any permit", value = median(timewaited))
+                              summarise(measure = "SP - Median wait for any permit", value = median(timewaited))
 
   kpi_wait_biz             <- filter(oss, category == "Business" & datein >= l & datein <= u) %>%
-                               summarise(measure = "Median wait for business permit", value = median(timewaited))
+                              summarise(measure = "SP - Median wait for business permit", value = median(timewaited))
 
   kpi_wait_payment         <- filter(oss, category == "Payment" & datein >= l & datein <= u) %>%
-                               summarise(measure = "Median wait to make a payment", value = median(timewaited))
+                              summarise(measure = "SP - Median wait to make a payment", value = median(timewaited))
 
   kpi_perc_online          <- applied[applied$filingdate <= u & applied$filingdate >= l & applied$online == TRUE,] %>%
-                               summarise(measure = "Percent of permits applied for online", value = sum(createdby == "publicwebcrm")/n())
+                              summarise(measure = "SP - Percent of permits applied for online", value = sum(createdby == "publicwebcrm")/n())
 
   kpi_avg_comm             <- filter(issued, usetype == "commercial" & issuedate >= l & issuedate <= u) %>%
-                              summarise(measure = "Mean days to issue commercial permit", value = mean(daystoissue, na.rm = TRUE))
+                              summarise(measure = "SP - Mean days to issue commercial permit", value = mean(daystoissue, na.rm = TRUE))
 
   kpi_avg_res              <- filter(issued, usetype == "residential" & issuedate >= l & issuedate <= u) %>%
-                              summarise(measure = "Mean days to issue residential permit", value = mean(daystoissue, na.rm = TRUE))
+                              summarise(measure = "SP - Mean days to issue residential permit", value = mean(daystoissue, na.rm = TRUE))
 
   kpi_avg_bldg_complaint   <- filter(complaints, opa_category == "Building" & firstinspection >= l & firstinspection <= u) %>%
-                              summarise(measure = "Mean days to respond to building complaints", value = mean(daystoinspect, na.rm = TRUE))
+                              summarise(measure = "SP - Mean days to respond to building complaints", value = mean(daystoinspect, na.rm = TRUE))
 
   kpi_avg_zoning_complaint <- filter(complaints, opa_category == "Zoning" & firstinspection >= l & firstinspection <= u) %>%
-                              summarise(measure = "Mean days to respond to zoning complaints", value = mean(daystoinspect, na.rm = TRUE))
+                              summarise(measure = "SP - Mean days to respond to zoning complaints", value = mean(daystoinspect, na.rm = TRUE))
 
   kpi_avg_biz_complaint    <- filter(inspections, date >= l & date <= u) %>%
-                              summarise(measure = "Mean days to business license inspection", value = mean(days, na.rm = TRUE))
+                              summarise(measure = "SP - Mean days to business license inspection", value = mean(days, na.rm = TRUE))
+
+  kpi_bldg_permit_same_day <- filter(issued, opa_category == "Building - All Others" | opa_category == "Building - New Construction", issuedate >= l & issuedate <= u) %>%
+                              mutate(sameday = ifelse(sec_to_issue <= 86400, TRUE, FALSE)) %>%
+                              summarise(measure = "SP - Percent of building permits issued in one day", value = sum(sameday == TRUE)/n())
+
+  # VCC KPIs
+  kpi_vcc_time <- filter(vcc_all, staff == "staff", issuedate >= l & issuedate <= u) %>%
+                  summarise(measure = "VCC - Average number of days to review staff approvable applications", value = mean(daystoissue))
+
+  kpi_vcc_closure <- filter(vcc_all, staff == "staff", issuedate >= l & issuedate <= u) %>%
+                     summarise(measure = "VCC - Percent of cases closed due to compliance", value = sum(violation == "Y" | violation == "y")/n())
+
+  # HDLC KPIs
+  kpi_hdlc_time <- filter(hdlc, issuedate >= l & issuedate <= u) %>%
+                   summarise(measure = "HDLC - Average number of days to review staff approvable applications", value = mean(daystoissue))
 
   # bind all to kpis object
   kpis <- rbind(
@@ -103,7 +121,11 @@ calcKPIs <- function(time_period, year_override = NA) {
                 kpi_avg_res,
                 kpi_avg_bldg_complaint,
                 kpi_avg_zoning_complaint,
-                kpi_avg_biz_complaint
+                kpi_avg_biz_complaint,
+                kpi_bldg_permit_same_day,
+                kpi_vcc_time,
+                kpi_vcc_closure,
+                kpi_hdlc_time
                )
 
   # save

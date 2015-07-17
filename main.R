@@ -24,5 +24,7 @@ reset_kpi()
 init("R")
 print_kpis()
 
+# calcKPIs("Q1")
+
 # finish
 cat("Finished!")
