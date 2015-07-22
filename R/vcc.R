@@ -105,7 +105,7 @@ responsiveness <- function() {
   d <- getTwoYears(vcc_all, month_end, r_period) %>%
        filter(staff == "staff") %>%
        group_by(month_end) %>%
-       summarise(not_response = sum(violation == "N"), response = sum(violation == "Y")) %>%
+       summarise(not_response = sum(violation == "N" | violation == "n"), response = sum(violation == "Y" | violation == "y")) %>%
        melt()
 
   p <- barOPA(d, "month_end", "value", "Number of applications approved due to violations", fill = "variable", position = "stack", legend.labels = c("In response to violations", "Not in response to violations"))
