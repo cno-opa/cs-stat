@@ -91,7 +91,7 @@ ossSP <- function() {
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
-    if(d_cat$category[i] == "Electrical" & d_cat$variable[i] == "n" | d_cat$category[i] == "Electrical" & d_cat$variable[i] == "medianserve" | d_cat$category[i] == "Plan Review" & d_cat$variable[i] == "medianserve") {
+    if( d_cat$category[i] == "Plan Review" & d_cat$variable[i] == "medianserve") {
       d_cat$highlight[i] <- "yes"
     }
   }
@@ -147,7 +147,7 @@ ossCPNC <- function() {
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
-    if(d_cat$category[i] == "Tour Guide" & d_cat$variable[i] == "medianwait" | d_cat$category[i] == "Tour Guide" & d_cat$variable[i] == "medianserve" ) {
+    if(d_cat$category[i] == "CPNC" & d_cat$variable[i] == "medianwait" | d_cat$category[i] == "Driver" & d_cat$variable[i] == "medianwait" ) {
       d_cat$highlight[i] <- "yes"
     }
   }
@@ -204,7 +204,7 @@ ossEtc <- function() {
   d_cat$highlight <- "no"
 
   for(i in 1:length(d_cat$month_start)) {
-    if(d_cat$category[i] == "HDLC" & d_cat$variable[i] == "medianserve" | d_cat$category[i] == "Payment" & d_cat$variable[i] == "n") {
+    if(d_cat$category[i] == "Event" & d_cat$variable[i] == "medianserve" ) {
       d_cat$highlight[i] <- "yes"
     }
   }
