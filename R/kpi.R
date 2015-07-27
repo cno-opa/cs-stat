@@ -68,10 +68,10 @@ calcKPIs <- function(time_period, year_override = NA) {
                               summarise(measure = "SP - Median wait for building permit", numerator = median(timewaited), denominator = n())
 
   kpi_wait_any             <- filter(oss, datein >= l & datein <= u) %>%
-                              summarise(measure = "SP - Median wait for any permit", numerator = median(timewaited), denominator = n())
+                              summarise(measure = "SP - Median wait time for any license or permit", numerator = median(timewaited), denominator = n())
 
   kpi_wait_biz             <- filter(oss, category == "Business" & datein >= l & datein <= u) %>%
-                              summarise(measure = "SP - Median wait for business permit", numerator = median(timewaited), denominator = n())
+                              summarise(measure = "SP - Median wait time (in minutes) to apply for a new occupational license", numerator = median(timewaited), denominator = n())
 
   kpi_wait_payment         <- filter(oss, category == "Payment" & datein >= l & datein <= u) %>%
                               summarise(measure = "SP - Median wait to make a payment", numerator = median(timewaited), denominator = n())
@@ -92,7 +92,7 @@ calcKPIs <- function(time_period, year_override = NA) {
                               summarise(measure = "SP - Mean days to respond to zoning complaints", numerator = mean(daystoinspect, na.rm = TRUE), denominator = n())
 
   kpi_avg_biz_complaint    <- filter(inspections, date >= l & date <= u) %>%
-                              summarise(measure = "SP - Mean days to business license inspection", numerator = mean(days, na.rm = TRUE), denominator = n())
+                              summarise(measure = "SP - Average number of days to respond to license inspection requests", numerator = mean(days, na.rm = TRUE), denominator = n())
 
   kpi_bldg_permit_same_day <- filter(issued, opa_category == "Building - All Others" | opa_category == "Building - New Construction", issuedate >= l & issuedate <= u) %>%
                               mutate(sameday = ifelse(sec_to_issue <= 86400, TRUE, FALSE)) %>%
