@@ -4,7 +4,7 @@
 
 # get user to set reporting period
 cat("What is the reporting period?\n\n##(Use mmm yyyy format, please)##\n\n")
-r_period <- readLines("stdin", 1, warn = FALSE)
+r_period <- "Feb 2016"
 
 # initialize
 init <- function(subdir) {
@@ -37,7 +37,7 @@ reset_kpi()
 init("R")
 print_kpis()
 
-calcKPIs("Q2")
+calcKPIs("Q1")
 
 # finish
 cat("Finished!")

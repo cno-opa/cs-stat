@@ -55,17 +55,6 @@ crossAndBuild <- function() {
   # determine if target was met
   vcc_all$under_target <- NA
   for(i in 1:nrow(vcc_all)) {
-    if( year(as.yearmon(vcc_all$month_end[i])) == 2014 ) {
-      if(vcc_all$daystoissue[i] <= 5) {
-        vcc_all$under_target[i] <- TRUE
-      } else if(vcc_all$daystoissue[i] > 5) {
-        vcc_all$under_target[i] <- FALSE
-      } else {
-        vcc_all$under_target[i] <- NA
-      }
-    }
-
-    if( year(as.yearmon(vcc_all$month_end[i])) == 2015 ) {
       if(vcc_all$daystoissue[i] <= 7) {
         vcc_all$under_target[i] <- TRUE
       } else if(vcc_all$daystoissue[i] > 7) {
@@ -73,7 +62,7 @@ crossAndBuild <- function() {
       } else {
         vcc_all$under_target[i] <- NA
       }
-    }
+    
   }
 
   return(vcc_all)
@@ -82,8 +71,6 @@ crossAndBuild <- function() {
 
 # plot
 plotVCC <- function() {
-#
-#
 
 theme_set(theme_opa())
 
@@ -117,9 +104,6 @@ responsiveness <- function() {
 # execute
 timeliness()
 responsiveness()
-
-#
-#
 }
 
 # load

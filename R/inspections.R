@@ -13,10 +13,11 @@
 # clean
 cleanBiz <- function(data) {
   data <- cleanInspections(data) %>%
-          filter(inspection == "Zoning") %>%
-          filter(type == "Business License" | type == "Temporary Business License") %>%
-          filter(days >= 0)
-  return(data)
+      filter(inspection == "Zoning") %>%
+      filter(type == "Business License" | type == "Temporary Business License") %>%
+      filter(!is.na(days)) %>%
+      filter(days >= 0)
+  return(unique(data))
 }
 
 set_kpis <- function() {
@@ -62,10 +63,13 @@ backlog <- function() {
   n_open <- data.frame(date = months_in_period)
 
   calcOpen <- function(d) {
-    date_end_month <- ymd( paste(year(d), month(d), days_in_month(month(d))) )
+    date_end_month <- ymd(paste(year(d), month(d), days_in_month(as.yearmon(d))))
 
     opened_before <- filter(inspections, requested <= date_end_month)
     closed_before <- filter(inspections, date <= date_end_month)
+    
+    outstanding <- anti_join(opened_before, closed_before)
+    write.csv(x = outstanding, file = paste0("biz_lic_insp_outstanding", "_", today(), ".csv"))
 
     return(nrow(opened_before) - nrow(closed_before))
   }
@@ -73,7 +77,7 @@ backlog <- function() {
   n_open$open_at_end <- lapply(n_open$date, calcOpen)
   n_open$date <- as.factor(as.yearmon(n_open$date))
 
-  p <- lineOPA(n_open, "date", "open_at_end", "Business licenses inspection requests outstanding at end of month", labels = "format(open_at_end, big.mark = \",\", scientific = FALSE)")
+  p <- lineOPA(n_open, "date", "open_at_end", "Business license inspection requests outstanding at end of month", labels = "format(open_at_end, big.mark = \",\", scientific = FALSE)")
   p <- buildChart(p)
   ggsave("./output/NEW-biz-inspections-backlog.png", plot = p, width = 7.42, height = 5.75)
 }
@@ -87,7 +91,11 @@ backlog()
 }
 
 # load
-inspections <- read.csv("./data/inspections-biz.csv", header = TRUE)
+inspections <- read.csv("./data/inspections-biz.csv", header = TRUE, stringsAsFactors = FALSE)
+inspections <- inspections %>%
+    mutate(Date = as.character(Date),
+           Requested = as.character(Requested),
+           Days = as.integer(as.character(Days)))
 
 # execute
 inspections <- cleanBiz(inspections)

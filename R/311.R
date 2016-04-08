@@ -143,8 +143,9 @@ operators <- function() {
 topRequest <- function() {
   top <- filter(qls,
                 type == "service request",
-                date == levels(qls$date)[length(levels(qls$date))]) %>%
-          arrange(value)
+                date == r_period,
+                !is.na(value)) %>%
+          arrange(desc(value))
 
   top <- top$measure[1:3]
   top <- as.character(top)
@@ -163,7 +164,7 @@ topRequest <- function() {
                "value",
                "Top service requests",
                group = "type",
-               highlight = "Street Light")
+               highlight = NULL)
   p <- p + theme(legend.text = element_text(size = rel(0.65))) +
            guides(fill = guide_legend(nrow = 2))
   p <- buildChart(p)

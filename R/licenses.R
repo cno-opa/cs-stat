@@ -85,8 +85,11 @@ biz <- function() {
 
 cpnc <- function() {
   d <- getTwoYears(l, month_end, r_period) %>%
-       filter(opa_category == "CPNC") %>%
-       group_by(month_end, type) %>%
+       filter(opa_category == "CPNC")
+  
+  write.csv(x = d, file = paste0("cpnc_licenses", "_", today(), ".csv"))
+  
+  d <- d %>% group_by(month_end, type) %>%
        summarise(n = n(), days_to_issue = mean(daystoissue)) %>%
        melt()
 

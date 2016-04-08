@@ -63,7 +63,7 @@ cleanIssued <- function(permits) {
       cat(paste("Address: ", permits$address[i]))
       cat(paste("\nDescription: ", permits$descr[i]))
       cat("\n \nresidential, commercial, or undetermined? Enter r, c, or u \n \n")
-      input <- readLines("stdin", 1, warn = FALSE)
+      input <- "u" # readLines("stdin", 1, warn = FALSE)
       if(input == "r") {
         input <- "residential"
       } else if( input == "c") {
@@ -101,11 +101,11 @@ cleanIssued <- function(permits) {
 }
 
 cleanHDLC <- function(permits) {
-  exclude <- read.csv("./data/permits-hdlc-exclude.csv", header = FALSE)
-  colnames(exclude) <- c("numstring", "filed", "issued", "type", "landuse", "event")
+  #exclude <- read.csv("./data/permits-hdlc-exclude.csv", header = TRUE, stringsAsFactors = FALSE)
+  #colnames(exclude) <- c("numstring", "filed", "issued", "type", "landuse", "event")
   permits <- cleanPermits(permits)
-  exclude <- filter(exclude, event != "NULL")
-  permits <- filter(permits, !(permits$numstring %in% exclude$numstring))
+  #exclude <- filter(exclude, event != "NULL")
+  #permits <- filter(permits, !(permits$numstring %in% exclude$numstring))
 
   #ad hoc item removal
   permits <- filter(permits, numstring != "13-35091-HDLC", numstring != "13-39018-HDLC", numstring != "13-44935-HDLC", numstring != "14-22548-HDLC", numstring != "14-08200-HDLC", numstring != "14-22548-HDLC", numstring != "14-33457-HDLC")
@@ -232,7 +232,7 @@ spVisits()
 
 # load
 issued <- read.csv("./data/permits-issued.csv", header = TRUE)
-hdlc <- read.csv("./data/permits-hdlc.csv", header = TRUE)
+hdlc <- read.csv("./data/permits-hdlc1.csv", header = TRUE, stringsAsFactors = FALSE)
 applied <- read.csv("./data/permits-applied.csv", header = TRUE)
 
 # execute

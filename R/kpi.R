@@ -19,7 +19,7 @@ print_kpis <- function() {
   write.csv(kpi, "./output/kpi.csv", row.names = FALSE)
 }
 
-calcKPIs <- function(time_period, year_override = NA) {
+calcKPIs <- function(time_period, year_override = 2015) {
   # time_period can be Q1, Q2, Q3, or annual
   # fn gets year based on Sys.time. set the year manually by using "year_override = 2013" for example
   # IMPORTANT! this fn depends on all the functions and data produced by the script. I suggest using calcKPIs() at the end of main.R

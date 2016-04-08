@@ -13,13 +13,13 @@
 # clean
 cleanRevD <- function(data) {
   categorize <- function(type) {
-    if(type == "Account Maint." | type == "Administration" | type == "Account Admin.") {
+    if(type %in% c("Account Maint.", "Administration", "Account Admin.", "Account Maintenance", "Account Recovery", "Revenue Administration")) {
       "Accounts"
-    } else if(type == "Business Regist.") {
+    } else if(type %in% c("Business Regist.", "Business Registration/Renewals")) {
       "Business Intake"
-    } else if(type == "Enforcement") {
+    } else if(type %in% c("Enforcement", "Enforcement/Special Events")) {
       "Enforcement"
-    } else if(type == "Alcoholic Beverage") {
+    } else if(type %in% c("Alcoholic Beverage", "ABO Accounts")) {
       "ABO"
     } else {
       "Other"
@@ -43,7 +43,7 @@ plotRev <- function() {
   d$highlight <- "no"
 
   for(i in 1:length(d$month_start)) {
-   if(d$opa_category[i] == "Business Intake" & d$variable[i] == "n" | d$opa_category[i] == "Business Intake" & d$variable[i] == "medianwait") {
+   if(d$opa_category[i] == "Enforcement" & d$variable[i] == "meanwait") {
      d$highlight[i] <- "yes"
    }
   }

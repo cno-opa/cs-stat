@@ -85,8 +85,10 @@ calcOpenAge <- function(data, month) {
   closed_before <- filter(data, firstinspection <= date_end_month)
   o <- anti_join(opened_before, closed_before, by = "num")
   o$age <- date_end_month - o$d_filed
+  
+  write.csv(x = o, file = "last_month_open.csv")
 
-  return( as.numeric(median(o$age, na.rm = TRUE), units ="days") )
+  return(as.numeric(median(o$age, na.rm = TRUE), units = "days"))
 }
 
 calcMedianClose <- function(data, month) {
@@ -98,7 +100,7 @@ countOpen <- function(month_year, df, date_start, date_end) {
   date_start <- eval(substitute(date_start), envir = df)
 
   # #remove cases which have been closed without inspections noted
-  # df <- filter(df, !grepl("been closed", keystatus))
+  #df <- filter(df, !grepl(".*been closed.*", keystatus))
 
   month_year <- as.Date(as.yearmon(month_year))
   eom <- ymd(paste(year(month_year), month(month_year), days_in_month(month(month_year)), sep="-"))
@@ -117,12 +119,13 @@ building <- function() {
        filter(month_end != "NA NA") %>%
        melt()
 
-  p <- barOPA(d, "month_end", "value", "Building inspections, and days to completion", fill = "variable", position = "identity", legend.labels = c("More than 7 days", "Less than 7 days"))
+  p <- barOPA(d, "month_end", "value", "Days to carry out building complaint inspections", fill = "variable", position = "identity", legend.labels = c("More than 7 days", "Less than 7 days"))
   p <- buildChart(p)
   ggsave("./output/40-complaints-building.png", plot = p, width = 7.42, height = 5.75)
 
   #age stats on building complaints
   f_complaints <- filter(complaints, opa_category == "Building")
+  
   ages = data.frame(date = as.factor(as.yearmon(months_in_period)))
   ages$open_age <- sapply(ages$date, calcOpenAge, data = f_complaints)
   ages$median_close <- sapply(ages$date, calcMedianClose, data = f_complaints)
@@ -153,7 +156,10 @@ zoning <- function() {
 
   #age stats on zoning complaints
   f_complaints <- filter(complaints, opa_category == "Zoning")
-  ages = data.frame(date = as.factor(as.yearmon(months_in_period)))
+  
+  #write.csv(x = f_complaints, file = paste0("zoning_complaints", "_", today(), ".csv"))
+  
+  ages <- data.frame(date = as.factor(as.yearmon(months_in_period)))
   ages$open_age <- sapply(ages$date, calcOpenAge, data = f_complaints)
   ages$median_close <- sapply(ages$date, calcMedianClose, data = f_complaints)
   ages <- melt(ages, id.vars = "date")
@@ -199,7 +205,7 @@ openEndOfMonth()
 }
 
 # load
-complaints <- read.csv("./data/complaints.csv", header = TRUE)
+complaints <- read.csv("./data/complaints.csv", header = TRUE, stringsAsFactors = FALSE)
 
 # execute
 complaints <- cleanSPComplaints(complaints)
